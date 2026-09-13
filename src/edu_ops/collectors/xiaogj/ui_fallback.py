@@ -39,9 +39,11 @@ def query_schedule_json(
     """Capture the site's authenticated QueryNew response without replaying secrets."""
     _prepare_schedule_page(page, query, base_url=base_url)
     with page.expect_response(
-        lambda response: response.url == QUERY_NEW_URL
-        and response.request.method == "POST"
-        and response.status == 200
+        lambda response: (
+            response.url == QUERY_NEW_URL
+            and response.request.method == "POST"
+            and response.status == 200
+        )
     ) as response_info:
         page.get_by_role("button", name="查询", exact=True).first.click()
     response = response_info.value
@@ -56,9 +58,11 @@ def query_schedule_json(
     total_count = int(first_data.get("TotalCount") or len(all_rows))
     while len(all_rows) < total_count:
         with page.expect_response(
-            lambda next_response: next_response.url == QUERY_NEW_URL
-            and next_response.request.method == "POST"
-            and next_response.status == 200
+            lambda next_response: (
+                next_response.url == QUERY_NEW_URL
+                and next_response.request.method == "POST"
+                and next_response.status == 200
+            )
         ) as next_response_info:
             page.get_by_role("button", name="下一页", exact=True).click()
         next_response = next_response_info.value

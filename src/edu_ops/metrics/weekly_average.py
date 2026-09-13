@@ -5,7 +5,7 @@ from datetime import date
 from decimal import Decimal
 from typing import Optional
 
-from edu_ops.transforms.schedule import ScheduleRecord
+from edu_ops.transforms.schedule import ScheduleRecord, is_cancelled
 
 
 def _selected_records(
@@ -17,6 +17,7 @@ def _selected_records(
     return (
         record
         for record in records
+        if not is_cancelled(record.status)
         if (week_start is None or record.lesson_date >= week_start)
         and (cutoff is None or record.lesson_date <= cutoff)
     )

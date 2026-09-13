@@ -7,6 +7,8 @@ from datetime import date, datetime
 from decimal import Decimal
 from typing import Any, List, Optional
 
+_SUBJECT_PREFIX = re.compile(r"^\s*\d+\s*[-_—－:：./]\s*")
+
 
 @dataclass(frozen=True)
 class ScheduleRecord:
@@ -24,6 +26,32 @@ class ScheduleRecord:
     status: Optional[str]
     source: str
     retrieved_at: datetime
+
+
+def _text(value: Any) -> Optional[str]:
+    if value in (None, ""):
+        return None
+    text = str(value).strip()
+    return text or None
+
+
+def normalize_subject(value: Any) -> Optional[str]:
+    """Remove only an explicit numeric export prefix, such as ``02-数学``."""
+    text = _text(value)
+    if text is None:
+        return None
+    normalized = _SUBJECT_PREFIX.sub("", text).strip()
+    return normalized or text
+
+
+def is_cancelled(status: Any) -> bool:
+    """Return whether a row is explicitly cancelled or voided."""
+    normalized = _text(status)
+    if normalized is None:
+        return False
+    return normalized in {"取消", "已取消", "作废", "已作废"} or normalized.startswith(
+        ("课程已取消", "课程作废")
+    )
 
 
 def _date(value: Any) -> date:
@@ -113,10 +141,10 @@ def normalize_schedule_row(
                 row.get("任课老师"),
             )
         ),
-        campus=(
+        campus=_text(
             _value(row.get("campus"), row.get("CampusName"), row.get("校区"), row.get("上课校区"))
         ),
-        subject=(
+        subject=normalize_subject(
             _value(row.get("subject"), row.get("SubjectName"), row.get("学科"), row.get("上课科目"))
         ),
         grade=(
@@ -181,3 +209,21 @@ def normalize_schedule_rows(
 ) -> List[ScheduleRecord]:
     """Normalize a sequence returned by either collector adapter."""
     return [normalize_schedule_row(row, source=source, retrieved_at=retrieved_at) for row in rows]
+
+
+def filter_records_by_dimension(
+    records: Iterable[ScheduleRecord], *, campus: str, subject: str
+) -> List[ScheduleRecord]:
+    """Select one exact campus/subject dimension and fail closed when absent."""
+    target_campus = _text(campus)
+    target_subject = normalize_subject(subject)
+    if target_campus is None or target_subject is None:
+        raise ValueError("目标校区和学科不能为空")
+    selected = [
+        record
+        for record in records
+        if record.campus == target_campus and record.subject == target_subject
+    ]
+    if not selected:
+        raise ValueError(f"目标维度不存在: 校区={target_campus}, 学科={target_subject}")
+    return selected

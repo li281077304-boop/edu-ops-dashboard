@@ -19,7 +19,7 @@ from edu_ops.collectors.xiaogj.validator import validate_export
 from edu_ops.config import resolve_manual_month
 from edu_ops.metrics.engine import MetricContext, build_metric_rows
 from edu_ops.storage.raw_files import save_json, write_run_record
-from edu_ops.transforms.schedule import normalize_schedule_rows
+from edu_ops.transforms.schedule import filter_records_by_dimension, normalize_schedule_rows
 
 
 def manual_month_query(
@@ -142,6 +142,7 @@ def build_metric_batch(
 ) -> list[dict[str, Any]]:
     """Normalize one collector result and build the write-ready metric batch."""
     records = normalize_schedule_rows(rows, source=source, retrieved_at=retrieved_at)
+    records = filter_records_by_dimension(records, campus=campus, subject=subject)
     return build_metric_rows(
         records,
         snapshot_date=snapshot_date,

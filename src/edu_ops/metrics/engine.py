@@ -10,7 +10,7 @@ from typing import Any, Dict, Iterable, List, Optional
 from edu_ops.metrics.forecast import forecast_hours, production_hours
 from edu_ops.metrics.monthly_average import monthly_average_hours, monthly_forecast_hours
 from edu_ops.metrics.weekly_average import weekly_average_hours, weekly_average_lessons
-from edu_ops.transforms.schedule import ScheduleRecord
+from edu_ops.transforms.schedule import ScheduleRecord, is_cancelled
 
 
 @dataclass(frozen=True)
@@ -23,7 +23,11 @@ class MetricContext:
 
 
 def _within(records: Iterable[ScheduleRecord], start: date, end: date) -> List[ScheduleRecord]:
-    return [record for record in records if start <= record.lesson_date <= end]
+    return [
+        record
+        for record in records
+        if not is_cancelled(record.status) and start <= record.lesson_date <= end
+    ]
 
 
 def _row(

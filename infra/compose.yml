@@ -2,11 +2,15 @@ services:
   postgres:
     image: postgres:16-alpine
     restart: unless-stopped
+    ports:
+      - "127.0.0.1:${POSTGRES_PORT:-5432}:5432"
     environment:
       POSTGRES_USER: ${POSTGRES_USER:-edu_ops}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD}
       POSTGRES_DB: postgres
       MB_DB_PASS: ${MB_DB_PASS:?set MB_DB_PASS}
+      ANALYTICS_DB_USER: ${ANALYTICS_DB_USER:-analytics_reader}
+      ANALYTICS_DB_PASS: ${ANALYTICS_DB_PASS:?set ANALYTICS_DB_PASS}
     volumes:
       - postgres_data:/var/lib/postgresql/data
       - ./postgres/init:/docker-entrypoint-initdb.d:ro

@@ -70,6 +70,7 @@ def test_real_xiaogj_export_fields_parse_date_and_hours() -> None:
     assert record.lesson_date == date(2026, 9, 6)
     assert record.lesson_hours == Decimal("1.5")
     assert record.campus == "宣城二校"
+    assert record.subject == "数学"
     assert record.status == "已上课"
 
 
@@ -94,7 +95,7 @@ def test_query_new_fields_parse_minutes_and_attendance_pair() -> None:
     assert record.lesson_hours == Decimal("2")
     assert record.expected_students == Decimal("3")
     assert record.attended_students == Decimal("2")
-    assert record.subject == "04-物理"
+    assert record.subject == "物理"
     assert record.teacher_id == "teacher-1"
 
 
@@ -175,6 +176,133 @@ def test_skill_forecast_uses_one_to_one_and_expected_student_rules() -> None:
     assert forecast_average(records, teacher_count=2) == Decimal("5.5")
 
 
+def test_cancelled_one_to_one_and_class_are_excluded_from_all_workload_metrics() -> None:
+    retrieved = datetime(2026, 9, 13)
+    records = [
+        normalize_schedule_row(
+            {
+                "上课日期": "2026-09-13",
+                "教学形式": "一对一",
+                "应到": 1,
+                "实到": 1,
+                "总小时数": 2,
+                "上课状态": "已上课",
+            },
+            source="fixture",
+            retrieved_at=retrieved,
+        ),
+        normalize_schedule_row(
+            {
+                "上课日期": "2026-09-13",
+                "教学形式": "一对一",
+                "应到": 1,
+                "实到": 1,
+                "总小时数": 2,
+                "上课状态": "已取消",
+            },
+            source="fixture",
+            retrieved_at=retrieved,
+        ),
+        normalize_schedule_row(
+            {
+                "上课日期": "2026-09-13",
+                "教学形式": "集体班",
+                "应到": 4,
+                "实到": 3,
+                "总小时数": 2,
+                "上课状态": "作废",
+            },
+            source="fixture",
+            retrieved_at=retrieved,
+        ),
+    ]
+    assert weekly_average_lessons(records, teacher_count=1) == Decimal("1")
+    assert weekly_average_hours(records, total_subject_count=1) == Decimal("2")
+    assert forecast_hours(records) == Decimal("3")
+    assert production_hours(records) == Decimal("3")
+
+
+def test_metric_batch_filters_exact_campus_and_normalized_subject() -> None:
+    rows = build_metric_batch(
+        [
+            {
+                "StartTime": "2026-09-13 10:00:00",
+                "Duration": 60,
+                "CampusName": " 宣城二校 ",
+                "SubjectName": "02-数学",
+                "TeacherID": "t1",
+                "IsOneToOneName": "一对一",
+                "CourseStudentCount": 1,
+                "Status": "已上课",
+            },
+            {
+                "StartTime": "2026-09-13 10:00:00",
+                "Duration": 60,
+                "CampusName": "宣城二校",
+                "SubjectName": "物理",
+                "TeacherID": "t2",
+                "IsOneToOneName": "一对一",
+                "CourseStudentCount": 1,
+                "Status": "已上课",
+            },
+            {
+                "StartTime": "2026-09-13 10:00:00",
+                "Duration": 60,
+                "CampusName": "宣城一校",
+                "SubjectName": "数学",
+                "TeacherID": "t3",
+                "IsOneToOneName": "一对一",
+                "CourseStudentCount": 1,
+                "Status": "已上课",
+            },
+            {
+                "StartTime": "2026-09-13 10:00:00",
+                "Duration": 60,
+                "SubjectName": "数学",
+                "TeacherID": "t4",
+                "IsOneToOneName": "一对一",
+                "CourseStudentCount": 1,
+                "Status": "已上课",
+            },
+        ],
+        source="fixture",
+        retrieved_at=datetime(2026, 9, 13),
+        snapshot_date=date(2026, 9, 13),
+        week_start=date(2026, 9, 7),
+        week_end=date(2026, 9, 13),
+        month_start=date(2026, 8, 31),
+        month_end=date(2026, 9, 27),
+        campus="宣城二校",
+        subject="数学",
+        context=MetricContext(teacher_count=1, total_subject_count=1, manual_month_weeks=4),
+        cutoff=date(2026, 9, 13),
+    )
+    by_metric = {row["metric"]: row for row in rows}
+    assert by_metric["weekly_average_lessons"]["value"] == Decimal("1")
+    assert by_metric["weekly_forecast_hours"]["value"] == Decimal("3")
+
+
+def test_metric_batch_fails_closed_when_target_dimension_is_missing() -> None:
+    try:
+        build_metric_batch(
+            [{"上课日期": "2026-09-13", "校区": "宣城二校", "学科": "物理"}],
+            source="fixture",
+            retrieved_at=datetime(2026, 9, 13),
+            snapshot_date=date(2026, 9, 13),
+            week_start=date(2026, 9, 7),
+            week_end=date(2026, 9, 13),
+            month_start=date(2026, 8, 31),
+            month_end=date(2026, 9, 27),
+            campus="宣城二校",
+            subject="数学",
+            context=MetricContext(teacher_count=1, total_subject_count=1, manual_month_weeks=4),
+        )
+    except ValueError as exc:
+        assert "目标维度不存在" in str(exc)
+    else:
+        raise AssertionError("缺少目标校区/学科时必须失败关闭")
+
+
 def test_skill_weekly_average_can_apply_week_and_cutoff() -> None:
     records = [
         normalize_schedule_row(
@@ -205,6 +333,8 @@ def test_metric_engine_builds_explicit_week_and_manual_month_rows() -> None:
                 "上课日期": "2026-09-07",
                 "上课时长": "2小时",
                 "教学形式": "一对一",
+                "校区": "宣城二校",
+                "学科": "数学",
                 "应到": 1,
                 "实到": 1,
                 "上课状态": "已上课",
@@ -253,6 +383,8 @@ def test_metric_batch_normalizes_collector_rows_before_aggregation() -> None:
                 "上课日期": "2026-09-07",
                 "上课时长": "2小时",
                 "教学形式": "一对一",
+                "校区": "宣城二校",
+                "学科": "数学",
                 "应到": 1,
                 "实到": 1,
                 "上课状态": "已上课",
@@ -280,11 +412,19 @@ def test_metric_batch_normalizes_collector_rows_before_aggregation() -> None:
 def test_manual_month_batch_uses_configured_four_week_period(tmp_path) -> None:
     config = tmp_path / "manual_months.csv"
     config.write_text(
-        "人工月,周数,开始日期,结束日期\n" "9,4,2026-08-31,2026-09-27\n",
+        "人工月,周数,开始日期,结束日期\n9,4,2026-08-31,2026-09-27\n",
         encoding="utf-8",
     )
     rows = build_manual_month_metric_batch(
-        [{"StartTime": "2026-09-13 10:00:00", "Duration": 60, "Status": "已上课"}],
+        [
+            {
+                "StartTime": "2026-09-13 10:00:00",
+                "Duration": 60,
+                "CampusName": "宣城二校",
+                "SubjectName": "数学",
+                "Status": "已上课",
+            }
+        ],
         today=date(2026, 9, 13),
         config_path=config,
         campus="宣城二校",

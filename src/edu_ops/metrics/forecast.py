@@ -6,7 +6,7 @@ from collections.abc import Iterable
 from decimal import Decimal
 from typing import Optional
 
-from edu_ops.transforms.schedule import ScheduleRecord
+from edu_ops.transforms.schedule import ScheduleRecord, is_cancelled
 
 
 def _is_one_to_one(record: ScheduleRecord) -> bool:
@@ -26,6 +26,8 @@ def planned_hours(records: Iterable[ScheduleRecord]) -> Decimal:
     """Calculate plan/forecast workload: 1v1×3, classes by expected students."""
     total = Decimal("0")
     for record in records:
+        if is_cancelled(record.status):
+            continue
         expected = _count(record.expected_students)
         if _is_one_to_one(record):
             total += _one_to_one_hours(record, expected)
@@ -43,6 +45,8 @@ def production_hours(records: Iterable[ScheduleRecord]) -> Decimal:
     """Calculate production: attended for completed rows, expected otherwise."""
     total = Decimal("0")
     for record in records:
+        if is_cancelled(record.status):
+            continue
         status = (record.status or "").strip()
         students = (
             _count(record.attended_students)

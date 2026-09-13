@@ -5,6 +5,7 @@ __pycache__/
 *.py[cod]
 *.egg-info/
 .env
+.env.local
 .DS_Store
 
 # 原始数据与运行产物默认不入库

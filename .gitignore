@@ -1,0 +1,23 @@
+.venv/
+__pycache__/
+.pytest_cache/
+.ruff_cache/
+*.py[cod]
+*.egg-info/
+.env
+.DS_Store
+
+# 原始数据与运行产物默认不入库
+data/raw/*
+data/interim/*
+data/processed/*
+logs/*
+playwright/.auth/*
+!data/raw/.gitkeep
+!data/interim/.gitkeep
+!data/processed/.gitkeep
+!logs/.gitkeep
+!playwright/.gitkeep
+
+# Local CI workflow kept outside the first public push until token scope is fixed.
+.github/workflows/ci.yml

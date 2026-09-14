@@ -36,6 +36,13 @@ Shared/Core 发布的 canonical schedule 至少包含：
 
 Payroll 与 Dashboard 可以各自扩展业务字段，但不得为了统一而重写双方的 `ScheduleRecord`。未来由 adapter 将各自内部结构映射到本契约。
 
+### 语义约束（兼容性审计补充）
+
+- `duration` 的 canonical 单位为小时，建议使用定点数；课次、lesson factor 和人数系数不是 duration。
+- `attended` 表示实到人数，不是布尔出勤；`0` 与缺失值必须保持可区分。
+- `class_type` 和 `lesson_status` 的标准枚举由 Shared/Core 发布；未知班型或状态不得猜测。
+- `grade` 暂不进入 minimum contract，但作为 Shared/Core 的 schedule extension 发布；Payroll 继续拥有工资系数和年级工资政策。
+
 ## 3. Provenance
 
 任何跨系统发布的事实或聚合结果都应能回溯到：

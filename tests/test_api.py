@@ -3,7 +3,9 @@ from datetime import date
 import pytest
 
 from edu_ops.collectors.xiaogj.api import (
+    XiaogjApiError,
     ensure_authenticated,
+    extract_rows,
     extract_schedule_rows,
     query_consume_total,
 )
@@ -78,3 +80,13 @@ def test_extract_schedule_rows_reads_query_new_envelope() -> None:
         "Data": {"TotalCount": 1, "PageSize": 1000, "List": [{"ID": "row-1"}]},
     }
     assert extract_schedule_rows(payload) == [{"ID": "row-1"}]
+
+
+def test_extract_schedule_rows_fails_closed_on_non_object_row() -> None:
+    with pytest.raises(XiaogjApiError, match="非法数据行"):
+        extract_schedule_rows({"IsSuccess": True, "Data": {"List": [{"ID": "row-1"}, None]}})
+
+
+def test_extract_rows_fails_closed_on_non_object_row() -> None:
+    with pytest.raises(XiaogjApiError, match="非法数据行"):
+        extract_rows({"data": {"rows": [{"id": 1}, "not-a-row"]}})

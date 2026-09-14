@@ -5,6 +5,8 @@ from __future__ import annotations
 from collections.abc import Iterable, Mapping
 from typing import Any
 
+from edu_ops.metrics.contracts import validate_metric_rows, validate_snapshot_rows
+
 METRIC_UPSERT_SQL = """
 INSERT INTO metric_values
   (snapshot_date, period_start, period_end, campus, subject, metric,
@@ -34,8 +36,9 @@ class PostgresWriter:
 
     def upsert_metrics(self, metrics: Iterable[Mapping[str, Any]]) -> int:
         """Upsert one computed batch in a single transaction."""
+        metric_rows = validate_metric_rows(metrics)
         count = 0
-        for metric in metrics:
+        for metric in metric_rows:
             self.connection.execute(
                 METRIC_UPSERT_SQL,
                 (
@@ -60,8 +63,8 @@ class PostgresWriter:
         snapshots: Iterable[Mapping[str, Any]],
     ) -> tuple[int, int]:
         """Write metric rows and their forecast snapshots in one transaction."""
-        metric_rows = list(metrics)
-        snapshot_rows = list(snapshots)
+        metric_rows = validate_metric_rows(metrics)
+        snapshot_rows = validate_snapshot_rows(snapshots)
         for metric in metric_rows:
             self.connection.execute(
                 METRIC_UPSERT_SQL,
@@ -99,8 +102,9 @@ class PostgresWriter:
 
     def upsert_forecast_snapshots(self, snapshots: Iterable[Mapping[str, Any]]) -> int:
         """Persist immutable-by-snapshot-date forecast observations."""
+        snapshot_rows = validate_snapshot_rows(snapshots)
         count = 0
-        for snapshot in snapshots:
+        for snapshot in snapshot_rows:
             self.connection.execute(
                 SNAPSHOT_UPSERT_SQL,
                 (

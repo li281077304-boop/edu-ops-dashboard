@@ -71,6 +71,7 @@ def test_real_xiaogj_export_fields_parse_date_and_hours() -> None:
     assert record.lesson_hours == Decimal("1.5")
     assert record.campus == "宣城二校"
     assert record.subject == "数学"
+    assert record.teacher_id is None
     assert record.status == "已上课"
 
 

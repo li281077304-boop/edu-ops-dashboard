@@ -138,7 +138,6 @@ def normalize_schedule_row(
                 row.get("teacher_id"),
                 row.get("TeacherID"),
                 row.get("教师ID"),
-                row.get("任课老师"),
             )
         ),
         campus=_text(

@@ -19,3 +19,5 @@
 采集器、标准化和指标层分离。校管家字段变化时只调整 adapter；课消汇总 API 与排课明细 Excel 各自进入适合的指标支路，不把汇总接口误当成逐节排课明细。
 
 原始学生、老师、课表和课消数据只保存在 Mac 本地。云端只接收聚合结果。Metabase application database 与 `edu_ops` 业务数据库分开。
+
+Dashboard 与未来 Shared/Core、Payroll 的 canonical ID、provenance、数据所有权和 schema 边界见 `docs/PLATFORM_INTEGRATION_CONTRACT.md`。当前不迁移数据库，也不把显示名称当作跨系统主键。

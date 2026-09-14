@@ -48,5 +48,15 @@ def test_validate_export_rejects_missing_required_key(tmp_path: Path) -> None:
 def test_validate_export_rejects_rows_without_parseable_dates(tmp_path: Path) -> None:
     export = tmp_path / "schedule.xlsx"
     export.write_bytes(b"fixture")
-    with pytest.raises(ValueError, match="没有有效日期列"):
+    with pytest.raises(ValueError, match="缺少有效日期列"):
         validate_export(export, [{"lesson_date": None}])
+
+
+def test_validate_export_rejects_any_row_with_missing_date(tmp_path: Path) -> None:
+    export = tmp_path / "schedule.xlsx"
+    export.write_bytes(b"fixture")
+    with pytest.raises(ValueError, match="第 2 行缺少有效日期列"):
+        validate_export(
+            export,
+            [{"lesson_date": "2026-09-13"}, {"lesson_date": None}],
+        )

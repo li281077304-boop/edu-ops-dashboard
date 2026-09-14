@@ -1,0 +1,53 @@
+{
+  "IsSuccess": true,
+  "Data": {
+    "TotalCount": 4,
+    "PageSize": 4,
+    "PageIndex": 1,
+    "List": [
+      {
+        "ID": "fixture-course-001",
+        "StartTime": "2026-09-13 10:00:00",
+        "Duration": 60,
+        "CampusName": "宣城二校",
+        "SubjectName": "02-数学",
+        "TeacherID": "fixture-teacher-001",
+        "IsOneToOneName": "一对一",
+        "CourseStudentCount": 1,
+        "Status": "已上课"
+      },
+      {
+        "ID": "fixture-course-002",
+        "StartTime": "2026-09-13 11:00:00",
+        "Duration": 120,
+        "CampusName": "宣城二校",
+        "SubjectName": "数学",
+        "TeacherID": "fixture-teacher-002",
+        "IsOneToOneName": "集体班",
+        "CourseStudentCount": 4,
+        "Status": "已取消"
+      },
+      {
+        "ID": "fixture-course-003",
+        "StartTime": "2026-09-13 12:00:00",
+        "Duration": 60,
+        "CampusName": "宣城一校",
+        "SubjectName": "数学",
+        "TeacherID": "fixture-teacher-003",
+        "IsOneToOneName": "集体班",
+        "CourseStudentCount": 5,
+        "Status": "已上课"
+      },
+      {
+        "ID": "fixture-course-004",
+        "StartTime": "2026-09-13 13:00:00",
+        "Duration": 60,
+        "SubjectName": "数学",
+        "TeacherID": "fixture-teacher-004",
+        "IsOneToOneName": "集体班",
+        "CourseStudentCount": 6,
+        "Status": "已上课"
+      }
+    ]
+  }
+}

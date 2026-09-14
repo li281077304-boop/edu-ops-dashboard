@@ -55,11 +55,14 @@ def validate_export(
         raise ValueError(f"导出文件为空: {path}")
     materialized = list(rows)
     parsed = []
-    for row in materialized:
+    for index, row in enumerate(materialized, start=1):
         value = row.get(date_key)
         if value is None or value == "":
-            continue
-        parsed.append(parse_date_value(value))
+            raise ValueError(f"导出数据第 {index} 行缺少有效日期列: {date_key}")
+        try:
+            parsed.append(parse_date_value(value))
+        except ValueError as exc:
+            raise ValueError(f"导出数据第 {index} 行日期无效: {date_key}") from exc
     min_date = min(parsed) if parsed else None
     max_date = max(parsed) if parsed else None
     if not materialized:

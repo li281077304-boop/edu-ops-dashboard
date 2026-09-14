@@ -56,7 +56,9 @@ def extract_schedule_rows(payload: Any) -> List[Mapping[str, Any]]:
     rows = data.get("List") or data.get("list") or data.get("rows")
     if not isinstance(rows, list):
         raise XiaogjApiError("排课响应中未找到 Data.List")
-    return [row for row in rows if isinstance(row, Mapping)]
+    if any(not isinstance(row, Mapping) for row in rows):
+        raise XiaogjApiError("排课响应包含非法数据行")
+    return rows
 
 
 def query_schedule(
@@ -84,7 +86,9 @@ def extract_rows(payload: Any) -> List[Mapping[str, Any]]:
             continue
         value = payload[key]
         if isinstance(value, list):
-            return [row for row in value if isinstance(row, Mapping)]
+            if any(not isinstance(row, Mapping) for row in value):
+                raise XiaogjApiError("课消响应包含非法数据行")
+            return value
         if isinstance(value, Mapping):
             return extract_rows(value)
     raise XiaogjApiError("课消响应中未找到 rows/data/items/list/result")

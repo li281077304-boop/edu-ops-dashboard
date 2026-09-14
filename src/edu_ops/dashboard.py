@@ -103,6 +103,7 @@ def _card(key: str, label: str, value: Any, unit: str, definition: str) -> dict[
         "value": value,
         "unit": unit,
         "definition": definition,
+        "metric": key,
         "source": "existing edu_ops metric engine",
     }
 
@@ -144,11 +145,11 @@ def build_dashboard_payload(
         status_counts[status] = status_counts.get(status, 0) + 1
 
     cards = [
-        _card("production_hours", "生产课时", _decimal_text(production), "课时", "production_hours：已上课按实到，未上课按应到；取消课排除"),
-        _card("planned_hours", "预排课时", _decimal_text(planned), "课时", "planned_hours：一对一每节 3 课时，其余按应到人数"),
-        _card("monthly_average_hours", "人工月平均课时", _decimal_text(monthly_production_average), "课时/周", f"monthly_average_hours：生产课时 ÷ 人工月 {month.weeks} 周"),
-        _card("monthly_forecast_hours", "人工月预排课时", _decimal_text(monthly_planned_average), "课时/周", f"monthly_forecast_hours：预排课时 ÷ 人工月 {month.weeks} 周"),
-        _card("weekly_average_lessons", "本周平均课次", _decimal_text(weekly_lessons), "节/教师", "weekly_average_lessons：本周截至昨日课次数 ÷ 本文件教师数"),
+        _card("production_hours", "生产课时", _decimal_text(production), "课时", "已上课按实到，未上课按应到；取消课排除"),
+        _card("planned_hours", "预排课时", _decimal_text(planned), "课时", "一对一每节 3 课时，其余按应到人数"),
+        _card("monthly_average_hours", "人工月平均课时", _decimal_text(monthly_production_average), "课时/周", f"生产课时 ÷ 人工月 {month.weeks} 周"),
+        _card("monthly_forecast_hours", "人工月预排课时", _decimal_text(monthly_planned_average), "课时/周", f"预排课时 ÷ 人工月 {month.weeks} 周"),
+        _card("weekly_average_lessons", "本周平均课次", _decimal_text(weekly_lessons), "节/教师", "本周截至昨日课次数 ÷ 本文件教师数"),
         _card("teacher_count", "参与教师数", str(teacher_count), "人", "从本次冻结 Excel 的任课老师列去重"),
     ]
     return {
@@ -226,7 +227,7 @@ h1 {{ margin:0 0 8px; font-size:clamp(24px,4vw,36px); }} .subtitle {{ opacity:.8
 <div class="period"><span>数据周期：<b>{period['start']} ～ {period['end']}</b></span><span>人工月：<b>{period['manual_month']}（{period['weeks']} 周）</b></span></div></header>
 <h2 class="section-title">核心经营指标</h2><section class="grid">{cards}</section>
 <h2 class="section-title">数据质量与来源</h2><section class="details"><div>记录：{quality['row_count']} 行　·　教师：{quality['teacher_count']} 人　·　截止：{quality['cutoff']}</div><div>工作表：{inp['sheet']}　·　SHA256：<code>{inp['sha256']}</code></div><div>输入文件：<code>{inp['path']}</code></div><div>下载链路：未触发（本页仅读取冻结输入）</div></section>
-<footer>指标口径复用仓库现有 metrics 引擎；刷新页面会重新读取同一文件。</footer>
+<footer>口径来自已确认的经营指标定义；刷新页面会重新读取同一份冻结文件。</footer>
 <script>window.__DASHBOARD_DATA__={data};</script></main></body></html>"""
 
 

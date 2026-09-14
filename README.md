@@ -26,6 +26,16 @@ uv run edu-ops --today 2026-09-13
 
 当前命令会读取 `config/manual_months.csv`，输出当前日期对应的人工月区间。增加 `--collect-schedule --headed` 可通过已登录页面采集排课 JSON，并在失败时自动切换 UI 导出；完整说明见 `docs/运行部署.md`。
 
+### 本地经营指标卡片（只读）
+
+使用昨天已经下载的排课 Excel，不会触发下载：
+
+```bash
+./start-dashboard.sh --input "/path/to/排课列表.xlsx"
+```
+
+省略 `--input` 时会从 `~/Downloads` 和 `~/Desktop` 自动选择最近的 `排课列表_*` 文件。启动后终端会打印 Mac 本机地址和局域网 Android 地址；页面刷新只重新读取同一份输入。
+
 ## 数据安全
 
 - 原始 JSON/XLSX 只放在本地 `data/raw/`，默认不会进入 Git。

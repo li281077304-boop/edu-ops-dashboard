@@ -144,6 +144,28 @@ def _raw_extension(key: str, value: Any, normalized: Optional[str]) -> Mapping[s
     return {key: raw} if raw and normalized is None else {}
 
 
+def _schedule_extensions(
+    record: Any,
+    *,
+    raw_class_type: Any,
+    normalized_class_type: Optional[str],
+) -> Mapping[str, str]:
+    """Keep source-specific schedule interpretation beside, not inside, core fields.
+
+    Payroll's ``grade_origin`` and ``grade_reason`` explain how a schedule
+    grade was established.  They are schedule-extension metadata, not a
+    replacement for canonical provenance (source hash, run, and rule version).
+    The adapter must retain them even though Dashboard's current record has no
+    equivalent fields.
+    """
+    extensions = dict(_raw_extension("raw_class_type", raw_class_type, normalized_class_type))
+    for key in ("grade_origin", "grade_reason"):
+        value = _text(getattr(record, key, None))
+        if value:
+            extensions[key] = value
+    return extensions
+
+
 def _provenance(
     *,
     source_run_id: Optional[str],
@@ -191,7 +213,11 @@ def dashboard_to_canonical(
         source_version=_text(source_version),
         grade=_text(record.grade),
         provenance=provenance or CanonicalProvenance(),
-        extensions=_raw_extension("raw_class_type", record.course_type, class_type),
+        extensions=_schedule_extensions(
+            record,
+            raw_class_type=record.course_type,
+            normalized_class_type=class_type,
+        ),
     )
 
 
@@ -224,7 +250,11 @@ def payroll_to_canonical(
         source_version=_text(source_version),
         grade=_text(getattr(record, "grade", None)),
         provenance=provenance or CanonicalProvenance(),
-        extensions=_raw_extension("raw_class_type", raw_class_type, class_type),
+        extensions=_schedule_extensions(
+            record,
+            raw_class_type=raw_class_type,
+            normalized_class_type=class_type,
+        ),
     )
 
 

@@ -1,5 +1,7 @@
+import json
 from datetime import datetime
 from decimal import Decimal
+from pathlib import Path
 from types import SimpleNamespace
 
 from edu_ops.compatibility import (
@@ -126,3 +128,28 @@ def test_grade_is_an_extension_and_does_not_change_shared_fields() -> None:
     assert payroll.grade == "跨学年待确认"
     assert payroll.class_type is None
     assert public_fields(payroll)["subject_id"] is None
+
+
+def test_current_payroll_grade_evidence_survives_as_schedule_extension() -> None:
+    fixture_path = Path(__file__).parent / "fixtures" / "payroll_schedule_current_sanitized.json"
+    payload = json.loads(fixture_path.read_text(encoding="utf-8"))
+    record = SimpleNamespace(**payload)
+
+    canonical = payroll_to_canonical(
+        record,
+        source_record_id="fixture-course-007",
+        source_version="payroll-adapter-current-v1",
+        provenance=CanonicalProvenance(
+            source_run_id="fixture-run-007",
+            source_file="payroll_schedule_current_sanitized.json",
+            source_hash="fixture-sha256",
+            period="2026-09",
+            rule_version="grade-inference-v1",
+        ),
+    )
+
+    assert canonical.grade == "七年级"
+    assert canonical.extensions["grade_origin"] == "DIRECT_SOURCE"
+    assert canonical.extensions["grade_reason"] == "当前课程或源表已明确标注年级。"
+    assert canonical.provenance.source_run_id == "fixture-run-007"
+    assert canonical.provenance.rule_version == "grade-inference-v1"

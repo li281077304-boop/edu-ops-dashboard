@@ -1,0 +1,17 @@
+{
+  "period": "2026-09",
+  "teacher": "fixture-teacher",
+  "grade": "七年级",
+  "subject": "数学",
+  "class_type": "集体班",
+  "attended": 2,
+  "lesson_status": "已上课",
+  "student": "fixture-student",
+  "lesson_date": "2026-09-13",
+  "class_name": "七年级数学班",
+  "course_name": "数学班",
+  "duration_text": "1小时30分",
+  "grade_origin": "DIRECT_SOURCE",
+  "grade_reason": "当前课程或源表已明确标注年级。",
+  "source": "fixture/payroll_schedule_current_sanitized.xlsx"
+}

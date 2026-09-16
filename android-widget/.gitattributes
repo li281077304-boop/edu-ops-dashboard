@@ -1,0 +1,3 @@
+# Windows launcher scripts must keep CRLF in the working tree.
+# The index stays normalised to LF, which keeps `git diff --check` clean.
+*.bat text eol=crlf

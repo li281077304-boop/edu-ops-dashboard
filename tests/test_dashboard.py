@@ -46,6 +46,9 @@ def test_dashboard_cards_reuse_existing_metrics_and_render_mobile_safe_html(tmp_
     assert values["production_hours"] == "6"
     assert values["planned_hours"] == "6"
     assert values["teacher_count"] == "2"
+    assert payload["widget"]["schema_version"] == 1
+    assert payload["widget"]["cards"] == payload["cards"]
+    assert payload["widget"]["period"]["start"] == "2026-08-31"
     assert payload["trace"]["download_pipeline_touched"] is False
     rendered = _html(payload)
     assert "grid-template-columns:1fr" in rendered

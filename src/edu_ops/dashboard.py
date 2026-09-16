@@ -153,6 +153,7 @@ def build_dashboard_payload(
         _card("teacher_count", "参与教师数", str(teacher_count), "人", "从本次冻结 Excel 的任课老师列去重"),
     ]
     return {
+        "schema_version": 1,
         "input": asdict(source_meta),
         "period": {
             "start": period_start.isoformat(),
@@ -176,6 +177,20 @@ def build_dashboard_payload(
         "trace": {
             "card_to_source": "每张卡片均由现有 metrics 模块消费同一份冻结 Excel → ScheduleRecord",
             "download_pipeline_touched": False,
+        },
+        # This is the intentionally small, stable boundary for non-browser
+        # consumers.  Keep the existing cards and metric engine untouched;
+        # clients should not need to know anything about Excel or rows.
+        "widget": {
+            "schema_version": 1,
+            "updated_at": retrieved_at.isoformat(),
+            "period": {
+                "start": period_start.isoformat(),
+                "end": period_end.isoformat(),
+                "manual_month": month.number,
+                "weeks": month.weeks,
+            },
+            "cards": cards,
         },
     }
 

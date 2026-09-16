@@ -1,0 +1,15 @@
+{
+  "version": "1.0",
+  "project": "weekly-report-module",
+  "contract": "WEEKLY_REPORT_UAT.md",
+  "scope": ["students", "production", "teachers"],
+  "obligations": [
+    {"id":"UAT-01","status":"PASS"},{"id":"UAT-02","status":"PASS"},{"id":"UAT-03","status":"PASS"},
+    {"id":"UAT-04","status":"PASS"},{"id":"UAT-05","status":"TECHNICAL_OPEN"},{"id":"UAT-06","status":"HUMAN_BLOCKED"},
+    {"id":"UAT-07","status":"TECHNICAL_OPEN"},{"id":"UAT-08","status":"TECHNICAL_OPEN"},{"id":"UAT-09","status":"PASS_WITH_WARNING"},
+    {"id":"UAT-10","status":"PASS_WITH_WARNING"},{"id":"UAT-11","status":"SOURCE_MISSING"},{"id":"UAT-12","status":"TECHNICAL_OPEN"},
+    {"id":"UAT-13","status":"TECHNICAL_OPEN"},{"id":"UAT-14","status":"NOT_TESTED"},{"id":"UAT-15","status":"NOT_TESTED"},
+    {"id":"UAT-16","status":"NOT_TESTED"},{"id":"UAT-17","status":"TECHNICAL_OPEN"},{"id":"UAT-18","status":"TECHNICAL_OPEN"},
+    {"id":"UAT-19","status":"PASS"},{"id":"UAT-20","status":"TECHNICAL_OPEN"}
+  ]
+}

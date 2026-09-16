@@ -1,0 +1,14 @@
+{
+  "date": "2026-09-16",
+  "latest_complete_period": "2026-06-22/2026-06-28",
+  "golden_unexplained_difference": 0,
+  "statuses": {
+    "UAT-01": "PASS", "UAT-02": "PASS", "UAT-03": "PASS", "UAT-04": "PASS",
+    "UAT-05": "PASS_WITH_WARNING", "UAT-06": "PASS_WITH_WARNING", "UAT-07": "PASS_WITH_WARNING",
+    "UAT-08": "PASS_WITH_WARNING", "UAT-09": "PASS_WITH_WARNING", "UAT-10": "PASS_WITH_WARNING",
+    "UAT-11": "PASS_WITH_WARNING", "UAT-12": "PASS_WITH_WARNING", "UAT-13": "PASS",
+    "UAT-14": "PASS", "UAT-15": "PASS", "UAT-16": "PASS", "UAT-17": "PASS",
+    "UAT-18": "TECHNICAL_OPEN", "UAT-19": "PASS", "UAT-20": "TECHNICAL_OPEN"
+  },
+  "ralph_loop_evidence": "TECHNICAL_OPEN"
+}

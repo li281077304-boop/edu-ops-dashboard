@@ -1,0 +1,32 @@
+{
+  "version": "2026-09-16",
+  "scope": ["students", "production", "teachers"],
+  "metrics": [
+    {"id":"students.single_subject_total","label":"单科数","domain":"students","relation":"derived","formula":"one_to_one.primary_scope + one_to_one.high_school + class.primary_scope + class.high_school","source_status":"DERIVED"},
+    {"id":"students.one_to_one_primary","label":"一对一·初小","domain":"students","relation":"source","source":"WPS/周数据汇总"},
+    {"id":"students.one_to_one_high","label":"一对一·高中","domain":"students","relation":"source","source":"WPS/周数据汇总"},
+    {"id":"students.one_to_one_double_three","label":"一对一·双三","domain":"students","relation":"source","source":"WPS/周数据汇总","note":"parent-scope overlap; display only"},
+    {"id":"students.class_primary","label":"班课·初小","domain":"students","relation":"source","source":"WPS/周数据汇总"},
+    {"id":"students.class_high","label":"班课·高中","domain":"students","relation":"source","source":"WPS/周数据汇总"},
+    {"id":"students.class_double_three","label":"班课·双三","domain":"students","relation":"source","source":"WPS/周数据汇总","note":"parent-scope overlap; display only"},
+    {"id":"students.changes","label":"停课/新增/结课/退费","domain":"students","relation":"source","source":"WPS change tables","source_status":"SOURCE_AVAILABLE_NOT_CONNECTED"},
+    {"id":"students.class_count","label":"开班数","domain":"students","relation":"source_or_manual","source":"WPS class table","source_status":"BUSINESS_RULE_MISSING"},
+    {"id":"fullness.total_rate","label":"总满班率","domain":"students","relation":"derived","formula":"total_single_subjects / total_capacity","source_status":"DERIVED"},
+    {"id":"production.week_hours","label":"周生产课时","domain":"production","relation":"derived","source":"TMS schedule","source_status":"DERIVED"},
+    {"id":"production.month_hours","label":"月累计生产课时","domain":"production","relation":"derived","source":"TMS schedule","source_status":"DERIVED"},
+    {"id":"production.one_to_one_ks","label":"1v1生产KS","domain":"production","relation":"source","source":"TMS schedule"},
+    {"id":"production.class_ks","label":"班课生产KS","domain":"production","relation":"source","source":"TMS schedule"},
+    {"id":"production.class_production_ks","label":"班课生产KS（bkh）","domain":"production","relation":"source","formula":"class attendance × 3","source_status":"DETERMINED"},
+    {"id":"production.week_hours_equivalent","label":"周生产课时当量","domain":"production","relation":"derived","formula":"one_to_one_ks + class_production_ks / 3","source_status":"DERIVED"},
+    {"id":"production.average_hours","label":"综合平均课时","domain":"production","relation":"derived","formula":"(I+N)/(H+L)","source_status":"SOURCE_MISSING","note":"adjusted H/L denominator absent from raw WPS"},
+    {"id":"production.average_sessions","label":"综合平均课次","domain":"production","relation":"derived","formula":"(I/3+O-R-S)/Q","source_status":"SOURCE_MISSING","note":"formal roster and adjusted inputs not present in raw source"},
+    {"id":"teachers.one_to_one_students","label":"教师1v1生数","domain":"teachers","relation":"source","source":"WPS/周数据汇总"},
+    {"id":"teachers.one_to_one_hours","label":"教师1v1课时数","domain":"teachers","relation":"source","source":"WPS/TMS"},
+    {"id":"teachers.class_students","label":"教师班课生数","domain":"teachers","relation":"source","source":"WPS/周数据汇总"},
+    {"id":"teachers.class_count","label":"教师班级数","domain":"teachers","relation":"source","source":"WPS/周数据汇总"},
+    {"id":"teachers.total_hours","label":"教师总课时","domain":"teachers","relation":"source","source":"WPS/TMS"},
+    {"id":"teachers.total_sessions","label":"教师总课次","domain":"teachers","relation":"source","source":"WPS/TMS"},
+    {"id":"teachers.renewal","label":"续费人头/课时","domain":"teachers","relation":"source","source":"当期续费+推荐工作表","source_status":"SOURCE_AVAILABLE_NOT_CONNECTED"},
+    {"id":"teachers.referral","label":"推荐人头/课时","domain":"teachers","relation":"source","source":"当期续费+推荐工作表","source_status":"SOURCE_AVAILABLE_NOT_CONNECTED"}
+  ]
+}

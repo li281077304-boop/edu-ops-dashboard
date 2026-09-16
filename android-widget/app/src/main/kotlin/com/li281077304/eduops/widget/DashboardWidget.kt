@@ -1,15 +1,20 @@
 package com.li281077304.eduops.widget
 
-import java.util.Locale
-
-import androidx.compose.ui.unit.dp
+import android.content.Context
+import android.content.Intent
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.unit.DpSize
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.glance.GlanceModifier
 import androidx.glance.ImageProvider
+import androidx.glance.LocalContext
+import androidx.glance.LocalSize
+import androidx.glance.action.clickable
 import androidx.glance.appwidget.GlanceAppWidget
 import androidx.glance.appwidget.GlanceAppWidgetReceiver
 import androidx.glance.appwidget.SizeMode
+import androidx.glance.appwidget.action.actionStartActivity
 import androidx.glance.appwidget.provideContent
 import androidx.glance.background
 import androidx.glance.layout.Alignment
@@ -26,27 +31,6 @@ import androidx.glance.text.Text
 import androidx.glance.text.TextStyle
 import androidx.glance.unit.ColorProvider
 
-private data class MetricCard(val title: String, val value: String)
-
-private fun formatKs(value: Double): String = String.format(Locale.US, "%.1f KS", value)
-
-private val testCards = testDashboardMetrics.let { metrics ->
-    listOf(
-        MetricCard("月度已生产", "${metrics.monthlyProducedKs} KS"),
-        MetricCard("月度预排", "${metrics.monthlyPlannedKs} KS"),
-        MetricCard(
-            "一对一周平均\nKS / 人 / 周",
-            formatKs(weeklyAverageKs(metrics.oneToOneKs, metrics.oneToOneStudentCount, metrics.weeksInPeriod)),
-        ),
-        MetricCard(
-            "全员周平均\nKS / 人 / 周",
-            formatKs(weeklyAverageKs(metrics.totalKs, metrics.totalStudentCount, metrics.weeksInPeriod)),
-        ),
-        MetricCard("平均课次", "${metrics.averageLessons} 次"),
-        MetricCard("大小周课时", "大周 1300 KS\n小周 700 KS"),
-    )
-}
-
 class DashboardWidget : GlanceAppWidget() {
     override val sizeMode: SizeMode = SizeMode.Responsive(
         setOf(
@@ -55,10 +39,10 @@ class DashboardWidget : GlanceAppWidget() {
         ),
     )
 
-    override suspend fun provideGlance(context: android.content.Context, id: androidx.glance.GlanceId) {
-        provideContent {
-            DashboardContent()
-        }
+    override suspend fun provideGlance(context: Context, id: androidx.glance.GlanceId) {
+        // Rendering is strictly local: network sync belongs to the app, never to a redraw.
+        val payload = DashboardConfig.currentPayload(context)
+        provideContent { DashboardContent(payload, DashboardConfig.isSample(context)) }
     }
 }
 
@@ -66,72 +50,75 @@ class DashboardWidgetReceiver : GlanceAppWidgetReceiver() {
     override val glanceAppWidget: GlanceAppWidget = DashboardWidget()
 }
 
-private fun cardModifier(weight: GlanceModifier): GlanceModifier = weight
-    .padding(4.dp)
-    .background(ImageProvider(R.drawable.widget_card_background))
-
-@androidx.compose.runtime.Composable
-private fun DashboardContent() {
+@Composable
+private fun DashboardContent(payload: WidgetPayload, isSample: Boolean) {
+    val context = LocalContext.current
+    val compact = LocalSize.current.width < 240.dp || LocalSize.current.height < 260.dp
+    val cards = if (compact) payload.cards.take(4) else payload.cards
     Column(
         modifier = GlanceModifier
             .fillMaxSize()
             .background(ImageProvider(R.drawable.widget_surface_background))
-            .padding(12.dp),
+            .padding(if (compact) 8.dp else 10.dp),
         verticalAlignment = Alignment.Vertical.Top,
     ) {
         Text(
-            text = "二校经营看板",
+            text = payload.dashboardName,
+            modifier = GlanceModifier.clickable(actionStartActivity(Intent(context, MainActivity::class.java))),
             style = TextStyle(
                 color = ColorProvider(R.color.widget_title),
-                fontSize = 18.sp,
+                fontSize = if (compact) 15.sp else 17.sp,
                 fontWeight = FontWeight.Bold,
             ),
         )
-        Spacer(GlanceModifier.height(2.dp))
         Text(
-            text = "数据更新时间：2026-09-15 15:30（测试数据）",
-            style = TextStyle(
-                color = ColorProvider(R.color.widget_muted),
-                fontSize = 10.sp,
-            ),
+            text = if (isSample) "示例数据 · 点击打开应用" else "更新 ${payload.updatedAt}",
+            style = TextStyle(color = ColorProvider(R.color.widget_muted), fontSize = 9.sp),
         )
-        Spacer(GlanceModifier.height(10.dp))
-        MetricRow(testCards[0], testCards[1])
-        MetricRow(testCards[2], testCards[3])
-        MetricRow(testCards[4], testCards[5])
+        if (!compact) {
+            Text(
+                text = payload.periodLabel,
+                style = TextStyle(color = ColorProvider(R.color.widget_muted), fontSize = 9.sp),
+            )
+        }
+        Spacer(GlanceModifier.height(if (compact) 5.dp else 7.dp))
+        cards.chunked(2).forEach { row ->
+            MetricRow(row, compact)
+        }
     }
 }
 
-@androidx.compose.runtime.Composable
-private fun MetricRow(left: MetricCard, right: MetricCard) {
+@Composable
+private fun MetricRow(cards: List<WidgetCard>, compact: Boolean) {
     Row(modifier = GlanceModifier.fillMaxWidth()) {
-        MetricCardView(left, GlanceModifier.defaultWeight())
-        Spacer(GlanceModifier.width(6.dp))
-        MetricCardView(right, GlanceModifier.defaultWeight())
+        cards.getOrNull(0)?.let { MetricCardView(it, compact, GlanceModifier.defaultWeight()) }
+        if (cards.size > 1) {
+            Spacer(GlanceModifier.width(5.dp))
+            MetricCardView(cards[1], compact, GlanceModifier.defaultWeight())
+        }
     }
-    Spacer(GlanceModifier.height(8.dp))
+    Spacer(GlanceModifier.height(5.dp))
 }
 
-@androidx.compose.runtime.Composable
-private fun MetricCardView(card: MetricCard, weight: GlanceModifier) {
+@Composable
+private fun MetricCardView(card: WidgetCard, compact: Boolean, weight: GlanceModifier) {
     Column(
-        modifier = cardModifier(weight)
-            .padding(10.dp),
+        modifier = weight
+            .padding(3.dp)
+            .background(ImageProvider(R.drawable.widget_card_background))
+            .padding(if (compact) 7.dp else 8.dp),
         verticalAlignment = Alignment.Vertical.CenterVertically,
     ) {
         Text(
-            text = card.title,
-            style = TextStyle(
-                color = ColorProvider(R.color.widget_muted),
-                fontSize = 11.sp,
-            ),
+            text = card.label,
+            style = TextStyle(color = ColorProvider(R.color.widget_muted), fontSize = 10.sp),
         )
-        Spacer(GlanceModifier.height(3.dp))
+        Spacer(GlanceModifier.height(2.dp))
         Text(
-            text = card.value,
+            text = formatCard(card),
             style = TextStyle(
                 color = ColorProvider(R.color.widget_value),
-                fontSize = 15.sp,
+                fontSize = if (card.key == "big_small_week_ks") 12.sp else 14.sp,
                 fontWeight = FontWeight.Bold,
             ),
         )

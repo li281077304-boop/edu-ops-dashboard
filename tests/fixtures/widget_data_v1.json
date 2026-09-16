@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "data_status": "live",
+  "dashboard": {"id": "fixture-campus", "name": "测试校区经营看板"},
+  "updated_at": "2026-09-16T09:00:00+08:00",
+  "period": {
+    "start": "2026-08-31",
+    "end": "2026-09-27",
+    "label": "人工月9 · 2026-08-31 ～ 2026-09-27"
+  },
+  "cards": [
+    {"key": "monthly_produced_ks", "label": "月度已生产", "value": "8420", "unit": "KS", "format": "number"},
+    {"key": "monthly_planned_ks", "label": "月度预排", "value": "10680", "unit": "KS", "format": "number"},
+    {"key": "one_to_one_weekly_average_ks", "label": "一对一周平均", "value": "3", "unit": "KS / 人 / 周", "format": "number"},
+    {"key": "total_weekly_average_ks", "label": "全员周平均", "value": "9.6", "unit": "KS / 人 / 周", "format": "number"},
+    {"key": "average_lessons", "label": "平均课次", "value": "12.4", "unit": "次 / 教师", "format": "number"},
+    {"key": "big_small_week_ks", "label": "大小周课时", "value": "大周 1300\n小周 700", "unit": "KS", "format": "text"}
+  ]
+}

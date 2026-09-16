@@ -26,6 +26,22 @@ uv run edu-ops --today 2026-09-13
 
 当前命令会读取 `config/manual_months.csv`，输出当前日期对应的人工月区间。增加 `--collect-schedule --headed` 可通过已登录页面采集排课 JSON，并在失败时自动切换 UI 导出；完整说明见 `docs/运行部署.md`。
 
+### V0.1 经营看板与 Widget 数据边界
+
+Python 业务层生成唯一的 [Dashboard Data Contract](docs/DASHBOARD_DATA_CONTRACT.md)，网页、`/api/status`、`/widget-data.json` 和 Android Widget 都消费同一份 JSON。Android 不解析 Excel，也不重新计算经营指标。
+
+使用已下载的 Excel 生成网页/API 和离线文件：
+
+```bash
+./start-dashboard.sh \
+  --input "/path/to/排课列表.xlsx" \
+  --one-to-one-students 100 \
+  --total-students 200 \
+  --export-json ./widget-data.json
+```
+
+Android App 支持“同步最新数据”和通过系统文件选择器“导入数据文件”。Widget 渲染只读本地缓存；网络失败不会清空旧数据。首次安装使用明确标注“示例数据”的内置 contract。完整操作和 UAT 见 [V0.1 产品化说明](docs/V0.1_PRODUCTIZATION.md)。
+
 ### 本地经营指标卡片（只读）
 
 使用昨天已经下载的排课 Excel，不会触发下载：

@@ -25,8 +25,9 @@ from urllib.parse import urlparse
 
 from edu_ops.collectors.xiaogj.excel import read_export
 from edu_ops.config import resolve_manual_month
+from edu_ops.dashboard_contract import validate_dashboard_contract, write_dashboard_json
 from edu_ops.metrics.forecast import planned_hours, production_hours
-from edu_ops.metrics.monthly_average import monthly_average_hours, monthly_forecast_hours
+from edu_ops.metrics.student_average import weekly_average_ks
 from edu_ops.metrics.weekly_average import weekly_average_lessons
 from edu_ops.transforms.schedule import ScheduleRecord, normalize_schedule_rows
 
@@ -96,16 +97,36 @@ def _record_date_range(records: list[ScheduleRecord]) -> tuple[date, date]:
     return min(dates), max(dates)
 
 
-def _card(key: str, label: str, value: Any, unit: str, definition: str) -> dict[str, Any]:
+def _card(
+    key: str,
+    label: str,
+    value: Any,
+    unit: str,
+    definition: str,
+    *,
+    card_format: str = "number",
+) -> dict[str, Any]:
     return {
         "key": key,
         "label": label,
         "value": value,
         "unit": unit,
+        "format": card_format,
         "definition": definition,
-        "metric": key,
-        "source": "existing edu_ops metric engine",
     }
+
+
+def _is_one_to_one(record: ScheduleRecord) -> bool:
+    value = (record.course_type or "").lower().replace(" ", "")
+    return any(token in value for token in ("一对一", "1对1", "1v1"))
+
+
+def _student_count(records: Iterable[ScheduleRecord]) -> Optional[int]:
+    materialized = list(records)
+    ids = {record.student_id for record in materialized}
+    if not materialized or None in ids or "" in ids:
+        return None
+    return len(ids)
 
 
 def build_dashboard_payload(
@@ -115,8 +136,14 @@ def build_dashboard_payload(
     source_meta: FrozenInput,
     config_path: Path,
     as_of: Optional[date] = None,
+    dashboard_id: str = "xc2",
+    dashboard_name: str = "二校经营看板",
+    one_to_one_student_count: Optional[int] = None,
+    total_student_count: Optional[int] = None,
+    big_week_ks: Optional[Decimal] = None,
+    small_week_ks: Optional[Decimal] = None,
 ) -> dict[str, Any]:
-    """Build cards and bounded evidence from normalized records."""
+    """Build the one versioned contract used by web, API and offline export."""
     retrieved_at = datetime.now().astimezone()
     records = normalize_schedule_rows(rows, source=source, retrieved_at=retrieved_at)
     observed_start, observed_end = _record_date_range(records)
@@ -137,26 +164,88 @@ def build_dashboard_payload(
     production = production_hours(records)
     planned = planned_hours(records)
     weekly_lessons = weekly_average_lessons(week_records, teacher_count)
-    monthly_production_average = monthly_average_hours(production, month.weeks)
-    monthly_planned_average = monthly_forecast_hours(planned, month.weeks)
+    one_to_one_records = [record for record in records if _is_one_to_one(record)]
+    one_to_one_students = (
+        one_to_one_student_count
+        if one_to_one_student_count is not None
+        else _student_count(one_to_one_records)
+    )
+    total_students = (
+        total_student_count if total_student_count is not None else _student_count(records)
+    )
     status_counts: dict[str, int] = {}
     for row in rows:
         status = str(row.get("上课状态") or row.get("status") or "未标注")
         status_counts[status] = status_counts.get(status, 0) + 1
 
+    one_to_one_average = (
+        _decimal_text(
+            weekly_average_ks(
+                production_hours(one_to_one_records), one_to_one_students, month.weeks
+            )
+        )
+        if one_to_one_students
+        else "—"
+    )
+    total_average = (
+        _decimal_text(weekly_average_ks(production, total_students, month.weeks))
+        if total_students
+        else "—"
+    )
+    big_small_value = (
+        f"大周 {_decimal_text(big_week_ks)}\n小周 {_decimal_text(small_week_ks)}"
+        if big_week_ks is not None and small_week_ks is not None
+        else "—"
+    )
     cards = [
-        _card("production_hours", "生产课时", _decimal_text(production), "课时", "已上课按实到，未上课按应到；取消课排除"),
-        _card("planned_hours", "预排课时", _decimal_text(planned), "课时", "一对一每节 3 课时，其余按应到人数"),
-        _card("monthly_average_hours", "人工月平均课时", _decimal_text(monthly_production_average), "课时/周", f"生产课时 ÷ 人工月 {month.weeks} 周"),
-        _card("monthly_forecast_hours", "人工月预排课时", _decimal_text(monthly_planned_average), "课时/周", f"预排课时 ÷ 人工月 {month.weeks} 周"),
-        _card("weekly_average_lessons", "本周平均课次", _decimal_text(weekly_lessons), "节/教师", "本周截至昨日课次数 ÷ 本文件教师数"),
-        _card("teacher_count", "参与教师数", str(teacher_count), "人", "从本次冻结 Excel 的任课老师列去重"),
+        _card(
+            "monthly_produced_ks", "月度已生产", _decimal_text(production), "KS", "人工月已生产课时"
+        ),
+        _card("monthly_planned_ks", "月度预排", _decimal_text(planned), "KS", "人工月预排课时"),
+        _card(
+            "one_to_one_weekly_average_ks",
+            "一对一周平均",
+            one_to_one_average,
+            "KS / 人 / 周" if one_to_one_students else "",
+            f"一对一月度生产 KS ÷ 一对一在读人数 ÷ {month.weeks} 周",
+            card_format="number" if one_to_one_students else "unavailable",
+        ),
+        _card(
+            "total_weekly_average_ks",
+            "全员周平均",
+            total_average,
+            "KS / 人 / 周" if total_students else "",
+            f"全员月度生产 KS ÷ 全部在读人数 ÷ {month.weeks} 周",
+            card_format="number" if total_students else "unavailable",
+        ),
+        _card(
+            "average_lessons",
+            "平均课次",
+            _decimal_text(weekly_lessons),
+            "次 / 教师",
+            "本周截至昨日累计课次 ÷ 固定教师数",
+        ),
+        _card(
+            "big_small_week_ks",
+            "大小周课时",
+            big_small_value,
+            "KS" if big_week_ks is not None and small_week_ks is not None else "",
+            "分别发布大周、小周周总生产课时；来源缺失时不猜测",
+            card_format="text"
+            if big_week_ks is not None and small_week_ks is not None
+            else "unavailable",
+        ),
     ]
-    return {
+    payload = {
+        "schema_version": 1,
+        "data_status": "live",
+        "dashboard": {"id": dashboard_id, "name": dashboard_name},
+        "updated_at": retrieved_at.isoformat(),
         "input": asdict(source_meta),
         "period": {
             "start": period_start.isoformat(),
             "end": period_end.isoformat(),
+            "label": f"人工月{month.number} · {period_start.isoformat()} ～ {period_end.isoformat()}",
             "manual_month": month.number,
             "weeks": month.weeks,
             "source": "Excel record date range + config/manual_months.csv",
@@ -176,11 +265,24 @@ def build_dashboard_payload(
         "trace": {
             "card_to_source": "每张卡片均由现有 metrics 模块消费同一份冻结 Excel → ScheduleRecord",
             "download_pipeline_touched": False,
+            "android_recalculates": False,
         },
     }
+    return validate_dashboard_contract(payload)
 
 
-def load_dashboard_payload(input_path: Path, config_path: Path, *, as_of: Optional[date] = None) -> dict[str, Any]:
+def load_dashboard_payload(
+    input_path: Path,
+    config_path: Path,
+    *,
+    as_of: Optional[date] = None,
+    dashboard_id: str = "xc2",
+    dashboard_name: str = "二校经营看板",
+    one_to_one_student_count: Optional[int] = None,
+    total_student_count: Optional[int] = None,
+    big_week_ks: Optional[Decimal] = None,
+    small_week_ks: Optional[Decimal] = None,
+) -> dict[str, Any]:
     input_path = input_path.expanduser().resolve()
     if not input_path.exists():
         raise FileNotFoundError(f"输入文件不存在: {input_path}")
@@ -193,7 +295,19 @@ def load_dashboard_payload(input_path: Path, config_path: Path, *, as_of: Option
         modified_at=datetime.fromtimestamp(stat.st_mtime).astimezone().isoformat(),
         sheet=_sheet_name(input_path),
     )
-    return build_dashboard_payload(rows, source=str(input_path), source_meta=frozen, config_path=config_path, as_of=as_of)
+    return build_dashboard_payload(
+        rows,
+        source=str(input_path),
+        source_meta=frozen,
+        config_path=config_path,
+        as_of=as_of,
+        dashboard_id=dashboard_id,
+        dashboard_name=dashboard_name,
+        one_to_one_student_count=one_to_one_student_count,
+        total_student_count=total_student_count,
+        big_week_ks=big_week_ks,
+        small_week_ks=small_week_ks,
+    )
 
 
 def _html(payload: Mapping[str, Any]) -> str:
@@ -223,7 +337,7 @@ h1 {{ margin:0 0 8px; font-size:clamp(24px,4vw,36px); }} .subtitle {{ opacity:.8
 .details code {{ color:#263e58; overflow-wrap:anywhere; }} footer {{ margin-top:24px; color:#7a8797; font-size:12px; }}
 @media (max-width:700px) {{ .shell {{ padding:14px 12px 30px; }} header {{ border-radius:16px; padding:19px 17px; }} .grid {{ grid-template-columns:1fr; gap:10px; }} .card {{ min-height:0; padding:16px; }} .section-title {{ margin-top:22px; }} }}
 </style></head><body><main class="shell">
-<header><h1>经营指标看板</h1><div class="subtitle">固定输入：昨天已下载的真实排课 Excel · 只读展示</div>
+<header><h1>{payload['dashboard']['name']}</h1><div class="subtitle">同一份 Dashboard Data Contract · 只读展示</div>
 <div class="period"><span>数据周期：<b>{period['start']} ～ {period['end']}</b></span><span>人工月：<b>{period['manual_month']}（{period['weeks']} 周）</b></span></div></header>
 <h2 class="section-title">核心经营指标</h2><section class="grid">{cards}</section>
 <h2 class="section-title">数据质量与来源</h2><section class="details"><div>记录：{quality['row_count']} 行　·　教师：{quality['teacher_count']} 人　·　截止：{quality['cutoff']}</div><div>工作表：{inp['sheet']}　·　SHA256：<code>{inp['sha256']}</code></div><div>输入文件：<code>{inp['path']}</code></div><div>下载链路：未触发（本页仅读取冻结输入）</div></section>
@@ -246,8 +360,11 @@ class _Handler(BaseHTTPRequestHandler):
         path = urlparse(self.path).path
         if path == "/":
             self._send(_html(self.payload).encode("utf-8"), "text/html; charset=utf-8")
-        elif path == "/api/status":
-            self._send(json.dumps(self.payload, ensure_ascii=False).encode("utf-8"), "application/json; charset=utf-8")
+        elif path in {"/api/status", "/widget-data.json"}:
+            self._send(
+                json.dumps(self.payload, ensure_ascii=False).encode("utf-8"),
+                "application/json; charset=utf-8",
+            )
         elif path == "/healthz":
             self._send(b"ok\n", "text/plain; charset=utf-8")
         else:
@@ -275,7 +392,7 @@ def serve(payload: dict[str, Any], *, host: str = "0.0.0.0", port: int = 8765) -
     print("Dashboard running", flush=True)
     print(f"Desktop: http://localhost:{actual_port}", flush=True)
     print(f"Android: http://{_lan_ip()}:{actual_port}", flush=True)
-    print(f"Data: {Path(payload['input']['path']).name}", flush=True)
+    print(f"Dashboard: {payload['dashboard']['name']}", flush=True)
     print(f"Period: {payload['period']['start']} ~ {payload['period']['end']}", flush=True)
     try:
         server.serve_forever()
@@ -290,10 +407,35 @@ def main(argv: Optional[list[str]] = None) -> int:
     parser.add_argument("--input", type=Path, help="已有排课 Excel；省略时自动选择最近文件")
     parser.add_argument("--config", type=Path, default=Path("config/manual_months.csv"))
     parser.add_argument("--host", default="0.0.0.0")
-    parser.add_argument("--port", type=int, default=int(os.environ.get("EDU_OPS_DASHBOARD_PORT", "8787")))
+    parser.add_argument(
+        "--port", type=int, default=int(os.environ.get("EDU_OPS_DASHBOARD_PORT", "8787"))
+    )
+    parser.add_argument("--dashboard-id", default=os.environ.get("EDU_OPS_DASHBOARD_ID", "xc2"))
+    parser.add_argument(
+        "--dashboard-name", default=os.environ.get("EDU_OPS_DASHBOARD_NAME", "二校经营看板")
+    )
+    parser.add_argument("--one-to-one-students", type=int)
+    parser.add_argument("--total-students", type=int)
+    parser.add_argument("--big-week-ks", type=Decimal)
+    parser.add_argument("--small-week-ks", type=Decimal)
+    parser.add_argument("--export-json", type=Path, help="同时原子导出同一份 Widget Data Contract")
+    parser.add_argument("--export-only", action="store_true", help="导出 JSON 后不启动 HTTP 服务")
     args = parser.parse_args(argv)
     input_path = args.input or discover_input()
-    payload = load_dashboard_payload(input_path, args.config)
+    payload = load_dashboard_payload(
+        input_path,
+        args.config,
+        dashboard_id=args.dashboard_id,
+        dashboard_name=args.dashboard_name,
+        one_to_one_student_count=args.one_to_one_students,
+        total_student_count=args.total_students,
+        big_week_ks=args.big_week_ks,
+        small_week_ks=args.small_week_ks,
+    )
+    if args.export_json:
+        write_dashboard_json(payload, args.export_json)
+    if args.export_only:
+        return 0
     serve(payload, host=args.host, port=args.port)
     return 0
 

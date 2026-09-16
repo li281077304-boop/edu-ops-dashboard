@@ -34,7 +34,9 @@ def test_dashboard_cards_reuse_existing_metrics_and_render_mobile_safe_html(tmp_
         },
     ]
     config = tmp_path / "manual_months.csv"
-    config.write_text("人工月,周数,开始日期,结束日期\n9,4,2026-08-31,2026-09-27\n", encoding="utf-8")
+    config.write_text(
+        "人工月,周数,开始日期,结束日期\n9,4,2026-08-31,2026-09-27\n", encoding="utf-8"
+    )
     payload = build_dashboard_payload(
         rows,
         source="fixture",
@@ -43,9 +45,22 @@ def test_dashboard_cards_reuse_existing_metrics_and_render_mobile_safe_html(tmp_
         as_of=__import__("datetime").date(2026, 9, 13),
     )
     values = {card["key"]: card["value"] for card in payload["cards"]}
-    assert values["production_hours"] == "6"
-    assert values["planned_hours"] == "6"
-    assert values["teacher_count"] == "2"
+    assert values["monthly_produced_ks"] == "6"
+    assert values["monthly_planned_ks"] == "6"
+    assert values["one_to_one_weekly_average_ks"] == "—"
+    assert values["total_weekly_average_ks"] == "—"
+    assert values["average_lessons"] == "1"
+    assert values["big_small_week_ks"] == "—"
+    assert payload["schema_version"] == 1
+    assert payload["dashboard"] == {"id": "xc2", "name": "二校经营看板"}
+    assert [card["key"] for card in payload["cards"]] == [
+        "monthly_produced_ks",
+        "monthly_planned_ks",
+        "one_to_one_weekly_average_ks",
+        "total_weekly_average_ks",
+        "average_lessons",
+        "big_small_week_ks",
+    ]
     assert payload["trace"]["download_pipeline_touched"] is False
     rendered = _html(payload)
     assert "grid-template-columns:1fr" in rendered

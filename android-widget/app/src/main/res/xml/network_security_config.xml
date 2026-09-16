@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <network-security-config>
-    <!-- This app talks only to the user-configured local Dashboard endpoint. -->
+    <!--
+      The Dashboard endpoint is configured by the operator (emulator 10.0.2.2,
+      a LAN address, or an HTTPS host), so a domain-scoped cleartext rule cannot
+      cover every case. Cleartext stays permitted repo-wide for that reason; once
+      the endpoint is fixed to HTTPS this block must be tightened or removed.
+    -->
     <base-config cleartextTrafficPermitted="true" />
 </network-security-config>

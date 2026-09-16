@@ -1,0 +1,35 @@
+{
+  "run_id": "ralph-dashboard-real-uat-20260916",
+  "input": {
+    "path": "/Users/macos/Downloads/排课列表_08月31日到09月27日_202609131718.xls",
+    "sha256": "647075195f101c998474d0d57a4bef7206fb38bc8faab88713696bbd92698544",
+    "size_bytes": 133252,
+    "sheet": "排课记录-08月31日到09月27日"
+  },
+  "period": {"start":"2026-08-31","end":"2026-09-27","manual_month":9,"weeks":4},
+  "quality": {"row_count":1092,"teacher_count":44,"observed_start":"2026-09-02","observed_end":"2026-09-27","invalid_rows":0,"duplicate_rows":0,"cutoff":"2026-09-15"},
+  "cards": {
+    "production_hours":"4043",
+    "planned_hours":"4188",
+    "monthly_average_hours":"1010.75",
+    "monthly_forecast_hours":"1047",
+    "weekly_average_lessons":"0.07",
+    "teacher_count":"44"
+  },
+  "runtime": {
+    "healthz":"PASS",
+    "desktop_url":"http://localhost:8799/",
+    "android_url":"http://192.168.110.49:8799/",
+    "api_status":"PASS",
+    "page_cards":"PASS",
+    "mobile_css":"PASS",
+    "refresh_same_sha":"PASS",
+    "download_pipeline_touched":false
+  },
+  "evidence": [
+    "DASHBOARD_CURRENT_STATE.md",
+    "DASHBOARD_OBLIGATIONS.json",
+    "src/edu_ops/dashboard.py",
+    "tests/test_dashboard.py"
+  ]
+}

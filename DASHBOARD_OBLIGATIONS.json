@@ -1,0 +1,14 @@
+{
+  "version": 1,
+  "project_id": "edu-ops-dashboard",
+  "source": "repository evidence + frozen real Excel bootstrap",
+  "updated_at": "2026-09-16T00:00:00+08:00",
+  "obligations": [
+    {"id":"dashboard-input-normalization","description":"冻结 Excel/CSV 通过现有 adapter 生成 normalized ScheduleRecord snapshot","status":"PASS","verification":["real input load and metadata recorded"],"evidence":["DASHBOARD_CURRENT_STATE.md","artifacts/ralph-real-uat.json"]},
+    {"id":"dashboard-metric-cards","description":"Dashboard 消费 normalized snapshot 并展示已确认经营指标卡片","status":"PASS","verification":["runtime HTTP page and /api/status"],"evidence":["src/edu_ops/dashboard.py","artifacts/ralph-real-uat.json"]},
+    {"id":"dashboard-mobile-view","description":"手机视图可读且无横向滚动","status":"PASS","verification":["responsive CSS and mobile viewport check"],"evidence":["src/edu_ops/dashboard.py","artifacts/ralph-real-uat.json"]},
+    {"id":"dashboard-snapshot-refresh","description":"刷新继续读取同一冻结输入并保持结果稳定","status":"PASS","verification":["two runtime reads with identical SHA and card values"],"evidence":["artifacts/ralph-real-uat.json"]},
+    {"id":"dashboard-android-widget","description":"Android 主屏 Widget 消费稳定 Dashboard 数据接口","status":"TECHNICAL_OPEN","verification":["requires widget runtime integration and device UAT"],"evidence":["docs/施工状态.md","/private/tmp/edu-ops-dashboard-p2-publish"]},
+    {"id":"dashboard-business-exclusions","description":"生产 KPI 对赠送课、亲属赠送、排课专用课程的排除规则","status":"HUMAN_BLOCKED","verification":["business owner confirmation"],"evidence":["docs/指标口径.md","docs/验收清单.md"]}
+  ]
+}

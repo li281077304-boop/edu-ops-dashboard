@@ -17,8 +17,14 @@ def test_health_endpoint_returns_complete_snapshot_module_response():
         except BaseException as error:
             handler_errors.append(error)
 
-    worker = Thread(target=handle_request, name="weekly-report-test-handler")
+    worker = Thread(
+        target=handle_request,
+        name="weekly-report-test-handler",
+        daemon=True,
+    )
     worker.start()
+    test_error = None
+    cleanup_errors = []
     try:
         client.sendall(
             b"GET /weekly-report/healthz HTTP/1.1\r\n"
@@ -42,6 +48,8 @@ def test_health_endpoint_returns_complete_snapshot_module_response():
             )
         )
         body = response[header_end + 4 :]
+        if len(body) > content_length:
+            raise AssertionError("HTTP response contained more bytes than Content-Length")
         while len(body) < content_length:
             chunk = client.recv(4096)
             if not chunk:
@@ -53,10 +61,35 @@ def test_health_endpoint_returns_complete_snapshot_module_response():
         assert headers[0].startswith("HTTP/1.0 200")
         assert content_length == len(body)
         assert json.loads(body) == {"status": "ok", "module": "weekly-report"}
+    except BaseException as error:
+        test_error = error
     finally:
-        client.close()
-        server.close()
-        worker.join(timeout=2)
+        for connection in (client, server):
+            try:
+                connection.close()
+            except BaseException as error:
+                cleanup_errors.append(error)
 
-    assert not worker.is_alive()
-    assert not handler_errors, handler_errors
+        try:
+            worker.join(timeout=2)
+        except BaseException as error:
+            cleanup_errors.append(error)
+
+        if worker.is_alive():
+            cleanup_errors.append(AssertionError("weekly report handler thread did not stop"))
+        if handler_errors:
+            cleanup_errors.extend(handler_errors)
+
+    if test_error is not None:
+        if cleanup_errors:
+            cleanup_error = AssertionError(
+                "Weekly Report HTTP boundary cleanup failed: "
+                + "; ".join(repr(error) for error in cleanup_errors)
+            )
+            raise test_error from cleanup_error
+        raise test_error
+    if cleanup_errors:
+        raise AssertionError(
+            "Weekly Report HTTP boundary cleanup failed: "
+            + "; ".join(repr(error) for error in cleanup_errors)
+        ) from cleanup_errors[0]

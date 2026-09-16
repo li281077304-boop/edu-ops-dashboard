@@ -44,4 +44,7 @@ dependencies {
     implementation("androidx.glance:glance-appwidget:1.1.1")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.1")
     testImplementation("junit:junit:4.13.2")
+    // Android local unit tests only see the stubbed android.jar org.json,
+    // which throws "Method ... not mocked"; use the real implementation.
+    testImplementation("org.json:json:20240303")
 }

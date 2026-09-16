@@ -11,6 +11,8 @@ __pycache__/
 .env
 .env.local
 .DS_Store
+.ralph/
+devlog/
 
 # 原始数据与运行产物默认不入库
 data/raw/*

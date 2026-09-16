@@ -1,0 +1,16 @@
+{
+  "version": "2026-09-16",
+  "entries": [
+    {"metric":"students.*","source_file_role":"RAW_INPUT","source":"WPS weekly summary workbook","source_columns":"C:S by teacher/weekly change tables","transform":"normalize teacher/grade/class labels; preserve double-three overlap","aggregation":"sum by week; month totals follow template semantics","output":"学生","status":"DETERMINISTIC"},
+    {"metric":"production.one_to_one_ks","source_file_role":"RAW_INPUT","source":"TMS schedule export","source_columns":"教学形式, 上课时间, 上课状态, 实到, 应到, 任课老师","transform":"filter target teachers and period; 1v1 class-hour rule","aggregation":"sum by teacher and week","output":"组课时生产 / 教师","status":"DETERMINISTIC"},
+    {"metric":"production.class_ks","source_file_role":"RAW_INPUT","source":"TMS schedule export","source_columns":"教学形式, 上课时间, 上课状态, 实到, 应到, 任课老师","transform":"filter class rows; retain source student/session units","aggregation":"sum by teacher and week","output":"组课时生产 / 教师","status":"DETERMINISTIC"},
+    {"metric":"production.class_production_ks","source_file_role":"RAW_INPUT","source":"TMS schedule export","source_columns":"教学形式, 上课状态, 实到, 应到","transform":"class attendance × 3; historical WPS alias bkh/N","aggregation":"sum by week","output":"组课时生产.N","status":"DETERMINISTIC"},
+    {"metric":"production.week_hours_equivalent","source_file_role":"DERIVED","source":"TMS schedule export","source_columns":"1v1 KS + class KS","transform":"class_production_ks / 3","aggregation":"per week","output":"组课时生产.C","status":"DERIVED"},
+    {"metric":"production.average_hours_and_sessions","source_file_role":"RAW_INPUT","source":"WPS + TMS","source_columns":"H,I,L,N,O,Q,R,S (template columns)","transform":"apply confirmed formulas; retain unresolved when adjusted H/L/Q are absent","aggregation":"weekly and month-to-date","output":"组课时生产","status":"SOURCE_MISSING"},
+    {"metric":"fullness.*","source_file_role":"RAW_INPUT","source":"WPS class-size table","source_columns":"grade/class-size buckets","transform":"capacity and rate formulas; preserve special 1v2/1v3","aggregation":"per grade and total","output":"满班率","status":"DERIVED"},
+    {"metric":"teachers.core","source_file_role":"RAW_INPUT","source":"WPS teacher summary + TMS","source_columns":"teacher rows and schedule teacher","transform":"unique normalized-name join; active roster from teacher_config","aggregation":"per teacher and group","output":"教师","status":"DETERMINISTIC"},
+    {"metric":"teachers.renewal_referral","source_file_role":"RAW_INPUT","source":"2026年度续费+推荐数据 workbook","source_columns":"month worksheet rows","transform":"count valid numeric records; sum confirmed hours","aggregation":"per teacher","output":"教师","status":"SOURCE_AVAILABLE_NOT_CONNECTED"},
+    {"metric":"students.manual_changes","source_file_role":"MANUAL_ONLY","source":"weekly ledger / manual adjustment log","source_columns":"explicit adjustment records","transform":"retain reason and evidence; never silently overwrite","aggregation":"per cell/metric","output":"学生 + manual_adjustments","status":"MANUAL_ONLY"},
+    {"metric":"narrative_sections","source_file_role":"MANUAL_ONLY","source":"report author input","source_columns":"回访检查/教研培训/工作与问题/计划/欣赏之窗","transform":"preserve text and provenance","aggregation":"none","output":"corresponding sheets","status":"MANUAL_ONLY"}
+  ]
+}

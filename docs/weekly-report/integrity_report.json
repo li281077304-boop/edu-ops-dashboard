@@ -1,0 +1,37 @@
+{
+  "period": {
+    "year": 2026,
+    "month": 6,
+    "week": 4,
+    "label": "2026年6月第4周",
+    "start": "2026-06-22",
+    "end": "2026-06-28",
+    "group": "数学组",
+    "campus": "宣城二校"
+  },
+  "source_row_counts": {
+    "WPS": 54,
+    "TMS": 1617
+  },
+  "teacher_count": 18,
+  "duplicate_teacher_names": [],
+  "missing_student_fields": [],
+  "unresolved_items": [
+    {
+      "metric": "students.changes.refund",
+      "status": "SOURCE_MISSING",
+      "reason": "weekly workflow does not have a verified refund source"
+    },
+    {
+      "metric": "production.average_hours_and_sessions",
+      "status": "SOURCE_MISSING",
+      "reason": "bkh/class KS is confirmed, but adjusted denominator H+L and formal teacher scope are not present in the raw WPS export"
+    },
+    {
+      "metric": "teachers.active_roster",
+      "status": "BUSINESS_RULE_MISSING",
+      "reason": "teacher_config distinguishes active/special teachers but the weekly source does not carry a signed roster snapshot"
+    }
+  ],
+  "status": "PASS_WITH_WARNING"
+}

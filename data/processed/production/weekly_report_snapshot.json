@@ -1095,13 +1095,14 @@
       4
     ]
   },
+  "manifest_hash": "7895152a4306f9fa25ee42953236540cd6af1365c3e16fd2e8a06c97203cc539",
   "source_hashes": {
     "wps": "55f3e66eb39e1d8ba8914291cb59be025526be2e023fec89ce2789de6410208d",
     "tms": "3a496a772b0ab3bec63b300ab4b79483074fe796fa724d5fea442ad3b4418619",
     "golden": "3390a2a4fa6ef4f406e2134d4abb6bdc308cd3f2aa1b983492a98a317be997b6",
     "roster": "b7001e351e6f10b36b0f5f39f73f68fcc19dfb9154518248778178d69ee8719f"
   },
-  "generated_at": "2026-09-17T00:50:06.936541+00:00",
+  "generated_at": "2026-09-17T01:00:42.603299+00:00",
   "week_over_week": {
     "status": "COMPUTED",
     "metrics": {
@@ -1144,8 +1145,8 @@
       "refund source is outside the P0 weekly-report scope."
     ]
   },
-  "business_fingerprint": "ab68f05858dcc312e2b76834f7c3f05d801ddeecbb7e9163b132da772e914dbe",
+  "business_fingerprint": "7f57bb892f17faeb4295ddba7c5c84a619a21f9492cb3938306eb2ca04e99909",
   "idempotency": {
-    "same_input_business_fingerprint": false
+    "same_input_business_fingerprint": true
   }
 }

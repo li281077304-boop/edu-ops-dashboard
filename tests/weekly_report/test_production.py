@@ -48,6 +48,32 @@ def test_next_week_fixture_is_discovered_without_rule_changes(tmp_path: Path):
     assert updated["latest_complete_period"] == (2026, 7, 1)
 
 
+def test_partial_latest_period_does_not_fall_back_to_an_older_final(tmp_path: Path):
+    source = tmp_path / "inbox"
+    source.mkdir()
+    for name in ("二校数学组数据汇总-六月第四周.xls", "数学组数据统计表-宣城二校6月第4周.xls", "排课列表_06月01日到06月28日_202606301011.xls"):
+        shutil.copy2(ASSET_ROOT / name, source / name)
+    shutil.copy2(source / "二校数学组数据汇总-六月第四周.xls", source / "二校数学组数据汇总-七月第一周.xls")
+
+    resolution = resolve_periods(discover_sources(source))
+    assert resolution["latest_available_period"] == (2026, 7, 1)
+    assert resolution["latest_complete_period"] == (2026, 6, 4)
+    assert resolution["completeness"] == "PARTIAL"
+
+    result = run_production(source, tmp_path / "out")
+    assert result["status"] == "PARTIAL"
+    assert not (tmp_path / "out" / "weekly_report_snapshot.json").exists()
+
+
+def test_manifest_hash_is_stable_and_bound_to_snapshot(tmp_path: Path):
+    first = discover_sources(ASSET_ROOT)
+    second = discover_sources(ASSET_ROOT)
+    assert first["manifest_hash"] == second["manifest_hash"]
+    output = tmp_path / "out"
+    result = run_production(ASSET_ROOT, output, template=ASSET_ROOT / "数学组数据统计表基础模板.xlsx")
+    assert result["snapshot"]["manifest_hash"] == first["manifest_hash"]
+
+
 def test_production_dry_run_is_idempotent_and_exports_reopenable_excel(tmp_path: Path):
     output = tmp_path / "out"
     first = run_production(ASSET_ROOT, output, template=ASSET_ROOT / "数学组数据统计表基础模板.xlsx")

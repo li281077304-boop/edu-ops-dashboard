@@ -1,7 +1,6 @@
 {
   "version": "1.0",
   "root": "/Users/macos/Documents/03-周报数据/数学组周数据统计",
-  "generated_at": "2026-09-17T00:50:06.700761+00:00",
   "files": [
     {
       "path": "/Users/macos/Documents/03-周报数据/数学组周数据统计/teacher_config.py",
@@ -236,5 +235,6 @@
       "size_bytes": 41454,
       "modified_at": "2026-06-24T06:50:21.559083+00:00"
     }
-  ]
+  ],
+  "manifest_hash": "7895152a4306f9fa25ee42953236540cd6af1365c3e16fd2e8a06c97203cc539"
 }

@@ -98,7 +98,17 @@ def discover_sources(root: str | Path) -> dict[str, Any]:
         })
     if not files:
         raise FileNotFoundError(f"no supported weekly report source files under {base}")
-    return {"version": "1.0", "root": str(base), "generated_at": datetime.now(timezone.utc).isoformat(), "files": files}
+    # The manifest is an input contract, not a run log.  Keep its identity
+    # deterministic so repeated runs over unchanged files can be compared and
+    # so downstream artifacts can prove exactly which source set they used.
+    manifest = {"version": "1.0", "root": str(base), "files": files}
+    manifest["manifest_hash"] = _manifest_hash(manifest)
+    return manifest
+
+
+def _manifest_hash(manifest: dict[str, Any]) -> str:
+    payload = {key: value for key, value in manifest.items() if key != "manifest_hash"}
+    return hashlib.sha256(json.dumps(payload, ensure_ascii=False, sort_keys=True, separators=(",", ":")).encode()).hexdigest()
 
 
 def _period_key(item: dict[str, Any]) -> tuple[int, int, int]:
@@ -123,12 +133,25 @@ def resolve_periods(manifest: dict[str, Any]) -> dict[str, Any]:
             if roster:
                 selected["roster"] = max(roster, key=lambda i: i["modified_at"])
             break
+    latest_is_complete = available is not None and complete == available
+    missing: list[str] = []
+    if available:
+        year, month, week = available
+        if not any(item["role"] == "WPS" and _period_key(item) == available for item in manifest["files"]):
+            missing.append("WPS")
+        if not any(item["role"] == "FINAL_GOLDEN" and _period_key(item) == available for item in manifest["files"]):
+            missing.append("FINAL_GOLDEN")
+        if not any(item["role"] == "TMS" and _period_key(item)[0:2] == (year, month) for item in manifest["files"]):
+            missing.append("TMS")
+    else:
+        missing = ["WPS", "TMS", "FINAL_GOLDEN"]
     return {
         "latest_available_period": available,
         "latest_complete_period": complete,
         "selected": selected,
-        "completeness": "COMPLETE" if complete else ("PARTIAL" if available else "INVALID"),
-        "missing_sources": [] if complete else ["WPS", "TMS", "FINAL_GOLDEN"],
+        # A newer partial inbox must not silently fall back to an older final.
+        "completeness": "COMPLETE" if latest_is_complete else ("PARTIAL" if available else "INVALID"),
+        "missing_sources": missing,
     }
 
 
@@ -196,7 +219,7 @@ def render_excel(snapshot: dict[str, Any], output: Path, template: Path | None =
         ts.cell(row, 1, teacher.get("name")); ts.cell(row, 2, teacher.get("status")); ts.cell(row, 3, teacher.get("hours"))
     meta = workbook.create_sheet("生产元数据") if "生产元数据" not in workbook.sheetnames else workbook["生产元数据"]
     meta["A1"], meta["B1"] = "字段", "值"
-    for row, (key, value) in enumerate((("schema_version", snapshot.get("version")), ("completeness", snapshot.get("completeness", {}).get("status")), ("business_fingerprint", snapshot.get("business_fingerprint"))), 2):
+    for row, (key, value) in enumerate((("schema_version", snapshot.get("version")), ("completeness", snapshot.get("completeness", {}).get("status")), ("manifest_hash", snapshot.get("manifest_hash")), ("business_fingerprint", snapshot.get("business_fingerprint"))), 2):
         meta.cell(row, 1, key); meta.cell(row, 2, json.dumps(value, ensure_ascii=False) if isinstance(value, (dict, list)) else value)
     workbook.save(output)
     return output
@@ -210,12 +233,22 @@ def run_production(source_root: str | Path, output_root: str | Path, *, template
     resolution = resolve_periods(manifest)
     (output / "PERIOD_RESOLUTION.json").write_text(json.dumps(resolution, ensure_ascii=False, indent=2), encoding="utf-8")
     if resolution["completeness"] != "COMPLETE":
+        # Do not leave a stale snapshot/workbook looking like the current
+        # result.  The manifest and resolution remain as durable diagnostics.
+        for stale in (output / "weekly_report_snapshot.json", output / "weekly_report_latest.xlsx"):
+            stale.unlink(missing_ok=True)
+        (output / "PIPELINE_STATUS.json").write_text(json.dumps({
+            "status": "PARTIAL",
+            "manifest_hash": manifest["manifest_hash"],
+            "resolution": resolution,
+        }, ensure_ascii=False, indent=2), encoding="utf-8")
         return {"manifest": manifest, "resolution": resolution, "status": "PARTIAL"}
     selected = resolution["selected"]
     period = resolution["latest_complete_period"]
     snapshot = build_snapshot(Path(selected["wps"]["path"]), Path(selected["tms"]["path"]), Path(selected["golden"]["path"]), period[2], Path(selected.get("roster", {}).get("path", DEFAULT_ROSTER)), year=period[0], month=period[1])
     snapshot["schema_version"] = "1.0"
     snapshot["completeness"] = {"status": "COMPLETE", "missing_sources": [], "latest_available_period": resolution["latest_available_period"], "latest_complete_period": period}
+    snapshot["manifest_hash"] = manifest["manifest_hash"]
     snapshot["source_hashes"] = {key: item["sha256"] for key, item in selected.items()}
     snapshot["generated_at"] = datetime.now(timezone.utc).isoformat()
     previous_path = output / "weekly_report_snapshot.json"
@@ -230,6 +263,12 @@ def run_production(source_root: str | Path, output_root: str | Path, *, template
     template_path = Path(template) if template else next((Path(item["path"]) for item in manifest["files"] if item["role"] == "TEMPLATE"), None)
     render_excel(snapshot, output / f"weekly_report_{period_label}.xlsx", template_path)
     render_excel(snapshot, output / "weekly_report_latest.xlsx", template_path)
+    (output / "PIPELINE_STATUS.json").write_text(json.dumps({
+        "status": "PASS",
+        "manifest_hash": manifest["manifest_hash"],
+        "resolution": resolution,
+        "snapshot_business_fingerprint": snapshot["business_fingerprint"],
+    }, ensure_ascii=False, indent=2), encoding="utf-8")
     return {"manifest": manifest, "resolution": resolution, "snapshot": snapshot, "status": "PASS"}
 
 

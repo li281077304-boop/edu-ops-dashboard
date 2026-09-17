@@ -603,10 +603,16 @@ def _run_production(source_root: str | Path, output_root: str | Path, *, templat
             and previous_delta_previous is not None
             and previous_delta_previous < period
         )
-        if valid_computed_delta or (
-            previous_delta == snapshot["week_over_week"]
-            and not (isinstance(previous_delta, dict) and previous_delta.get("status") == "COMPUTED")
-        ):
+        valid_noncomputed_delta = (
+            isinstance(previous_delta, dict)
+            and previous_delta.get("status") in {
+                "NO_PREVIOUS_PERIOD",
+                "PREVIOUS_PERIOD_UNAVAILABLE",
+                "SAME_PERIOD_BASELINE_UNAVAILABLE",
+                "PREVIOUS_PERIOD_IS_NOT_EARLIER",
+            }
+        )
+        if valid_computed_delta or valid_noncomputed_delta:
             snapshot["week_over_week"] = previous_delta or snapshot["week_over_week"]
     else:
         snapshot["generated_at"] = datetime.now(timezone.utc).isoformat()

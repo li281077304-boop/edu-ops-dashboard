@@ -124,6 +124,22 @@ def test_production_dry_run_is_idempotent_and_exports_reopenable_excel(tmp_path:
     assert all("#REF!" not in str(cell.value) for sheet in workbook.worksheets for row in sheet.iter_rows() for cell in row)
 
 
+def test_empty_output_repeated_identical_runs_are_byte_identical(tmp_path: Path):
+    output = tmp_path / "out"
+    first = run_production(ASSET_ROOT, output, template=ASSET_ROOT / "数学组数据统计表基础模板.xlsx")
+    assert first["status"] == "PASS"
+    snapshot_path = output / "weekly_report_snapshot.json"
+    first_bytes = snapshot_path.read_bytes()
+    first_snapshot = json.loads(first_bytes)
+    assert first_snapshot["week_over_week"]["status"] == "NO_PREVIOUS_PERIOD"
+
+    second = run_production(ASSET_ROOT, output, template=ASSET_ROOT / "数学组数据统计表基础模板.xlsx")
+    assert second["status"] == "PASS"
+    second_bytes = snapshot_path.read_bytes()
+    assert second_bytes == first_bytes
+    assert json.loads(second_bytes)["week_over_week"] == first_snapshot["week_over_week"]
+
+
 def test_excel_semantic_regression_mapping_is_not_just_expected_cell_self_check(tmp_path: Path):
     output = tmp_path / "out"
     result = run_production(ASSET_ROOT, output, template=ASSET_ROOT / "数学组数据统计表基础模板.xlsx")

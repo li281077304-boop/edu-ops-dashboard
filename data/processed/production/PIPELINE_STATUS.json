@@ -1,6 +1,6 @@
 {
   "status": "PASS",
-  "manifest_hash": "7895152a4306f9fa25ee42953236540cd6af1365c3e16fd2e8a06c97203cc539",
+  "manifest_hash": "7a6d0637e5b6ead248912d9f00472bba8b1edaf1f377d9c69be7d1ce8b88d5d3",
   "resolution": {
     "latest_available_period": [
       2026,
@@ -64,7 +64,7 @@
     "completeness": "COMPLETE",
     "missing_sources": []
   },
-  "snapshot_business_fingerprint": "7f57bb892f17faeb4295ddba7c5c84a619a21f9492cb3938306eb2ca04e99909",
+  "snapshot_business_fingerprint": "f7895ecc16a7298fbb9da7e58fa6a641106157f6077d637b52fa24e3cadd60a2",
   "evidence": {
     "snapshot": "data/processed/production/weekly_report_snapshot.json",
     "excel": "data/processed/production/weekly_report_latest.xlsx",
@@ -73,22 +73,28 @@
     "golden_unexplained_difference": 0,
     "excel_reopen": {
       "status": "PASS",
-      "path": "data/processed/production/weekly_report_latest.xlsx",
-      "sheets": [
-        "源数据",
-        "续推数据",
-        "学生",
-        "满班率",
-        "教师",
-        "组课时生产",
-        "回访检查",
-        "教研培训",
-        "本周工作与问题",
-        "下周工作计划",
-        "欣赏之窗",
-        "生产元数据"
-      ],
-      "formula_errors": 0
+      "dated": {
+        "status": "PASS",
+        "path": "data/processed/production/weekly_report_2026-06-w4.xlsx",
+        "errors": [],
+        "sheets": [
+          "组课时生产",
+          "学生",
+          "生产元数据",
+          "教师"
+        ]
+      },
+      "latest": {
+        "status": "PASS",
+        "path": "data/processed/production/weekly_report_latest.xlsx",
+        "errors": [],
+        "sheets": [
+          "组课时生产",
+          "学生",
+          "生产元数据",
+          "教师"
+        ]
+      }
     }
   }
 }

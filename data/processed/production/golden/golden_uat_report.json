@@ -1463,7 +1463,7 @@
   "unexplained_difference": 0,
   "status": "PASS",
   "generated_at": "2026-09-16",
-  "manifest_hash": "7895152a4306f9fa25ee42953236540cd6af1365c3e16fd2e8a06c97203cc539",
-  "business_fingerprint": "7f57bb892f17faeb4295ddba7c5c84a619a21f9492cb3938306eb2ca04e99909",
+  "manifest_hash": "7a6d0637e5b6ead248912d9f00472bba8b1edaf1f377d9c69be7d1ce8b88d5d3",
+  "business_fingerprint": "f7895ecc16a7298fbb9da7e58fa6a641106157f6077d637b52fa24e3cadd60a2",
   "snapshot_path": "data/processed/production/weekly_report_snapshot.json"
 }

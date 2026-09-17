@@ -229,12 +229,12 @@
     {
       "path": "/Users/macos/Documents/03-周报数据/数学组周数据统计/数学组数据统计表基础模板.xlsx",
       "relative_path": "数学组数据统计表基础模板.xlsx",
-      "role": "FINAL_GOLDEN",
+      "role": "TEMPLATE",
       "period": null,
       "sha256": "7282e1d15ebdbdc62c1b0cd29259a437617296448fa67e4ec905702f7801e8b4",
       "size_bytes": 41454,
       "modified_at": "2026-06-24T06:50:21.559083+00:00"
     }
   ],
-  "manifest_hash": "7895152a4306f9fa25ee42953236540cd6af1365c3e16fd2e8a06c97203cc539"
+  "manifest_hash": "7a6d0637e5b6ead248912d9f00472bba8b1edaf1f377d9c69be7d1ce8b88d5d3"
 }

@@ -59,12 +59,12 @@ def compare_snapshot(
         source = _get(snapshot["students"], path)
         oracle = _get(golden["student"], path)
         metric = ".".join(path)
-        status = "MATCH" if _equal(source, oracle) else ("HISTORICAL_SOURCE_GAP" if (metric in authorized_gaps or "*" in authorized_gaps) else "UNEXPLAINED_DIFFERENCE")
+        status = "MATCH" if _equal(source, oracle) else ("HISTORICAL_SOURCE_GAP" if metric in authorized_gaps else "UNEXPLAINED_DIFFERENCE")
         comparisons.append({"domain": "students", "metric": metric, "source": source, "golden": oracle, "status": status, "reason": "explicitly authorized historical source bridge" if status == "HISTORICAL_SOURCE_GAP" else ("WPS source versus manually maintained final workbook" if status != "MATCH" else "")})
     for field in PRODUCTION_FIELDS:
         source = _get(snapshot["production"].get("tms", {}), (field,))
         oracle = _get(golden["production"], (field,))
-        status = "MATCH" if _equal(source, oracle) else ("HISTORICAL_SOURCE_GAP" if (field in authorized_gaps or "*" in authorized_gaps) else "UNEXPLAINED_DIFFERENCE")
+        status = "MATCH" if _equal(source, oracle) else ("HISTORICAL_SOURCE_GAP" if field in authorized_gaps else "UNEXPLAINED_DIFFERENCE")
         comparisons.append({"domain": "production", "metric": field, "source": source, "golden": oracle, "status": status, "reason": "explicitly authorized historical source bridge" if status == "HISTORICAL_SOURCE_GAP" else ("TMS revision/manual cumulative standard differs; no deterministic source bridge in the historical inputs" if status != "MATCH" else "")})
     # Teacher-level spot checks are intentionally identity-safe and bounded.
     source_teachers = {row["name"]: row for row in snapshot["teachers"]}
@@ -79,7 +79,7 @@ def compare_snapshot(
             if not _equal(left, right):
                 teacher_mismatches += 1
                 metric = f"teachers.{name}.{field}"
-                status = "HISTORICAL_SOURCE_GAP" if (metric in authorized_gaps or "*" in authorized_gaps) else "UNEXPLAINED_DIFFERENCE"
+                status = "HISTORICAL_SOURCE_GAP" if metric in authorized_gaps else "UNEXPLAINED_DIFFERENCE"
                 comparisons.append({"domain": "teachers", "metric": metric, "source": left, "golden": right, "status": status, "reason": "explicitly authorized historical source bridge" if status == "HISTORICAL_SOURCE_GAP" else "teacher summary and manually adjusted final workbook differ"})
     matches = sum(item["status"] == "MATCH" for item in comparisons)
     gaps = sum(item["status"] == "HISTORICAL_SOURCE_GAP" for item in comparisons)

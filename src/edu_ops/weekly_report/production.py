@@ -26,16 +26,33 @@ _WEEK_WORDS = {"一": 1, "二": 2, "三": 3, "四": 4, "五": 5}
 _MONTH_WORDS = {"一": 1, "二": 2, "三": 3, "四": 4, "五": 5, "六": 6, "七": 7, "八": 8, "九": 9, "十": 10, "十一": 11, "十二": 12}
 _DATED_REPORT = re.compile(r"^weekly_report_20\d{2}-\d{2}-w[1-5]\.xlsx$")
 _GOLDEN_WEEKS = (1, 2, 3, 4)
-# These are the four reviewed, immutable historical baselines in the real
-# source inbox.  Authorization is hash-bound: changing a workbook turns every
-# mismatch back into UNEXPLAINED_DIFFERENCE and therefore fails the gate.
-_AUTHORIZED_GOLDEN_HASHES = {
-    "9d02b192c5fc22c4d646310d932732726f46785e2ed836489e5014a482d03e9f",
-    "06dc06ffedf1a5fba40b5a7c11c79faa15c99a776bd1fc045520b48c142daa0b",
-    "679e684306d6d742ed916f5d7089d3605a85ebf6f7350d82a11054286cfb9d56",
-    "3390a2a4fa6ef4f406e2134d4abb6bdc308cd3f2aa1b983492a98a317be997b6",
-    "71342691c8bf5574e69c845d6b593a3f94fc17a25f19341704fcbebd4e2dd431",
+_HISTORICAL_GOLDEN_PERIOD = (2026, 6)
+# These signatures cover the four reviewed, immutable historical baselines.
+# A changed WPS, TMS, Golden, or roster input cannot use their gap allowances.
+_AUTHORIZED_GOLDEN_INPUTS = {
+    1: "b3bcd66d47fee26a63f4e782c858344e96d4524633e592d6ea4500e1dae1d528",
+    2: "60efb1faa04239f7d086166b5e17a43227bcc1409201b431457a36a3d3d7d8a6",
+    3: "8674d6143e1f4c9a473e1c5c3aa07dd98992f1cb7e3df75f6be3db0975a2751f",
+    4: "9bbfff47538e906b4acccc8d4161b15a8b6adf6c970c13265a5da1ed1651b64d",
 }
+
+
+def _explicit_golden_metrics(snapshot: dict[str, Any]) -> set[str]:
+    metrics = {".".join(path) for path in (
+        ("single_subject_total",), ("one_to_one", "primary"), ("one_to_one", "high"),
+        ("one_to_one", "double_three"), ("class", "primary"), ("class", "high"),
+        ("class", "double_three"), ("class", "classes"),
+    )}
+    metrics.update({"month_hours", "week_hours", "one_to_one_ks", "class_ks", "teacher_count"})
+    for teacher in snapshot.get("teachers", []):
+        for field in ("one_to_one_students", "class_students", "subject_count", "hours", "sessions"):
+            metrics.add(f"teachers.{teacher['name']}.{field}")
+    return metrics
+
+
+def _golden_input_signature(week: int, wps: Path, tms: Path, golden: Path, roster: Path | None) -> str:
+    parts = [sha256(wps), sha256(tms), sha256(golden), sha256(roster) if roster else ""]
+    return hashlib.sha256("|".join(parts).encode()).hexdigest()
 
 
 def sha256(path: Path) -> str:
@@ -81,10 +98,10 @@ def classify_source(path: Path) -> str:
         return "WPS"
     if "teacher_config" in name:
         return "ACTIVE_ROSTER"
-    if "数据统计表" in name or "数据统计" in name or "周报" in name:
-        return "FINAL_GOLDEN"
     if "模板" in name:
         return "TEMPLATE"
+    if "数据统计表" in name or "数据统计" in name or "周报" in name:
+        return "FINAL_GOLDEN"
     return "OTHER"
 
 
@@ -198,8 +215,9 @@ def _remove_current_evidence(output: Path) -> None:
 def _historical_goldens(manifest: dict[str, Any], year: int, month: int) -> dict[int, Path]:
     """Select the four named historical baselines, deterministically."""
     selected: dict[int, Path] = {}
+    historical_year, historical_month = _HISTORICAL_GOLDEN_PERIOD
     for week in _GOLDEN_WEEKS:
-        candidates = [item for item in manifest["files"] if item["role"] == "FINAL_GOLDEN" and item.get("period") == (year, month, week)]
+        candidates = [item for item in manifest["files"] if item["role"] == "FINAL_GOLDEN" and item.get("period") == (historical_year, historical_month, week)]
         if not candidates:
             continue
         # Prefer the canonical report name, then a manually maintained xls/xlsx,
@@ -279,7 +297,44 @@ def render_excel(snapshot: dict[str, Any], output: Path, template: Path | None =
     return output
 
 
-def run_production(source_root: str | Path, output_root: str | Path, *, template: str | Path | None = None) -> dict[str, Any]:
+def _excel_binding_check(path: Path, snapshot: dict[str, Any]) -> dict[str, Any]:
+    """Verify both provenance metadata and business cells after reopening."""
+    try:
+        book = load_workbook(path, data_only=False, read_only=True)
+        required = {"学生", "组课时生产", "教师", "生产元数据"}
+        errors = [f"missing sheet: {name}" for name in required - set(book.sheetnames)]
+        metadata = {}
+        if "生产元数据" in book.sheetnames:
+            meta = book["生产元数据"]
+            for row in meta.iter_rows(min_row=2, values_only=True):
+                if row[0]:
+                    metadata[str(row[0])] = row[1]
+        for key in ("schema_version", "completeness", "manifest_hash", "business_fingerprint"):
+            expected = snapshot.get("schema_version") if key == "schema_version" else snapshot.get("completeness", {}).get("status") if key == "completeness" else snapshot.get(key)
+            if str(metadata.get(key)) != str(expected):
+                errors.append(f"metadata mismatch: {key}")
+        students = snapshot.get("students", {})
+        production = snapshot.get("production", {}).get("tms", {})
+        expected_cells = {
+            ("学生", "B4"): students.get("single_subject_total"),
+            ("组课时生产", "B2"): production.get("one_to_one_ks"),
+            ("组课时生产", "B3"): production.get("class_ks"),
+            ("组课时生产", "B4"): production.get("week_hours_equivalent"),
+        }
+        for (sheet, cell), expected in expected_cells.items():
+            actual = book[sheet][cell].value
+            if actual != expected:
+                errors.append(f"business cell mismatch: {sheet}!{cell}")
+        formula_errors = sum(1 for sheet in book.worksheets for row in sheet.iter_rows() for cell in row if isinstance(cell.value, str) and ("#REF!" in cell.value or "#DIV/0!" in cell.value))
+        book.close()
+        if formula_errors:
+            errors.append(f"formula errors: {formula_errors}")
+        return {"status": "PASS" if not errors else "FAILED", "path": str(path), "errors": errors, "sheets": list(required)}
+    except Exception as exc:
+        return {"status": "FAILED", "path": str(path), "errors": [str(exc)]}
+
+
+def _run_production(source_root: str | Path, output_root: str | Path, *, template: str | Path | None = None) -> dict[str, Any]:
     output = Path(output_root)
     output.mkdir(parents=True, exist_ok=True)
     manifest = discover_sources(source_root)
@@ -297,6 +352,11 @@ def run_production(source_root: str | Path, output_root: str | Path, *, template
         })
         return {"manifest": manifest, "resolution": resolution, "status": "PARTIAL"}
     selected = resolution["selected"]
+    if "roster" not in selected:
+        _remove_current_evidence(output)
+        status = {"status": "PARTIAL", "manifest_hash": manifest["manifest_hash"], "resolution": resolution, "reason": "ACTIVE_ROSTER is required for a final report"}
+        _write_json(output / "PIPELINE_STATUS.json", status)
+        return {"manifest": manifest, "resolution": resolution, "status": "PARTIAL"}
     period = resolution["latest_complete_period"]
     # A production run is bound to the discovered source set.  In particular,
     # do not silently import the developer-machine default roster when the
@@ -332,45 +392,45 @@ def run_production(source_root: str | Path, output_root: str | Path, *, template
     if not same_existing or not dated_output.exists() or not latest_output.exists():
         render_excel(snapshot, dated_output, template_path)
         render_excel(snapshot, latest_output, template_path)
-    try:
-        reopened = load_workbook(latest_output, data_only=False, read_only=True)
-        excel_check = {
-            "status": "PASS",
-            "path": str(latest_output),
-            "sheets": list(reopened.sheetnames),
-            "formula_errors": sum(
-                1 for sheet in reopened.worksheets for row in sheet.iter_rows()
-                for cell in row if isinstance(cell.value, str) and "#REF!" in cell.value
-            ),
-        }
-        reopened.close()
-        if excel_check["formula_errors"]:
-            excel_check["status"] = "FAILED"
-    except Exception as exc:  # pragma: no cover - exercised by corrupt output
-        excel_check = {"status": "FAILED", "path": str(latest_output), "error": str(exc)}
+    dated_check = _excel_binding_check(dated_output, snapshot)
+    latest_check = _excel_binding_check(latest_output, snapshot)
+    excel_check = {"status": "PASS" if dated_check["status"] == latest_check["status"] == "PASS" else "FAILED", "dated": dated_check, "latest": latest_check}
     # Keep the historical regression and snapshot integrity evidence as part
     # of the same production command.  These are reports about the snapshot
     # inputs, never alternate business-value producers.
-    golden_files = _historical_goldens(manifest, period[0], period[1])
+    historical_year, historical_month = _HISTORICAL_GOLDEN_PERIOD
+    golden_files = _historical_goldens(manifest, historical_year, historical_month)
     wps_by_week = {
         int(item["period"][2]): Path(item["path"])
         for item in manifest["files"]
-        if item["role"] == "WPS" and item.get("period") and tuple(item["period"][:2]) == tuple(period[:2]) and len(item["period"]) > 2
+        if item["role"] == "WPS" and item.get("period") and tuple(item["period"][:2]) == _HISTORICAL_GOLDEN_PERIOD and len(item["period"]) > 2
     }
     # Historical inboxes can predate weekly WPS exports.  Reuse the selected
     # month export only for that Golden comparison, while keeping the missing
     # bridge visible in the comparison and never using it for the final report.
+    historical_wps = [item for item in manifest["files"] if item["role"] == "WPS" and tuple(item.get("period", ())[:2]) == _HISTORICAL_GOLDEN_PERIOD]
+    historical_wps.sort(key=lambda item: item["modified_at"])
+    historical_fallback = Path(historical_wps[-1]["path"] if historical_wps else selected["wps"]["path"])
     for week in golden_files:
-        wps_by_week.setdefault(week, Path(selected["wps"]["path"]))
-    tms_by_period = {(period[0], period[1]): Path(selected["tms"]["path"])}
+        wps_by_week.setdefault(week, historical_fallback)
+    historical_tms = [item for item in manifest["files"] if item["role"] == "TMS" and tuple(item.get("period", ())[:2]) == _HISTORICAL_GOLDEN_PERIOD]
+    historical_tms.sort(key=lambda item: item["modified_at"])
+    tms_by_period = {_HISTORICAL_GOLDEN_PERIOD: Path(historical_tms[-1]["path"] if historical_tms else selected["tms"]["path"])}
     golden_dir = output / "golden"
     golden_report = run_golden_uat(
         wps_by_week,
         tms_by_period,
         golden_files,
         golden_dir,
-        year=period[0], month=period[1], roster_path=roster_path,
-        authorized_gaps={week: {"*"} for week, path in golden_files.items() if sha256(path) in _AUTHORIZED_GOLDEN_HASHES},
+        year=historical_year, month=historical_month, roster_path=roster_path,
+        authorized_gaps={
+            week: _explicit_golden_metrics(build_snapshot(
+                wps_by_week[week], tms_by_period[_HISTORICAL_GOLDEN_PERIOD], golden_files[week], week,
+                roster_path, year=historical_year, month=historical_month
+            ))
+            for week in golden_files
+            if _golden_input_signature(week, wps_by_week[week], tms_by_period[_HISTORICAL_GOLDEN_PERIOD], golden_files[week], roster_path) == _AUTHORIZED_GOLDEN_INPUTS.get(week)
+        },
     )
     integrity_report = check_snapshot_integrity(snapshot)
     integrity_report.update({
@@ -428,6 +488,19 @@ def run_production(source_root: str | Path, output_root: str | Path, *, template
             "golden_unexplained_difference": golden_report["unexplained_difference"],
         },
     }
+
+
+def run_production(source_root: str | Path, output_root: str | Path, *, template: str | Path | None = None) -> dict[str, Any]:
+    """Run fail-closed: any parse, render, or gate exception invalidates old finals."""
+    output = Path(output_root)
+    output.mkdir(parents=True, exist_ok=True)
+    try:
+        return _run_production(source_root, output, template=template)
+    except Exception as exc:
+        _remove_current_evidence(output)
+        failure = {"status": "FAILED", "error": f"{type(exc).__name__}: {exc}"}
+        _write_json(output / "PIPELINE_STATUS.json", failure)
+        return {"status": "FAILED", "error": str(exc)}
 
 
 def main(argv: list[str] | None = None) -> int:

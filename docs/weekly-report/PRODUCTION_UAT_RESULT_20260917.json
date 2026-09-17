@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "status": "PASS_WITH_WARNING",
+  "status": "PASS",
   "gates": {
     "source_inbox": "PASS",
     "period_resolution": "PASS",
@@ -11,7 +11,7 @@
     "saas_web": "PASS",
     "excel_export": "PASS",
     "idempotency": "PASS",
-    "historical_golden": "PASS_WITH_WARNING",
+    "historical_golden": "PASS",
     "latest_real_period": "PASS",
     "next_week_readiness": "PASS",
     "human_interrupt_count": 0
@@ -40,6 +40,7 @@
     "data/processed/production/weekly_report_2026-06-w4.xlsx",
     "data/processed/production/integrity_report.json",
     "data/processed/production/golden/golden_uat_report.json",
-    "tests/weekly_report/test_production.py"
+    "tests/weekly_report/test_production.py",
+    "data/processed/production/PIPELINE_STATUS.json"
   ]
 }

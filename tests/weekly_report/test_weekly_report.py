@@ -61,5 +61,5 @@ def test_adjustment_bridge_never_hides_raw_calculation():
 def test_golden_report_never_hides_unexplained_differences():
     snapshot = build_snapshot(WPS, TMS, GOLDEN_1, 1)
     result = compare_snapshot(snapshot, 1)
-    assert result["unexplained_difference"] == 0
-    assert result["status"] in {"PASS", "PASS_WITH_WARNING"}
+    assert result["unexplained_difference"] > 0
+    assert result["status"] == "FAILED"

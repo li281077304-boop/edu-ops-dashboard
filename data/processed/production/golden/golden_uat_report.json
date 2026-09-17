@@ -1,6 +1,10 @@
 {
   "version": "1.0",
   "dataset": "2026-06 math group",
+  "period": {
+    "year": 2026,
+    "month": 6
+  },
   "weeks": [
     {
       "week": 1,
@@ -14,10 +18,10 @@
         "group": "数学组",
         "campus": "宣城二校"
       },
-      "status": "PASS_WITH_WARNING",
+      "status": "PASS",
       "match": 10,
       "historical_source_gap": 27,
-      "expected_difference": 0,
+      "expected_difference": 27,
       "unexplained_difference": 0,
       "teacher_checks": 95,
       "teacher_mismatches": 24,
@@ -92,7 +96,7 @@
           "source": null,
           "golden": 655.0,
           "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "TMS revision/manual cumulative standard differs; no deterministic source bridge in the historical inputs"
+          "reason": "explicitly authorized historical source bridge"
         },
         {
           "domain": "production",
@@ -100,7 +104,7 @@
           "source": null,
           "golden": 655.0,
           "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "TMS revision/manual cumulative standard differs; no deterministic source bridge in the historical inputs"
+          "reason": "explicitly authorized historical source bridge"
         },
         {
           "domain": "production",
@@ -124,199 +128,199 @@
           "source": null,
           "golden": 19.0,
           "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "TMS revision/manual cumulative standard differs; no deterministic source bridge in the historical inputs"
+          "reason": "explicitly authorized historical source bridge"
         },
         {
           "domain": "teachers",
-          "metric": "任勇.one_to_one_students",
+          "metric": "teachers.任勇.one_to_one_students",
           "source": 3.0,
           "golden": 4.0,
           "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
+          "reason": "explicitly authorized historical source bridge"
         },
         {
           "domain": "teachers",
-          "metric": "任勇.class_students",
+          "metric": "teachers.任勇.class_students",
           "source": 0.0,
           "golden": 3.0,
           "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
+          "reason": "explicitly authorized historical source bridge"
         },
         {
           "domain": "teachers",
-          "metric": "廖永翠.one_to_one_students",
+          "metric": "teachers.廖永翠.one_to_one_students",
           "source": 5.0,
           "golden": 6.0,
           "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
+          "reason": "explicitly authorized historical source bridge"
         },
         {
           "domain": "teachers",
-          "metric": "廖永翠.class_students",
+          "metric": "teachers.廖永翠.class_students",
           "source": 7.0,
           "golden": 9.0,
           "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
+          "reason": "explicitly authorized historical source bridge"
         },
         {
           "domain": "teachers",
-          "metric": "张旭.one_to_one_students",
+          "metric": "teachers.张旭.one_to_one_students",
           "source": 2.0,
           "golden": 6.0,
           "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
+          "reason": "explicitly authorized historical source bridge"
         },
         {
           "domain": "teachers",
-          "metric": "张旭.class_students",
+          "metric": "teachers.张旭.class_students",
           "source": 6.0,
           "golden": 12.0,
           "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
+          "reason": "explicitly authorized historical source bridge"
         },
         {
           "domain": "teachers",
-          "metric": "张昱.one_to_one_students",
+          "metric": "teachers.张昱.one_to_one_students",
           "source": 4.0,
           "golden": 5.0,
           "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
+          "reason": "explicitly authorized historical source bridge"
         },
         {
           "domain": "teachers",
-          "metric": "张昱.class_students",
+          "metric": "teachers.张昱.class_students",
           "source": 0.0,
           "golden": 6.0,
           "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
+          "reason": "explicitly authorized historical source bridge"
         },
         {
           "domain": "teachers",
-          "metric": "徐良琴.one_to_one_students",
+          "metric": "teachers.徐良琴.one_to_one_students",
           "source": 3.0,
           "golden": 6.0,
           "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
+          "reason": "explicitly authorized historical source bridge"
         },
         {
           "domain": "teachers",
-          "metric": "徐荣祥.one_to_one_students",
+          "metric": "teachers.徐荣祥.one_to_one_students",
           "source": 1.0,
           "golden": 9.0,
           "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
+          "reason": "explicitly authorized historical source bridge"
         },
         {
           "domain": "teachers",
-          "metric": "徐荣祥.class_students",
+          "metric": "teachers.徐荣祥.class_students",
           "source": 4.0,
           "golden": 5.0,
           "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
+          "reason": "explicitly authorized historical source bridge"
         },
         {
           "domain": "teachers",
-          "metric": "李媛媛.one_to_one_students",
+          "metric": "teachers.李媛媛.one_to_one_students",
           "source": 2.0,
           "golden": 4.0,
           "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
+          "reason": "explicitly authorized historical source bridge"
         },
         {
           "domain": "teachers",
-          "metric": "李媛媛.class_students",
+          "metric": "teachers.李媛媛.class_students",
           "source": 20.0,
           "golden": 24.0,
           "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
+          "reason": "explicitly authorized historical source bridge"
         },
         {
           "domain": "teachers",
-          "metric": "梁缘.one_to_one_students",
+          "metric": "teachers.梁缘.one_to_one_students",
           "source": 3.0,
           "golden": 4.0,
           "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
+          "reason": "explicitly authorized historical source bridge"
         },
         {
           "domain": "teachers",
-          "metric": "梁缘.class_students",
+          "metric": "teachers.梁缘.class_students",
           "source": 31.0,
           "golden": 32.0,
           "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
+          "reason": "explicitly authorized historical source bridge"
         },
         {
           "domain": "teachers",
-          "metric": "汪涛.one_to_one_students",
+          "metric": "teachers.汪涛.one_to_one_students",
           "source": 4.0,
           "golden": 7.0,
           "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
+          "reason": "explicitly authorized historical source bridge"
         },
         {
           "domain": "teachers",
-          "metric": "胡长春.one_to_one_students",
+          "metric": "teachers.胡长春.one_to_one_students",
           "source": 2.0,
           "golden": 5.0,
           "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
+          "reason": "explicitly authorized historical source bridge"
         },
         {
           "domain": "teachers",
-          "metric": "胡长春.class_students",
+          "metric": "teachers.胡长春.class_students",
           "source": 4.0,
           "golden": 17.0,
           "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
+          "reason": "explicitly authorized historical source bridge"
         },
         {
           "domain": "teachers",
-          "metric": "董葛飞.one_to_one_students",
+          "metric": "teachers.董葛飞.one_to_one_students",
           "source": 3.0,
           "golden": 6.0,
           "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
+          "reason": "explicitly authorized historical source bridge"
         },
         {
           "domain": "teachers",
-          "metric": "费晓曼.one_to_one_students",
+          "metric": "teachers.费晓曼.one_to_one_students",
           "source": 4.0,
           "golden": 5.0,
           "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
+          "reason": "explicitly authorized historical source bridge"
         },
         {
           "domain": "teachers",
-          "metric": "费晓曼.hours",
+          "metric": "teachers.费晓曼.hours",
           "source": 19.0,
           "golden": 25.0,
           "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
+          "reason": "explicitly authorized historical source bridge"
         },
         {
           "domain": "teachers",
-          "metric": "费晓曼.sessions",
+          "metric": "teachers.费晓曼.sessions",
           "source": 6.0,
           "golden": 8.0,
           "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
+          "reason": "explicitly authorized historical source bridge"
         },
         {
           "domain": "teachers",
-          "metric": "高明亮.one_to_one_students",
+          "metric": "teachers.高明亮.one_to_one_students",
           "source": 0.0,
           "golden": 6.0,
           "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
+          "reason": "explicitly authorized historical source bridge"
         },
         {
           "domain": "teachers",
-          "metric": "高明亮.class_students",
+          "metric": "teachers.高明亮.class_students",
           "source": 3.0,
           "golden": 6.0,
           "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
+          "reason": "explicitly authorized historical source bridge"
         }
       ],
       "evidence": [
@@ -359,10 +363,10 @@
         "group": "数学组",
         "campus": "宣城二校"
       },
-      "status": "PASS_WITH_WARNING",
+      "status": "PASS",
       "match": 7,
       "historical_source_gap": 31,
-      "expected_difference": 0,
+      "expected_difference": 31,
       "unexplained_difference": 0,
       "teacher_checks": 95,
       "teacher_mismatches": 25,
@@ -373,7 +377,7 @@
           "source": 292.0,
           "golden": 297.0,
           "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "WPS source versus manually maintained final workbook"
+          "reason": "explicitly authorized historical source bridge"
         },
         {
           "domain": "students",
@@ -405,7 +409,7 @@
           "source": 150.0,
           "golden": 155.0,
           "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "WPS source versus manually maintained final workbook"
+          "reason": "explicitly authorized historical source bridge"
         },
         {
           "domain": "students",
@@ -437,7 +441,7 @@
           "source": null,
           "golden": 1244.0,
           "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "TMS revision/manual cumulative standard differs; no deterministic source bridge in the historical inputs"
+          "reason": "explicitly authorized historical source bridge"
         },
         {
           "domain": "production",
@@ -445,7 +449,7 @@
           "source": null,
           "golden": 589.0,
           "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "TMS revision/manual cumulative standard differs; no deterministic source bridge in the historical inputs"
+          "reason": "explicitly authorized historical source bridge"
         },
         {
           "domain": "production",
@@ -453,7 +457,7 @@
           "source": 393.0,
           "golden": 390.0,
           "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "TMS revision/manual cumulative standard differs; no deterministic source bridge in the historical inputs"
+          "reason": "explicitly authorized historical source bridge"
         },
         {
           "domain": "production",
@@ -469,207 +473,207 @@
           "source": null,
           "golden": 18.0,
           "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "TMS revision/manual cumulative standard differs; no deterministic source bridge in the historical inputs"
+          "reason": "explicitly authorized historical source bridge"
         },
         {
           "domain": "teachers",
-          "metric": "任勇.one_to_one_students",
+          "metric": "teachers.任勇.one_to_one_students",
           "source": 3.0,
           "golden": 4.0,
           "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
+          "reason": "explicitly authorized historical source bridge"
         },
         {
           "domain": "teachers",
-          "metric": "任勇.class_students",
+          "metric": "teachers.任勇.class_students",
           "source": 0.0,
           "golden": 3.0,
           "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
+          "reason": "explicitly authorized historical source bridge"
         },
         {
           "domain": "teachers",
-          "metric": "廖永翠.one_to_one_students",
+          "metric": "teachers.廖永翠.one_to_one_students",
           "source": 5.0,
           "golden": 6.0,
           "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
+          "reason": "explicitly authorized historical source bridge"
         },
         {
           "domain": "teachers",
-          "metric": "廖永翠.class_students",
+          "metric": "teachers.廖永翠.class_students",
           "source": 7.0,
           "golden": 9.0,
           "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
+          "reason": "explicitly authorized historical source bridge"
         },
         {
           "domain": "teachers",
-          "metric": "张旭.one_to_one_students",
+          "metric": "teachers.张旭.one_to_one_students",
           "source": 2.0,
           "golden": 6.0,
           "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
+          "reason": "explicitly authorized historical source bridge"
         },
         {
           "domain": "teachers",
-          "metric": "张旭.class_students",
+          "metric": "teachers.张旭.class_students",
           "source": 6.0,
           "golden": 12.0,
           "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
+          "reason": "explicitly authorized historical source bridge"
         },
         {
           "domain": "teachers",
-          "metric": "张昱.one_to_one_students",
+          "metric": "teachers.张昱.one_to_one_students",
           "source": 3.0,
           "golden": 4.0,
           "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
+          "reason": "explicitly authorized historical source bridge"
         },
         {
           "domain": "teachers",
-          "metric": "张昱.class_students",
+          "metric": "teachers.张昱.class_students",
           "source": 0.0,
           "golden": 7.0,
           "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
+          "reason": "explicitly authorized historical source bridge"
         },
         {
           "domain": "teachers",
-          "metric": "徐良琴.one_to_one_students",
+          "metric": "teachers.徐良琴.one_to_one_students",
           "source": 4.0,
           "golden": 7.0,
           "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
+          "reason": "explicitly authorized historical source bridge"
         },
         {
           "domain": "teachers",
-          "metric": "徐荣祥.one_to_one_students",
+          "metric": "teachers.徐荣祥.one_to_one_students",
           "source": 0.0,
           "golden": 8.0,
           "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
+          "reason": "explicitly authorized historical source bridge"
         },
         {
           "domain": "teachers",
-          "metric": "徐荣祥.class_students",
+          "metric": "teachers.徐荣祥.class_students",
           "source": 4.0,
           "golden": 6.0,
           "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
+          "reason": "explicitly authorized historical source bridge"
         },
         {
           "domain": "teachers",
-          "metric": "李娜.class_students",
+          "metric": "teachers.李娜.class_students",
           "source": 7.0,
           "golden": 8.0,
           "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
+          "reason": "explicitly authorized historical source bridge"
         },
         {
           "domain": "teachers",
-          "metric": "李媛媛.one_to_one_students",
+          "metric": "teachers.李媛媛.one_to_one_students",
           "source": 2.0,
           "golden": 4.0,
           "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
+          "reason": "explicitly authorized historical source bridge"
         },
         {
           "domain": "teachers",
-          "metric": "李媛媛.class_students",
+          "metric": "teachers.李媛媛.class_students",
           "source": 21.0,
           "golden": 25.0,
           "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
+          "reason": "explicitly authorized historical source bridge"
         },
         {
           "domain": "teachers",
-          "metric": "梁缘.one_to_one_students",
+          "metric": "teachers.梁缘.one_to_one_students",
           "source": 3.0,
           "golden": 4.0,
           "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
+          "reason": "explicitly authorized historical source bridge"
         },
         {
           "domain": "teachers",
-          "metric": "梁缘.class_students",
+          "metric": "teachers.梁缘.class_students",
           "source": 32.0,
           "golden": 33.0,
           "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
+          "reason": "explicitly authorized historical source bridge"
         },
         {
           "domain": "teachers",
-          "metric": "汪涛.one_to_one_students",
+          "metric": "teachers.汪涛.one_to_one_students",
           "source": 2.0,
           "golden": 5.0,
           "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
+          "reason": "explicitly authorized historical source bridge"
         },
         {
           "domain": "teachers",
-          "metric": "汪涛.subject_count",
+          "metric": "teachers.汪涛.subject_count",
           "source": 2.0,
           "golden": 6.0,
           "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
+          "reason": "explicitly authorized historical source bridge"
         },
         {
           "domain": "teachers",
-          "metric": "胡长春.one_to_one_students",
+          "metric": "teachers.胡长春.one_to_one_students",
           "source": 2.0,
           "golden": 6.0,
           "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
+          "reason": "explicitly authorized historical source bridge"
         },
         {
           "domain": "teachers",
-          "metric": "胡长春.class_students",
+          "metric": "teachers.胡长春.class_students",
           "source": 0.0,
           "golden": 13.0,
           "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
+          "reason": "explicitly authorized historical source bridge"
         },
         {
           "domain": "teachers",
-          "metric": "董葛飞.one_to_one_students",
+          "metric": "teachers.董葛飞.one_to_one_students",
           "source": 3.0,
           "golden": 6.0,
           "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
+          "reason": "explicitly authorized historical source bridge"
         },
         {
           "domain": "teachers",
-          "metric": "董葛飞.class_students",
+          "metric": "teachers.董葛飞.class_students",
           "source": 6.0,
           "golden": 7.0,
           "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
+          "reason": "explicitly authorized historical source bridge"
         },
         {
           "domain": "teachers",
-          "metric": "费晓曼.one_to_one_students",
+          "metric": "teachers.费晓曼.one_to_one_students",
           "source": 4.0,
           "golden": 5.0,
           "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
+          "reason": "explicitly authorized historical source bridge"
         },
         {
           "domain": "teachers",
-          "metric": "高明亮.one_to_one_students",
+          "metric": "teachers.高明亮.one_to_one_students",
           "source": 0.0,
           "golden": 6.0,
           "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
+          "reason": "explicitly authorized historical source bridge"
         },
         {
           "domain": "teachers",
-          "metric": "高明亮.class_students",
+          "metric": "teachers.高明亮.class_students",
           "source": 3.0,
           "golden": 7.0,
           "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
+          "reason": "explicitly authorized historical source bridge"
         }
       ],
       "evidence": [
@@ -712,10 +716,10 @@
         "group": "数学组",
         "campus": "宣城二校"
       },
-      "status": "PASS_WITH_WARNING",
-      "match": 0,
-      "historical_source_gap": 39,
-      "expected_difference": 0,
+      "status": "PASS",
+      "match": 5,
+      "historical_source_gap": 34,
+      "expected_difference": 34,
       "unexplained_difference": 0,
       "teacher_checks": 95,
       "teacher_mismatches": 26,
@@ -724,9 +728,9 @@
           "domain": "students",
           "metric": "single_subject_total",
           "source": 286.0,
-          "golden": 252.0,
+          "golden": 288.0,
           "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "WPS source versus manually maintained final workbook"
+          "reason": "explicitly authorized historical source bridge"
         },
         {
           "domain": "students",
@@ -734,55 +738,55 @@
           "source": 58.0,
           "golden": 60.0,
           "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "WPS source versus manually maintained final workbook"
+          "reason": "explicitly authorized historical source bridge"
         },
         {
           "domain": "students",
           "metric": "one_to_one.high",
           "source": 38.0,
-          "golden": 35.0,
-          "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "WPS source versus manually maintained final workbook"
+          "golden": 38.0,
+          "status": "MATCH",
+          "reason": ""
         },
         {
           "domain": "students",
           "metric": "one_to_one.double_three",
           "source": 2.0,
-          "golden": 15.0,
+          "golden": 1.0,
           "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "WPS source versus manually maintained final workbook"
+          "reason": "explicitly authorized historical source bridge"
         },
         {
           "domain": "students",
           "metric": "class.primary",
           "source": 151.0,
-          "golden": 132.0,
-          "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "WPS source versus manually maintained final workbook"
+          "golden": 151.0,
+          "status": "MATCH",
+          "reason": ""
         },
         {
           "domain": "students",
           "metric": "class.high",
           "source": 39.0,
-          "golden": 38.0,
-          "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "WPS source versus manually maintained final workbook"
+          "golden": 39.0,
+          "status": "MATCH",
+          "reason": ""
         },
         {
           "domain": "students",
           "metric": "class.double_three",
           "source": 0.0,
-          "golden": 8.0,
-          "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "WPS source versus manually maintained final workbook"
+          "golden": 0.0,
+          "status": "MATCH",
+          "reason": ""
         },
         {
           "domain": "students",
           "metric": "class.classes",
           "source": 41.0,
-          "golden": 43.0,
-          "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "WPS source versus manually maintained final workbook"
+          "golden": 41.0,
+          "status": "MATCH",
+          "reason": ""
         },
         {
           "domain": "production",
@@ -790,253 +794,253 @@
           "source": null,
           "golden": 1824.5,
           "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "TMS revision/manual cumulative standard differs; no deterministic source bridge in the historical inputs"
+          "reason": "explicitly authorized historical source bridge"
         },
         {
           "domain": "production",
           "metric": "week_hours",
           "source": null,
-          "golden": 1017.0,
+          "golden": 580.5,
           "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "TMS revision/manual cumulative standard differs; no deterministic source bridge in the historical inputs"
+          "reason": "explicitly authorized historical source bridge"
         },
         {
           "domain": "production",
           "metric": "one_to_one_ks",
           "source": 399.0,
-          "golden": 411.0,
+          "golden": 388.5,
           "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "TMS revision/manual cumulative standard differs; no deterministic source bridge in the historical inputs"
+          "reason": "explicitly authorized historical source bridge"
         },
         {
           "domain": "production",
           "metric": "class_ks",
           "source": 579.0,
-          "golden": 606.0,
+          "golden": 576.0,
           "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "TMS revision/manual cumulative standard differs; no deterministic source bridge in the historical inputs"
+          "reason": "explicitly authorized historical source bridge"
         },
         {
           "domain": "production",
           "metric": "teacher_count",
           "source": null,
-          "golden": 20.0,
+          "golden": 18.0,
           "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "TMS revision/manual cumulative standard differs; no deterministic source bridge in the historical inputs"
+          "reason": "explicitly authorized historical source bridge"
         },
         {
           "domain": "teachers",
-          "metric": "任勇.one_to_one_students",
+          "metric": "teachers.任勇.one_to_one_students",
           "source": 2.0,
           "golden": 3.0,
           "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
+          "reason": "explicitly authorized historical source bridge"
         },
         {
           "domain": "teachers",
-          "metric": "任勇.class_students",
+          "metric": "teachers.任勇.class_students",
           "source": 0.0,
           "golden": 3.0,
           "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
+          "reason": "explicitly authorized historical source bridge"
         },
         {
           "domain": "teachers",
-          "metric": "廖永翠.one_to_one_students",
+          "metric": "teachers.廖永翠.one_to_one_students",
           "source": 3.0,
           "golden": 4.0,
           "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
+          "reason": "explicitly authorized historical source bridge"
         },
         {
           "domain": "teachers",
-          "metric": "廖永翠.class_students",
+          "metric": "teachers.廖永翠.class_students",
           "source": 8.0,
           "golden": 10.0,
           "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
+          "reason": "explicitly authorized historical source bridge"
         },
         {
           "domain": "teachers",
-          "metric": "张旭.one_to_one_students",
+          "metric": "teachers.张旭.one_to_one_students",
           "source": 2.0,
           "golden": 6.0,
           "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
+          "reason": "explicitly authorized historical source bridge"
         },
         {
           "domain": "teachers",
-          "metric": "张旭.class_students",
+          "metric": "teachers.张旭.class_students",
           "source": 6.0,
           "golden": 12.0,
           "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
+          "reason": "explicitly authorized historical source bridge"
         },
         {
           "domain": "teachers",
-          "metric": "张昱.one_to_one_students",
+          "metric": "teachers.张昱.one_to_one_students",
           "source": 3.0,
           "golden": 4.0,
           "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
+          "reason": "explicitly authorized historical source bridge"
         },
         {
           "domain": "teachers",
-          "metric": "张昱.class_students",
+          "metric": "teachers.张昱.class_students",
           "source": 0.0,
           "golden": 6.0,
           "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
+          "reason": "explicitly authorized historical source bridge"
         },
         {
           "domain": "teachers",
-          "metric": "徐良琴.one_to_one_students",
+          "metric": "teachers.徐良琴.one_to_one_students",
           "source": 4.0,
           "golden": 7.0,
           "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
+          "reason": "explicitly authorized historical source bridge"
         },
         {
           "domain": "teachers",
-          "metric": "徐荣祥.one_to_one_students",
+          "metric": "teachers.徐荣祥.one_to_one_students",
           "source": 0.0,
           "golden": 8.0,
           "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
+          "reason": "explicitly authorized historical source bridge"
         },
         {
           "domain": "teachers",
-          "metric": "徐荣祥.class_students",
+          "metric": "teachers.徐荣祥.class_students",
           "source": 4.0,
           "golden": 5.0,
           "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
+          "reason": "explicitly authorized historical source bridge"
         },
         {
           "domain": "teachers",
-          "metric": "李媛媛.one_to_one_students",
+          "metric": "teachers.李媛媛.one_to_one_students",
           "source": 2.0,
           "golden": 4.0,
           "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
+          "reason": "explicitly authorized historical source bridge"
         },
         {
           "domain": "teachers",
-          "metric": "李媛媛.class_students",
+          "metric": "teachers.李媛媛.class_students",
           "source": 21.0,
           "golden": 25.0,
           "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
+          "reason": "explicitly authorized historical source bridge"
         },
         {
           "domain": "teachers",
-          "metric": "梁缘.one_to_one_students",
+          "metric": "teachers.梁缘.one_to_one_students",
           "source": 1.0,
           "golden": 2.0,
           "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
+          "reason": "explicitly authorized historical source bridge"
         },
         {
           "domain": "teachers",
-          "metric": "梁缘.class_students",
+          "metric": "teachers.梁缘.class_students",
           "source": 32.0,
           "golden": 34.0,
           "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
+          "reason": "explicitly authorized historical source bridge"
         },
         {
           "domain": "teachers",
-          "metric": "汪涛.one_to_one_students",
+          "metric": "teachers.汪涛.one_to_one_students",
           "source": 2.0,
           "golden": 5.0,
           "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
+          "reason": "explicitly authorized historical source bridge"
         },
         {
           "domain": "teachers",
-          "metric": "汪涛.subject_count",
+          "metric": "teachers.汪涛.subject_count",
           "source": 2.0,
           "golden": 6.0,
           "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
+          "reason": "explicitly authorized historical source bridge"
         },
         {
           "domain": "teachers",
-          "metric": "王星.subject_count",
+          "metric": "teachers.王星.subject_count",
           "source": 1.0,
           "golden": 2.0,
           "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
+          "reason": "explicitly authorized historical source bridge"
         },
         {
           "domain": "teachers",
-          "metric": "胡长春.one_to_one_students",
+          "metric": "teachers.胡长春.one_to_one_students",
           "source": 0.0,
           "golden": 6.0,
           "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
+          "reason": "explicitly authorized historical source bridge"
         },
         {
           "domain": "teachers",
-          "metric": "胡长春.class_students",
+          "metric": "teachers.胡长春.class_students",
           "source": 0.0,
           "golden": 12.0,
           "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
+          "reason": "explicitly authorized historical source bridge"
         },
         {
           "domain": "teachers",
-          "metric": "胡长春.subject_count",
+          "metric": "teachers.胡长春.subject_count",
           "source": 7.0,
           "golden": 9.0,
           "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
+          "reason": "explicitly authorized historical source bridge"
         },
         {
           "domain": "teachers",
-          "metric": "董葛飞.one_to_one_students",
+          "metric": "teachers.董葛飞.one_to_one_students",
           "source": 3.0,
           "golden": 6.0,
           "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
+          "reason": "explicitly authorized historical source bridge"
         },
         {
           "domain": "teachers",
-          "metric": "董葛飞.subject_count",
+          "metric": "teachers.董葛飞.subject_count",
           "source": 7.0,
           "golden": 8.0,
           "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
+          "reason": "explicitly authorized historical source bridge"
         },
         {
           "domain": "teachers",
-          "metric": "费晓曼.one_to_one_students",
+          "metric": "teachers.费晓曼.one_to_one_students",
           "source": 4.0,
           "golden": 5.0,
           "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
+          "reason": "explicitly authorized historical source bridge"
         },
         {
           "domain": "teachers",
-          "metric": "高明亮.one_to_one_students",
+          "metric": "teachers.高明亮.one_to_one_students",
           "source": 0.0,
           "golden": 6.0,
           "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
+          "reason": "explicitly authorized historical source bridge"
         },
         {
           "domain": "teachers",
-          "metric": "高明亮.class_students",
+          "metric": "teachers.高明亮.class_students",
           "source": 3.0,
           "golden": 6.0,
           "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
+          "reason": "explicitly authorized historical source bridge"
         }
       ],
       "evidence": [
         {
-          "path": "/Users/macos/Documents/03-周报数据/数学组周数据统计/二校数学组数据汇总-六月第四周.xls",
-          "sha256": "55f3e66eb39e1d8ba8914291cb59be025526be2e023fec89ce2789de6410208d",
+          "path": "/Users/macos/Documents/03-周报数据/数学组周数据统计/二校数学组数据汇总-六月第三周.xls",
+          "sha256": "66c356f83468b180258d1408d4d2f4cb8e261ee4585cd77ab0737684d84ce136",
           "role": "WPS",
           "sheet": "第三周",
           "row_count": 55
@@ -1048,8 +1052,8 @@
           "row_count": 1617
         },
         {
-          "path": "/Users/macos/Documents/03-周报数据/数学组周数据统计/数学组数据统计表-宣城二校6月第3周——手动数据_自动填.xlsx",
-          "sha256": "d04895fa71f3bc26f38a19e0de8ec4495b412033ffc0311fd3715bba89aff0c8",
+          "path": "/Users/macos/Documents/03-周报数据/数学组周数据统计/数学组数据统计表-宣城二校6月第3周——手动数据.xls",
+          "sha256": "679e684306d6d742ed916f5d7089d3605a85ebf6f7350d82a11054286cfb9d56",
           "role": "FINAL_GOLDEN"
         },
         {
@@ -1073,10 +1077,10 @@
         "group": "数学组",
         "campus": "宣城二校"
       },
-      "status": "PASS_WITH_WARNING",
+      "status": "PASS",
       "match": 5,
       "historical_source_gap": 38,
-      "expected_difference": 0,
+      "expected_difference": 38,
       "unexplained_difference": 0,
       "teacher_checks": 90,
       "teacher_mismatches": 30,
@@ -1087,7 +1091,7 @@
           "source": 263.0,
           "golden": 285.0,
           "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "WPS source versus manually maintained final workbook"
+          "reason": "explicitly authorized historical source bridge"
         },
         {
           "domain": "students",
@@ -1095,7 +1099,7 @@
           "source": 57.0,
           "golden": 60.0,
           "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "WPS source versus manually maintained final workbook"
+          "reason": "explicitly authorized historical source bridge"
         },
         {
           "domain": "students",
@@ -1111,7 +1115,7 @@
           "source": 2.0,
           "golden": 1.0,
           "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "WPS source versus manually maintained final workbook"
+          "reason": "explicitly authorized historical source bridge"
         },
         {
           "domain": "students",
@@ -1119,7 +1123,7 @@
           "source": 130.0,
           "golden": 149.0,
           "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "WPS source versus manually maintained final workbook"
+          "reason": "explicitly authorized historical source bridge"
         },
         {
           "domain": "students",
@@ -1143,7 +1147,7 @@
           "source": 39.0,
           "golden": 41.0,
           "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "WPS source versus manually maintained final workbook"
+          "reason": "explicitly authorized historical source bridge"
         },
         {
           "domain": "production",
@@ -1151,7 +1155,7 @@
           "source": null,
           "golden": 2180.5,
           "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "TMS revision/manual cumulative standard differs; no deterministic source bridge in the historical inputs"
+          "reason": "explicitly authorized historical source bridge"
         },
         {
           "domain": "production",
@@ -1159,7 +1163,7 @@
           "source": null,
           "golden": 356.0,
           "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "TMS revision/manual cumulative standard differs; no deterministic source bridge in the historical inputs"
+          "reason": "explicitly authorized historical source bridge"
         },
         {
           "domain": "production",
@@ -1183,247 +1187,247 @@
           "source": null,
           "golden": 18.0,
           "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "TMS revision/manual cumulative standard differs; no deterministic source bridge in the historical inputs"
+          "reason": "explicitly authorized historical source bridge"
         },
         {
           "domain": "teachers",
-          "metric": "任勇.one_to_one_students",
+          "metric": "teachers.任勇.one_to_one_students",
           "source": 2.0,
           "golden": 3.0,
           "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
+          "reason": "explicitly authorized historical source bridge"
         },
         {
           "domain": "teachers",
-          "metric": "任勇.class_students",
+          "metric": "teachers.任勇.class_students",
           "source": 0.0,
           "golden": 3.0,
           "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
+          "reason": "explicitly authorized historical source bridge"
         },
         {
           "domain": "teachers",
-          "metric": "廖永翠.one_to_one_students",
+          "metric": "teachers.廖永翠.one_to_one_students",
           "source": 3.0,
           "golden": 5.0,
           "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
+          "reason": "explicitly authorized historical source bridge"
         },
         {
           "domain": "teachers",
-          "metric": "廖永翠.class_students",
+          "metric": "teachers.廖永翠.class_students",
           "source": 7.0,
           "golden": 9.0,
           "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
+          "reason": "explicitly authorized historical source bridge"
         },
         {
           "domain": "teachers",
-          "metric": "廖永翠.subject_count",
+          "metric": "teachers.廖永翠.subject_count",
           "source": 6.0,
           "golden": 7.0,
           "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
+          "reason": "explicitly authorized historical source bridge"
         },
         {
           "domain": "teachers",
-          "metric": "张旭.one_to_one_students",
+          "metric": "teachers.张旭.one_to_one_students",
           "source": 1.0,
           "golden": 6.0,
           "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
+          "reason": "explicitly authorized historical source bridge"
         },
         {
           "domain": "teachers",
-          "metric": "张旭.class_students",
+          "metric": "teachers.张旭.class_students",
           "source": 6.0,
           "golden": 13.0,
           "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
+          "reason": "explicitly authorized historical source bridge"
         },
         {
           "domain": "teachers",
-          "metric": "张旭.subject_count",
+          "metric": "teachers.张旭.subject_count",
           "source": 9.0,
           "golden": 10.0,
           "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
+          "reason": "explicitly authorized historical source bridge"
         },
         {
           "domain": "teachers",
-          "metric": "张昱.class_students",
+          "metric": "teachers.张昱.class_students",
           "source": 0.0,
           "golden": 6.0,
           "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
+          "reason": "explicitly authorized historical source bridge"
         },
         {
           "domain": "teachers",
-          "metric": "徐良琴.one_to_one_students",
+          "metric": "teachers.徐良琴.one_to_one_students",
           "source": 4.0,
           "golden": 7.0,
           "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
+          "reason": "explicitly authorized historical source bridge"
         },
         {
           "domain": "teachers",
-          "metric": "徐荣祥.one_to_one_students",
+          "metric": "teachers.徐荣祥.one_to_one_students",
           "source": 0.0,
           "golden": 8.0,
           "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
+          "reason": "explicitly authorized historical source bridge"
         },
         {
           "domain": "teachers",
-          "metric": "徐荣祥.class_students",
+          "metric": "teachers.徐荣祥.class_students",
           "source": 3.0,
           "golden": 4.0,
           "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
+          "reason": "explicitly authorized historical source bridge"
         },
         {
           "domain": "teachers",
-          "metric": "李娜.class_students",
+          "metric": "teachers.李娜.class_students",
           "source": 7.0,
           "golden": 8.0,
           "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
+          "reason": "explicitly authorized historical source bridge"
         },
         {
           "domain": "teachers",
-          "metric": "李媛媛.one_to_one_students",
+          "metric": "teachers.李媛媛.one_to_one_students",
           "source": 2.0,
           "golden": 4.0,
           "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
+          "reason": "explicitly authorized historical source bridge"
         },
         {
           "domain": "teachers",
-          "metric": "李媛媛.class_students",
+          "metric": "teachers.李媛媛.class_students",
           "source": 21.0,
           "golden": 25.0,
           "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
+          "reason": "explicitly authorized historical source bridge"
         },
         {
           "domain": "teachers",
-          "metric": "李梦.one_to_one_students",
+          "metric": "teachers.李梦.one_to_one_students",
           "source": 5.0,
           "golden": 6.0,
           "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
+          "reason": "explicitly authorized historical source bridge"
         },
         {
           "domain": "teachers",
-          "metric": "李梦.subject_count",
+          "metric": "teachers.李梦.subject_count",
           "source": 8.0,
           "golden": 9.0,
           "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
+          "reason": "explicitly authorized historical source bridge"
         },
         {
           "domain": "teachers",
-          "metric": "梁缘.one_to_one_students",
+          "metric": "teachers.梁缘.one_to_one_students",
           "source": 2.0,
           "golden": 3.0,
           "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
+          "reason": "explicitly authorized historical source bridge"
         },
         {
           "domain": "teachers",
-          "metric": "梁缘.class_students",
+          "metric": "teachers.梁缘.class_students",
           "source": 31.0,
           "golden": 33.0,
           "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
+          "reason": "explicitly authorized historical source bridge"
         },
         {
           "domain": "teachers",
-          "metric": "汪涛.one_to_one_students",
+          "metric": "teachers.汪涛.one_to_one_students",
           "source": 2.0,
           "golden": 5.0,
           "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
+          "reason": "explicitly authorized historical source bridge"
         },
         {
           "domain": "teachers",
-          "metric": "汪涛.subject_count",
+          "metric": "teachers.汪涛.subject_count",
           "source": 2.0,
           "golden": 6.0,
           "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
+          "reason": "explicitly authorized historical source bridge"
         },
         {
           "domain": "teachers",
-          "metric": "潘瑶.class_students",
+          "metric": "teachers.潘瑶.class_students",
           "source": 11.0,
           "golden": 28.0,
           "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
+          "reason": "explicitly authorized historical source bridge"
         },
         {
           "domain": "teachers",
-          "metric": "潘瑶.subject_count",
+          "metric": "teachers.潘瑶.subject_count",
           "source": 7.0,
           "golden": 9.0,
           "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
+          "reason": "explicitly authorized historical source bridge"
         },
         {
           "domain": "teachers",
-          "metric": "胡长春.one_to_one_students",
+          "metric": "teachers.胡长春.one_to_one_students",
           "source": 0.0,
           "golden": 4.0,
           "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
+          "reason": "explicitly authorized historical source bridge"
         },
         {
           "domain": "teachers",
-          "metric": "胡长春.class_students",
+          "metric": "teachers.胡长春.class_students",
           "source": 0.0,
           "golden": 11.0,
           "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
+          "reason": "explicitly authorized historical source bridge"
         },
         {
           "domain": "teachers",
-          "metric": "董葛飞.one_to_one_students",
+          "metric": "teachers.董葛飞.one_to_one_students",
           "source": 3.0,
           "golden": 6.0,
           "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
+          "reason": "explicitly authorized historical source bridge"
         },
         {
           "domain": "teachers",
-          "metric": "董葛飞.class_students",
+          "metric": "teachers.董葛飞.class_students",
           "source": 5.0,
           "golden": 6.0,
           "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
+          "reason": "explicitly authorized historical source bridge"
         },
         {
           "domain": "teachers",
-          "metric": "费晓曼.one_to_one_students",
+          "metric": "teachers.费晓曼.one_to_one_students",
           "source": 4.0,
           "golden": 5.0,
           "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
+          "reason": "explicitly authorized historical source bridge"
         },
         {
           "domain": "teachers",
-          "metric": "高明亮.one_to_one_students",
+          "metric": "teachers.高明亮.one_to_one_students",
           "source": 0.0,
           "golden": 6.0,
           "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
+          "reason": "explicitly authorized historical source bridge"
         },
         {
           "domain": "teachers",
-          "metric": "高明亮.class_students",
+          "metric": "teachers.高明亮.class_students",
           "source": 3.0,
           "golden": 6.0,
           "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
+          "reason": "explicitly authorized historical source bridge"
         }
       ],
       "evidence": [
@@ -1455,6 +1459,11 @@
       "snapshot_path": "data/processed/production/golden/week4.json"
     }
   ],
+  "golden_weeks": 4,
   "unexplained_difference": 0,
-  "generated_at": "2026-09-16"
+  "status": "PASS",
+  "generated_at": "2026-09-16",
+  "manifest_hash": "7895152a4306f9fa25ee42953236540cd6af1365c3e16fd2e8a06c97203cc539",
+  "business_fingerprint": "7f57bb892f17faeb4295ddba7c5c84a619a21f9492cb3938306eb2ca04e99909",
+  "snapshot_path": "data/processed/production/weekly_report_snapshot.json"
 }

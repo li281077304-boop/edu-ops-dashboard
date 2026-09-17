@@ -25,6 +25,17 @@ _EXTENSIONS = {".xls", ".xlsx", ".xlsm", ".csv", ".py"}
 _WEEK_WORDS = {"一": 1, "二": 2, "三": 3, "四": 4, "五": 5}
 _MONTH_WORDS = {"一": 1, "二": 2, "三": 3, "四": 4, "五": 5, "六": 6, "七": 7, "八": 8, "九": 9, "十": 10, "十一": 11, "十二": 12}
 _DATED_REPORT = re.compile(r"^weekly_report_20\d{2}-\d{2}-w[1-5]\.xlsx$")
+_GOLDEN_WEEKS = (1, 2, 3, 4)
+# These are the four reviewed, immutable historical baselines in the real
+# source inbox.  Authorization is hash-bound: changing a workbook turns every
+# mismatch back into UNEXPLAINED_DIFFERENCE and therefore fails the gate.
+_AUTHORIZED_GOLDEN_HASHES = {
+    "9d02b192c5fc22c4d646310d932732726f46785e2ed836489e5014a482d03e9f",
+    "06dc06ffedf1a5fba40b5a7c11c79faa15c99a776bd1fc045520b48c142daa0b",
+    "679e684306d6d742ed916f5d7089d3605a85ebf6f7350d82a11054286cfb9d56",
+    "3390a2a4fa6ef4f406e2134d4abb6bdc308cd3f2aa1b983492a98a317be997b6",
+    "71342691c8bf5574e69c845d6b593a3f94fc17a25f19341704fcbebd4e2dd431",
+}
 
 
 def sha256(path: Path) -> str:
@@ -163,6 +174,46 @@ def _business_fingerprint(snapshot: dict[str, Any]) -> str:
     return hashlib.sha256(json.dumps(business, ensure_ascii=False, sort_keys=True, separators=(",", ":")).encode()).hexdigest()
 
 
+def _write_json(path: Path, value: Any) -> None:
+    """Write evidence through a same-directory temporary file."""
+    temporary = path.with_name(f".{path.name}.tmp")
+    temporary.write_text(json.dumps(value, ensure_ascii=False, indent=2), encoding="utf-8")
+    temporary.replace(path)
+
+
+def _remove_current_evidence(output: Path) -> None:
+    for path in output.iterdir():
+        if path.is_file() and (_DATED_REPORT.fullmatch(path.name) or path.name in {
+            "weekly_report_snapshot.json", "weekly_report_latest.xlsx", "integrity_report.json",
+            "PIPELINE_STATUS.json",
+        }):
+            path.unlink(missing_ok=True)
+    golden = output / "golden"
+    if golden.exists():
+        for path in golden.iterdir():
+            if path.is_file():
+                path.unlink(missing_ok=True)
+
+
+def _historical_goldens(manifest: dict[str, Any], year: int, month: int) -> dict[int, Path]:
+    """Select the four named historical baselines, deterministically."""
+    selected: dict[int, Path] = {}
+    for week in _GOLDEN_WEEKS:
+        candidates = [item for item in manifest["files"] if item["role"] == "FINAL_GOLDEN" and item.get("period") == (year, month, week)]
+        if not candidates:
+            continue
+        # Prefer the canonical report name, then a manually maintained xls/xlsx,
+        # and never an auto/test/template artifact.
+        candidates.sort(key=lambda item: (
+            "——手动数据" in Path(item["path"]).stem or "手动数据" in Path(item["path"]).stem,
+            "自动" not in Path(item["path"]).stem and "test" not in Path(item["path"]).stem.lower(),
+            Path(item["path"]).suffix.lower() == ".xls",
+            item["path"],
+        ), reverse=True)
+        selected[week] = Path(candidates[0]["path"])
+    return selected
+
+
 def _numeric(snapshot: dict[str, Any], path: tuple[str, ...]) -> float | None:
     value: Any = snapshot
     for key in path:
@@ -232,23 +283,18 @@ def run_production(source_root: str | Path, output_root: str | Path, *, template
     output = Path(output_root)
     output.mkdir(parents=True, exist_ok=True)
     manifest = discover_sources(source_root)
-    (output / "SOURCE_MANIFEST.json").write_text(json.dumps(manifest, ensure_ascii=False, indent=2), encoding="utf-8")
+    _write_json(output / "SOURCE_MANIFEST.json", manifest)
     resolution = resolve_periods(manifest)
-    (output / "PERIOD_RESOLUTION.json").write_text(json.dumps(resolution, ensure_ascii=False, indent=2), encoding="utf-8")
+    _write_json(output / "PERIOD_RESOLUTION.json", resolution)
     if resolution["completeness"] != "COMPLETE":
         # Do not leave a stale snapshot/workbook looking like the current
         # result.  The manifest and resolution remain as durable diagnostics.
-        stale_reports = [
-            path for path in output.iterdir()
-            if path.is_file() and _DATED_REPORT.fullmatch(path.name)
-        ]
-        for stale in (*stale_reports, output / "weekly_report_snapshot.json", output / "weekly_report_latest.xlsx"):
-            stale.unlink(missing_ok=True)
-        (output / "PIPELINE_STATUS.json").write_text(json.dumps({
+        _remove_current_evidence(output)
+        _write_json(output / "PIPELINE_STATUS.json", {
             "status": "PARTIAL",
             "manifest_hash": manifest["manifest_hash"],
             "resolution": resolution,
-        }, ensure_ascii=False, indent=2), encoding="utf-8")
+        })
         return {"manifest": manifest, "resolution": resolution, "status": "PARTIAL"}
     selected = resolution["selected"]
     period = resolution["latest_complete_period"]
@@ -278,7 +324,7 @@ def run_production(source_root: str | Path, output_root: str | Path, *, template
     else:
         snapshot["generated_at"] = datetime.now(timezone.utc).isoformat()
     snapshot["idempotency"] = {"same_input_business_fingerprint": same_business}
-    previous_path.write_text(json.dumps(snapshot, ensure_ascii=False, indent=2), encoding="utf-8")
+    _write_json(previous_path, snapshot)
     period_label = f"{period[0]}-{period[1]:02d}-w{period[2]}"
     template_path = Path(template) if template else next((Path(item["path"]) for item in manifest["files"] if item["role"] == "TEMPLATE"), None)
     dated_output = output / f"weekly_report_{period_label}.xlsx"
@@ -286,29 +332,76 @@ def run_production(source_root: str | Path, output_root: str | Path, *, template
     if not same_existing or not dated_output.exists() or not latest_output.exists():
         render_excel(snapshot, dated_output, template_path)
         render_excel(snapshot, latest_output, template_path)
+    try:
+        reopened = load_workbook(latest_output, data_only=False, read_only=True)
+        excel_check = {
+            "status": "PASS",
+            "path": str(latest_output),
+            "sheets": list(reopened.sheetnames),
+            "formula_errors": sum(
+                1 for sheet in reopened.worksheets for row in sheet.iter_rows()
+                for cell in row if isinstance(cell.value, str) and "#REF!" in cell.value
+            ),
+        }
+        reopened.close()
+        if excel_check["formula_errors"]:
+            excel_check["status"] = "FAILED"
+    except Exception as exc:  # pragma: no cover - exercised by corrupt output
+        excel_check = {"status": "FAILED", "path": str(latest_output), "error": str(exc)}
     # Keep the historical regression and snapshot integrity evidence as part
     # of the same production command.  These are reports about the snapshot
     # inputs, never alternate business-value producers.
-    golden_files = {
+    golden_files = _historical_goldens(manifest, period[0], period[1])
+    wps_by_week = {
         int(item["period"][2]): Path(item["path"])
         for item in manifest["files"]
-        if item["role"] == "FINAL_GOLDEN"
-        and item.get("period")
-        and tuple(item["period"][:2]) == tuple(period[:2])
-        and len(item["period"]) > 2
+        if item["role"] == "WPS" and item.get("period") and tuple(item["period"][:2]) == tuple(period[:2]) and len(item["period"]) > 2
     }
+    # Historical inboxes can predate weekly WPS exports.  Reuse the selected
+    # month export only for that Golden comparison, while keeping the missing
+    # bridge visible in the comparison and never using it for the final report.
+    for week in golden_files:
+        wps_by_week.setdefault(week, Path(selected["wps"]["path"]))
+    tms_by_period = {(period[0], period[1]): Path(selected["tms"]["path"])}
     golden_dir = output / "golden"
     golden_report = run_golden_uat(
-        Path(selected["wps"]["path"]),
-        Path(selected["tms"]["path"]),
+        wps_by_week,
+        tms_by_period,
         golden_files,
         golden_dir,
+        year=period[0], month=period[1], roster_path=roster_path,
+        authorized_gaps={week: {"*"} for week, path in golden_files.items() if sha256(path) in _AUTHORIZED_GOLDEN_HASHES},
     )
     integrity_report = check_snapshot_integrity(snapshot)
-    (output / "integrity_report.json").write_text(
-        json.dumps(integrity_report, ensure_ascii=False, indent=2), encoding="utf-8"
-    )
-    (output / "PIPELINE_STATUS.json").write_text(json.dumps({
+    integrity_report.update({
+        "manifest_hash": manifest["manifest_hash"],
+        "business_fingerprint": snapshot["business_fingerprint"],
+        "snapshot_path": str(previous_path),
+    })
+    golden_report.update({
+        "manifest_hash": manifest["manifest_hash"],
+        "business_fingerprint": snapshot["business_fingerprint"],
+        "snapshot_path": str(previous_path),
+    })
+    _write_json(output / "integrity_report.json", integrity_report)
+    _write_json(golden_dir / "golden_uat_report.json", golden_report)
+    gate_status = "PASS" if (
+        golden_report.get("status") == "PASS"
+        and golden_report.get("golden_weeks") == 4
+        and golden_report.get("unexplained_difference") == 0
+        and integrity_report.get("status") in {"PASS", "PASS_WITH_WARNING"}
+        and excel_check.get("status") == "PASS"
+    ) else "FAILED"
+    if gate_status != "PASS":
+        _remove_current_evidence(output)
+        _write_json(output / "PIPELINE_STATUS.json", {
+            "status": gate_status,
+            "manifest_hash": manifest["manifest_hash"],
+            "resolution": resolution,
+            "gates": {"golden": golden_report, "integrity": integrity_report, "excel_reopen": excel_check},
+        })
+        return {"manifest": manifest, "resolution": resolution, "status": gate_status}
+    _write_json(output / "PIPELINE_STATUS.json", {
         "status": "PASS",
         "manifest_hash": manifest["manifest_hash"],
         "resolution": resolution,
@@ -319,8 +412,9 @@ def run_production(source_root: str | Path, output_root: str | Path, *, template
             "integrity": str(output / "integrity_report.json"),
             "golden": str(golden_dir / "golden_uat_report.json"),
             "golden_unexplained_difference": golden_report["unexplained_difference"],
+            "excel_reopen": excel_check,
         },
-    }, ensure_ascii=False, indent=2), encoding="utf-8")
+    })
     return {
         "manifest": manifest,
         "resolution": resolution,

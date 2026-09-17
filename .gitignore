@@ -28,3 +28,6 @@ playwright/.auth/*
 
 # Local CI workflow kept outside the first public push until token scope is fixed.
 .github/workflows/ci.yml
+
+# Ralph/external transport runtime
+.playwright-cli/

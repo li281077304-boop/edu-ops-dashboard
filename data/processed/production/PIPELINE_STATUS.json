@@ -78,10 +78,10 @@
         "path": "data/processed/production/weekly_report_2026-06-w4.xlsx",
         "errors": [],
         "sheets": [
-          "组课时生产",
           "学生",
+          "教师",
           "生产元数据",
-          "教师"
+          "组课时生产"
         ]
       },
       "latest": {
@@ -89,10 +89,10 @@
         "path": "data/processed/production/weekly_report_latest.xlsx",
         "errors": [],
         "sheets": [
-          "组课时生产",
           "学生",
+          "教师",
           "生产元数据",
-          "教师"
+          "组课时生产"
         ]
       }
     }

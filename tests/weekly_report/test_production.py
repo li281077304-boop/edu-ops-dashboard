@@ -7,7 +7,9 @@ from pathlib import Path
 from openpyxl import load_workbook
 
 from edu_ops.weekly_report.production import (
+    _excel_binding_check,
     discover_sources,
+    main,
     resolve_periods,
     run_production,
     week_delta,
@@ -60,9 +62,42 @@ def test_partial_latest_period_does_not_fall_back_to_an_older_final(tmp_path: Pa
     assert resolution["latest_complete_period"] == (2026, 6, 4)
     assert resolution["completeness"] == "PARTIAL"
 
-    result = run_production(source, tmp_path / "out")
+    output = tmp_path / "out"
+    prior = output / "weekly_report_2026-06-w4.xlsx"
+    output.mkdir()
+    prior.write_bytes(b"previous-success")
+    result = run_production(source, output)
     assert result["status"] == "PARTIAL"
-    assert not (tmp_path / "out" / "weekly_report_snapshot.json").exists()
+    assert not (output / "weekly_report_snapshot.json").exists()
+    assert prior.exists()
+
+
+def test_real_template_mapping_and_tamper_gate(tmp_path: Path):
+    output = tmp_path / "out"
+    result = run_production(ASSET_ROOT, output, template=ASSET_ROOT / "数学组数据统计表基础模板.xlsx")
+    assert result["status"] == "PASS"
+    snapshot = json.loads((output / "weekly_report_snapshot.json").read_text(encoding="utf-8"))
+    dated = output / "weekly_report_2026-06-w4.xlsx"
+    assert _excel_binding_check(dated, snapshot)["status"] == "PASS"
+    book = load_workbook(dated)
+    book["学生"]["C7"] = 999
+    book.save(dated)
+    assert _excel_binding_check(dated, snapshot)["status"] == "FAILED"
+
+
+def test_main_failure_is_structured_without_secondary_traceback(tmp_path: Path, monkeypatch, capsys):
+    import edu_ops.weekly_report.production as production
+
+    def explode(*args, **kwargs):
+        raise RuntimeError("synthetic failure")
+
+    monkeypatch.setattr(production, "_run_production", explode)
+    output = tmp_path / "out"
+    assert main(["--source-root", str(tmp_path / "missing"), "--output-root", str(output)]) == 2
+    captured = capsys.readouterr()
+    assert json.loads(captured.out)["status"] == "FAILED"
+    assert "Traceback" not in captured.err
+    assert json.loads((output / "PIPELINE_STATUS.json").read_text())["status"] == "FAILED"
 
 
 def test_manifest_hash_is_stable_and_bound_to_snapshot(tmp_path: Path):

@@ -1103,39 +1103,8 @@
     "roster": "b7001e351e6f10b36b0f5f39f73f68fcc19dfb9154518248778178d69ee8719f"
   },
   "week_over_week": {
-    "status": "COMPUTED",
-    "metrics": {
-      "students.single_subject_total": {
-        "current": 263.0,
-        "previous": 263.0,
-        "delta": 0.0,
-        "delta_pct": 0.0
-      },
-      "production.one_to_one_ks": {
-        "current": 219.0,
-        "previous": 219.0,
-        "delta": 0.0,
-        "delta_pct": 0.0
-      },
-      "production.class_ks": {
-        "current": 411.0,
-        "previous": 411.0,
-        "delta": 0.0,
-        "delta_pct": 0.0
-      },
-      "production.week_hours_equivalent": {
-        "current": 356.0,
-        "previous": 356.0,
-        "delta": 0.0,
-        "delta_pct": 0.0
-      },
-      "teachers.count": {
-        "current": 18,
-        "previous": 18,
-        "delta": 0,
-        "delta_pct": 0.0
-      }
-    }
+    "status": "NO_PREVIOUS_PERIOD",
+    "metrics": {}
   },
   "reconciliation": {
     "status": "WARNING",
@@ -1145,7 +1114,7 @@
     ]
   },
   "business_fingerprint": "f7895ecc16a7298fbb9da7e58fa6a641106157f6077d637b52fa24e3cadd60a2",
-  "generated_at": "2026-09-17T01:58:03.466322+00:00",
+  "generated_at": "2026-09-17T02:10:25.888243+00:00",
   "idempotency": {
     "same_input_business_fingerprint": true
   }

@@ -198,9 +198,10 @@ def _write_json(path: Path, value: Any) -> None:
     temporary.replace(path)
 
 
-def _remove_current_evidence(output: Path) -> None:
+def _remove_current_evidence(output: Path, current_period: tuple[int, ...] | None = None) -> None:
     for path in output.iterdir():
-        if path.is_file() and (_DATED_REPORT.fullmatch(path.name) or path.name in {
+        is_current_dated = bool(current_period and _DATED_REPORT.fullmatch(path.name) and path.name == f"weekly_report_{current_period[0]}-{current_period[1]:02d}-w{current_period[2]}.xlsx")
+        if path.is_file() and (is_current_dated or path.name in {
             "weekly_report_snapshot.json", "weekly_report_latest.xlsx", "integrity_report.json",
             "PIPELINE_STATUS.json",
         }):
@@ -263,6 +264,87 @@ def week_delta(current: dict[str, Any], previous: dict[str, Any] | None) -> dict
     return {"status": "COMPUTED", "metrics": result}
 
 
+def _excel_expected_cells(snapshot: dict[str, Any]) -> dict[tuple[str, str], Any]:
+    """Return the complete snapshot-to-workbook business-cell mapping."""
+    students = snapshot.get("students", {})
+    production = snapshot.get("production", {}).get("tms", {})
+    golden = snapshot.get("production", {}).get("golden", {})
+
+    def value_at(source: dict[str, Any], path: str | tuple[str, ...]) -> Any:
+        if isinstance(path, str):
+            return source.get(path)
+        value: Any = source
+        for part in path:
+            value = value.get(part) if isinstance(value, dict) else None
+        return value
+
+    expected: dict[tuple[str, str], Any] = {}
+    student_fields = (
+        ("B", "single_subject_total"),
+        ("C", ("one_to_one", "primary")), ("D", ("one_to_one", "high")),
+        ("E", ("one_to_one", "double_three")), ("F", ("one_to_one", "stop")),
+        ("G", ("one_to_one", "new")), ("H", ("one_to_one", "completed")),
+        ("I", ("one_to_one", "refund")),
+        ("J", ("class", "primary")), ("K", ("class", "high")),
+        ("L", ("class", "double_three")), ("M", ("class", "stop")),
+        ("N", ("class", "new")), ("O", ("class", "completed")),
+        ("P", ("class", "refund")), ("Q", ("class", "classes")), ("R", None),
+    )
+    week = int(snapshot.get("period", {}).get("week", 1))
+    for row in (week + 3, 9, 11):
+        for column, path in student_fields:
+            expected[("学生", f"{column}{row}")] = value_at(students, path) if path else None
+
+    production_fields = {
+        "B": golden.get("month_hours", production.get("month_hours")),
+        "C": golden.get("week_hours", production.get("week_hours")),
+        "D": golden.get("month_hours"), "E": golden.get("week_hours"),
+        "F": None, "G": None, "H": production.get("one_to_one_ks"),
+        "I": production.get("one_to_one_ks"), "J": None, "K": None,
+        "L": production.get("class_ks"), "M": golden.get("teacher_count"),
+        "N": production.get("class_ks"), "O": None, "P": None,
+        "Q": golden.get("teacher_count"), "R": golden.get("special_one_to_one"),
+        "S": golden.get("special_class"),
+    }
+    for row in (week + 3, 9, 11):
+        for column, value in production_fields.items():
+            expected[("组课时生产", f"{column}{row}")] = value
+
+    for row, teacher in enumerate(snapshot.get("teachers", []), 4):
+        one = teacher.get("one_to_one", {})
+        cls = teacher.get("class", {})
+        values = {
+            "A": row - 3, "B": teacher.get("name"), "C": one.get("primary"),
+            "D": one.get("hours"), "E": one.get("weekly_average"),
+            "F": cls.get("primary"), "G": cls.get("classes"),
+            "H": cls.get("average_class_size"), "I": teacher.get("subject_count"),
+            "J": teacher.get("hours"), "K": teacher.get("sessions"),
+            "L": teacher.get("leave"), "M": teacher.get("extra"),
+            "N": teacher.get("expansion"), "O": None, "P": None, "Q": None,
+            "R": None, "S": None, "T": None, "U": None,
+        }
+        for column, value in values.items():
+            expected[("教师", f"{column}{row}")] = value
+    return expected
+
+
+def _clear_template_business_cells(workbook) -> None:
+    ranges = {
+        "学生": (4, 11, 2, 18), "满班率": (4, 8, 2, 21),
+        "教师": (4, 26, 1, 21), "组课时生产": (4, 11, 1, 19),
+    }
+    for sheet in workbook.worksheets:
+        if sheet.title in ranges:
+            min_row, max_row, min_col, max_col = ranges[sheet.title]
+            for row in sheet.iter_rows(min_row=min_row, max_row=max_row, min_col=min_col, max_col=max_col):
+                for cell in row:
+                    cell.value = None
+        elif sheet.title != "生产元数据":
+            for row in sheet.iter_rows(min_row=3):
+                for cell in row:
+                    cell.value = None
+
+
 def render_excel(snapshot: dict[str, Any], output: Path, template: Path | None = None) -> Path:
     output.parent.mkdir(parents=True, exist_ok=True)
     if template and template.exists() and template.suffix.lower() == ".xlsx":
@@ -273,22 +355,21 @@ def render_excel(snapshot: dict[str, Any], output: Path, template: Path | None =
         workbook.active.title = "学生"
         workbook.create_sheet("组课时生产")
         workbook.create_sheet("教师")
+    _clear_template_business_cells(workbook)
+    expected = _excel_expected_cells(snapshot)
     students = snapshot.get("students", {})
     sheet = workbook["学生"]
     sheet["A1"] = "学科组长周报"
     sheet["A2"] = snapshot.get("period", {}).get("label", "")
-    sheet["A4"], sheet["B4"] = "单科数", students.get("single_subject_total")
-    sheet["A5"], sheet["B5"] = "1v1 新增", students.get("one_to_one", {}).get("new")
-    sheet["A6"], sheet["B6"] = "班课新增", students.get("class", {}).get("new")
-    production = snapshot.get("production", {}).get("tms", {})
+    sheet["A4"] = "单科数"
+    sheet["A5"] = "1v1 新增"
+    sheet["A6"] = "班课新增"
+    for (sheet_name, cell), value in expected.items():
+        workbook[sheet_name][cell] = value
     ps = workbook["组课时生产"]
-    ps["A1"], ps["B1"] = "指标", "值"
-    for row, (key, value) in enumerate((("1v1 KS", production.get("one_to_one_ks")), ("班课 KS", production.get("class_ks")), ("课时当量", production.get("week_hours_equivalent"))), 2):
-        ps.cell(row, 1, key); ps.cell(row, 2, value)
+    ps["A1"] = "数学组课时生产"
     ts = workbook["教师"]
-    ts["A1"], ts["B1"], ts["C1"] = "教师", "状态", "课时"
-    for row, teacher in enumerate(snapshot.get("teachers", []), 2):
-        ts.cell(row, 1, teacher.get("name")); ts.cell(row, 2, teacher.get("status")); ts.cell(row, 3, teacher.get("hours"))
+    ts["A1"] = "数学组学科教师数据汇总"
     meta = workbook.create_sheet("生产元数据") if "生产元数据" not in workbook.sheetnames else workbook["生产元数据"]
     meta["A1"], meta["B1"] = "字段", "值"
     for row, (key, value) in enumerate((("schema_version", snapshot.get("version")), ("completeness", snapshot.get("completeness", {}).get("status")), ("manifest_hash", snapshot.get("manifest_hash")), ("business_fingerprint", snapshot.get("business_fingerprint"))), 2):
@@ -302,7 +383,7 @@ def _excel_binding_check(path: Path, snapshot: dict[str, Any]) -> dict[str, Any]
     try:
         book = load_workbook(path, data_only=False, read_only=True)
         required = {"学生", "组课时生产", "教师", "生产元数据"}
-        errors = [f"missing sheet: {name}" for name in required - set(book.sheetnames)]
+        errors = [f"missing sheet: {name}" for name in sorted(required - set(book.sheetnames))]
         metadata = {}
         if "生产元数据" in book.sheetnames:
             meta = book["生产元数据"]
@@ -313,23 +394,21 @@ def _excel_binding_check(path: Path, snapshot: dict[str, Any]) -> dict[str, Any]
             expected = snapshot.get("schema_version") if key == "schema_version" else snapshot.get("completeness", {}).get("status") if key == "completeness" else snapshot.get(key)
             if str(metadata.get(key)) != str(expected):
                 errors.append(f"metadata mismatch: {key}")
-        students = snapshot.get("students", {})
-        production = snapshot.get("production", {}).get("tms", {})
-        expected_cells = {
-            ("学生", "B4"): students.get("single_subject_total"),
-            ("组课时生产", "B2"): production.get("one_to_one_ks"),
-            ("组课时生产", "B3"): production.get("class_ks"),
-            ("组课时生产", "B4"): production.get("week_hours_equivalent"),
-        }
+        expected_cells = _excel_expected_cells(snapshot)
         for (sheet, cell), expected in expected_cells.items():
+            if sheet not in book.sheetnames:
+                continue
             actual = book[sheet][cell].value
-            if actual != expected:
+            same = actual == expected
+            if isinstance(actual, (int, float)) and isinstance(expected, (int, float)):
+                same = abs(float(actual) - float(expected)) < 1e-9
+            if not same:
                 errors.append(f"business cell mismatch: {sheet}!{cell}")
         formula_errors = sum(1 for sheet in book.worksheets for row in sheet.iter_rows() for cell in row if isinstance(cell.value, str) and ("#REF!" in cell.value or "#DIV/0!" in cell.value))
         book.close()
         if formula_errors:
             errors.append(f"formula errors: {formula_errors}")
-        return {"status": "PASS" if not errors else "FAILED", "path": str(path), "errors": errors, "sheets": list(required)}
+        return {"status": "PASS" if not errors else "FAILED", "path": str(path), "errors": errors, "sheets": sorted(required)}
     except Exception as exc:
         return {"status": "FAILED", "path": str(path), "errors": [str(exc)]}
 
@@ -344,7 +423,7 @@ def _run_production(source_root: str | Path, output_root: str | Path, *, templat
     if resolution["completeness"] != "COMPLETE":
         # Do not leave a stale snapshot/workbook looking like the current
         # result.  The manifest and resolution remain as durable diagnostics.
-        _remove_current_evidence(output)
+        _remove_current_evidence(output, resolution.get("latest_available_period"))
         _write_json(output / "PIPELINE_STATUS.json", {
             "status": "PARTIAL",
             "manifest_hash": manifest["manifest_hash"],
@@ -353,7 +432,7 @@ def _run_production(source_root: str | Path, output_root: str | Path, *, templat
         return {"manifest": manifest, "resolution": resolution, "status": "PARTIAL"}
     selected = resolution["selected"]
     if "roster" not in selected:
-        _remove_current_evidence(output)
+        _remove_current_evidence(output, resolution.get("latest_available_period"))
         status = {"status": "PARTIAL", "manifest_hash": manifest["manifest_hash"], "resolution": resolution, "reason": "ACTIVE_ROSTER is required for a final report"}
         _write_json(output / "PIPELINE_STATUS.json", status)
         return {"manifest": manifest, "resolution": resolution, "status": "PARTIAL"}
@@ -389,7 +468,14 @@ def _run_production(source_root: str | Path, output_root: str | Path, *, templat
     template_path = Path(template) if template else next((Path(item["path"]) for item in manifest["files"] if item["role"] == "TEMPLATE"), None)
     dated_output = output / f"weekly_report_{period_label}.xlsx"
     latest_output = output / "weekly_report_latest.xlsx"
-    if not same_existing or not dated_output.exists() or not latest_output.exists():
+    existing_excel_is_bound = (
+        same_existing
+        and dated_output.exists()
+        and latest_output.exists()
+        and _excel_binding_check(dated_output, snapshot).get("status") == "PASS"
+        and _excel_binding_check(latest_output, snapshot).get("status") == "PASS"
+    )
+    if not existing_excel_is_bound:
         render_excel(snapshot, dated_output, template_path)
         render_excel(snapshot, latest_output, template_path)
     dated_check = _excel_binding_check(dated_output, snapshot)
@@ -453,7 +539,7 @@ def _run_production(source_root: str | Path, output_root: str | Path, *, templat
         and excel_check.get("status") == "PASS"
     ) else "FAILED"
     if gate_status != "PASS":
-        _remove_current_evidence(output)
+        _remove_current_evidence(output, period)
         _write_json(output / "PIPELINE_STATUS.json", {
             "status": gate_status,
             "manifest_hash": manifest["manifest_hash"],
@@ -497,7 +583,15 @@ def run_production(source_root: str | Path, output_root: str | Path, *, template
     try:
         return _run_production(source_root, output, template=template)
     except Exception as exc:
-        _remove_current_evidence(output)
+        current_period = None
+        resolution_path = output / "PERIOD_RESOLUTION.json"
+        if resolution_path.exists():
+            try:
+                raw = json.loads(resolution_path.read_text(encoding="utf-8"))
+                current_period = tuple(raw.get("latest_available_period") or ()) or None
+            except (OSError, ValueError, TypeError):
+                current_period = None
+        _remove_current_evidence(output, current_period)
         failure = {"status": "FAILED", "error": f"{type(exc).__name__}: {exc}"}
         _write_json(output / "PIPELINE_STATUS.json", failure)
         return {"status": "FAILED", "error": str(exc)}
@@ -510,7 +604,7 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--template", type=Path)
     args = parser.parse_args(argv)
     result = run_production(args.source_root, args.output_root, template=args.template)
-    print(json.dumps({"status": result["status"], "resolution": result["resolution"]}, ensure_ascii=False))
+    print(json.dumps({"status": result["status"], "resolution": result.get("resolution")}, ensure_ascii=False))
     return 0 if result["status"] == "PASS" else 2
 
 

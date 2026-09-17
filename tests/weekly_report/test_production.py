@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import hashlib
 import json
 import shutil
 from pathlib import Path
@@ -181,6 +182,33 @@ def test_same_period_replacement_does_not_self_compare_as_zero(tmp_path: Path):
     refreshed = json.loads(snapshot_path.read_text(encoding="utf-8"))
     assert refreshed["week_over_week"]["status"] == "SAME_PERIOD_BASELINE_UNAVAILABLE"
     assert refreshed["week_over_week"]["metrics"] == {}
+
+
+def test_cross_period_week_delta_is_idempotent(tmp_path: Path):
+    source = tmp_path / "inbox"
+    shutil.copytree(ASSET_ROOT, source)
+    output = tmp_path / "out"
+    first = run_production(source, output)
+    assert first["status"] == "PASS"
+
+    shutil.copy2(source / "二校数学组数据汇总-六月第四周.xls", source / "二校数学组数据汇总-七月第一周.xls")
+    shutil.copy2(source / "数学组数据统计表-宣城二校6月第4周.xls", source / "数学组数据统计表-宣城二校7月第一周.xls")
+    shutil.copy2(source / "排课列表_06月01日到06月28日_202606301011.xls", source / "排课列表_07月01日到07月07日_202607071011.xls")
+
+    second = run_production(source, output)
+    assert second["status"] == "PASS"
+    snapshot_path = output / "weekly_report_snapshot.json"
+    first_new_bytes = snapshot_path.read_bytes()
+    first_new = json.loads(first_new_bytes)
+    assert first_new["week_over_week"]["status"] == "COMPUTED"
+    assert tuple(first_new["week_over_week"]["current_period"]) == (2026, 7, 1)
+    assert tuple(first_new["week_over_week"]["previous_period"]) == (2026, 6, 4)
+
+    third = run_production(source, output)
+    assert third["status"] == "PASS"
+    second_new_bytes = snapshot_path.read_bytes()
+    assert hashlib.sha256(second_new_bytes).hexdigest() == hashlib.sha256(first_new_bytes).hexdigest()
+    assert json.loads(second_new_bytes)["week_over_week"] == first_new["week_over_week"]
 
 
 def test_same_period_week_delta_is_not_computed():

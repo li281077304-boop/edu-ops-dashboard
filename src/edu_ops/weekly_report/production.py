@@ -253,6 +253,16 @@ def _snapshot_period(snapshot: dict[str, Any] | None) -> tuple[int, int, int] | 
     return year, month, week
 
 
+def _period_tuple(value: Any) -> tuple[int, int, int] | None:
+    """Normalize persisted period metadata before validating idempotency."""
+    if not isinstance(value, (list, tuple)) or len(value) != 3:
+        return None
+    try:
+        return int(value[0]), int(value[1]), int(value[2])
+    except (TypeError, ValueError):
+        return None
+
+
 def week_delta(current: dict[str, Any], previous: dict[str, Any] | None) -> dict[str, Any]:
     if not previous:
         return {"status": "NO_PREVIOUS_PERIOD", "metrics": {}}
@@ -584,14 +594,30 @@ def _run_production(source_root: str | Path, output_root: str | Path, *, templat
         # while an old same-period artifact is repaired to an explicit
         # unavailable state.
         previous_delta = previous.get("week_over_week")
-        if previous_delta == snapshot["week_over_week"] or not (
-            previous_delta and previous_delta.get("status") == "COMPUTED"
-            and snapshot["week_over_week"].get("status") != "COMPUTED"
+        previous_delta_current = _period_tuple(previous_delta.get("current_period")) if isinstance(previous_delta, dict) else None
+        previous_delta_previous = _period_tuple(previous_delta.get("previous_period")) if isinstance(previous_delta, dict) else None
+        valid_computed_delta = (
+            isinstance(previous_delta, dict)
+            and previous_delta.get("status") == "COMPUTED"
+            and previous_delta_current == period
+            and previous_delta_previous is not None
+            and previous_delta_previous < period
+        )
+        if valid_computed_delta or (
+            previous_delta == snapshot["week_over_week"]
+            and not (isinstance(previous_delta, dict) and previous_delta.get("status") == "COMPUTED")
         ):
             snapshot["week_over_week"] = previous_delta or snapshot["week_over_week"]
     else:
         snapshot["generated_at"] = datetime.now(timezone.utc).isoformat()
-    snapshot["idempotency"] = {"same_input_business_fingerprint": same_business}
+    # Keep the persisted idempotency evidence stable after the first snapshot
+    # for an input set.  Recomputing this flag on every retry would make an
+    # otherwise identical cross-period snapshot change from false to true.
+    snapshot["idempotency"] = (
+        previous.get("idempotency", {"same_input_business_fingerprint": same_business})
+        if same_existing
+        else {"same_input_business_fingerprint": same_business}
+    )
     _write_json(previous_path, snapshot)
     period_label = f"{period[0]}-{period[1]:02d}-w{period[2]}"
     template_path = Path(template) if template else next((Path(item["path"]) for item in manifest["files"] if item["role"] == "TEMPLATE"), None)

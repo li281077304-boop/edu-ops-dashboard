@@ -123,6 +123,39 @@ def test_production_dry_run_is_idempotent_and_exports_reopenable_excel(tmp_path:
     assert all("#REF!" not in str(cell.value) for sheet in workbook.worksheets for row in sheet.iter_rows() for cell in row)
 
 
+def test_excel_semantic_regression_mapping_is_not_just_expected_cell_self_check(tmp_path: Path):
+    output = tmp_path / "out"
+    result = run_production(ASSET_ROOT, output, template=ASSET_ROOT / "数学组数据统计表基础模板.xlsx")
+    assert result["status"] == "PASS"
+    snapshot = json.loads((output / "weekly_report_snapshot.json").read_text(encoding="utf-8"))
+    workbook = load_workbook(output / "weekly_report_2026-06-w4.xlsx", data_only=False)
+    production = workbook["组课时生产"]
+    teachers = workbook["教师"]
+
+    # Week 4 is row 7: H/L are student counts, I/N are production KS,
+    # M is class count, and Q is the formal teacher count.
+    assert production["H7"].value == 94  # 1v1 初小 + 高中; 双三 is overlap only
+    assert production["I7"].value == snapshot["production"]["tms"]["one_to_one_ks"] == 219
+    assert production["L7"].value == 169  # 班课初小 + 高中
+    assert production["M7"].value == snapshot["students"]["class"]["classes"] == 39
+    assert production["N7"].value == snapshot["production"]["tms"]["class_ks"] == 411
+    assert production["Q7"].value == snapshot["production"]["golden"]["teacher_count"] == 18
+
+    # Teacher student counts include both parent grade buckets; high-school
+    # rows must not silently disappear from the teacher sheet.
+    assert teachers["C5"].value == 4  # 胡长春: 0 初小 + 4 高中
+    assert teachers["F5"].value == 11  # 胡长春: 0 初小 + 11 高中
+
+    # The source snapshot has no month-to-date student/KS breakdown.  The
+    # month-total row therefore keeps only its explicitly sourced B value.
+    assert production["B9"].value == snapshot["production"]["golden"]["month_hours"]
+    for cell in ("C9", "H9", "I9", "L9", "M9", "N9", "Q9"):
+        assert production[cell].value is None
+    for row in (7, 11):
+        for column in ("D", "E", "F", "G", "J", "K", "O", "P"):
+            assert production[f"{column}{row}"].value is None
+
+
 def test_week_delta_is_explicit_and_bounded():
     current = {"students": {"single_subject_total": 12}, "production": {"tms": {"one_to_one_ks": 10, "class_ks": 20, "week_hours_equivalent": 16}}, "teachers": [{"name": "A"}, {"name": "B"}]}
     previous = {"students": {"single_subject_total": 10}, "production": {"tms": {"one_to_one_ks": 8, "class_ks": 20, "week_hours_equivalent": 14}}, "teachers": [{"name": "A"}]}

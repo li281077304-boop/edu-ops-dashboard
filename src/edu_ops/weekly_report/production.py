@@ -278,6 +278,12 @@ def _excel_expected_cells(snapshot: dict[str, Any]) -> dict[tuple[str, str], Any
             value = value.get(part) if isinstance(value, dict) else None
         return value
 
+    def add_known(left: Any, right: Any) -> Any:
+        """Add two independently sourced buckets without turning unknown into zero."""
+        if left is None and right is None:
+            return None
+        return (left or 0) + (right or 0)
+
     expected: dict[tuple[str, str], Any] = {}
     student_fields = (
         ("B", "single_subject_total"),
@@ -291,32 +297,57 @@ def _excel_expected_cells(snapshot: dict[str, Any]) -> dict[tuple[str, str], Any
         ("P", ("class", "refund")), ("Q", ("class", "classes")), ("R", None),
     )
     week = int(snapshot.get("period", {}).get("week", 1))
-    for row in (week + 3, 9, 11):
+    week_row = week + 3
+    month_total_row = 9
+    current_week_row = 11
+    for row in (week_row,):
         for column, path in student_fields:
             expected[("学生", f"{column}{row}")] = value_at(students, path) if path else None
+    # The snapshot contains one weekly WPS summary, not a month-to-date
+    # student ledger.  The month-total row must therefore stay unresolved.
+    for column, path in student_fields:
+        expected[("学生", f"{column}{month_total_row}")] = None
+    # The template's 当周 row is a change row.  Only the verified WPS change
+    # buckets are written there; current headcounts are not copied into it.
+    changes = snapshot.get("changes", {})
+    for column, path in student_fields:
+        value = None
+        if path and path[1] in {"stop", "new", "completed"}:
+            value = value_at(changes.get(path[0], {}), path[1])
+        expected[("学生", f"{column}{current_week_row}")] = value
 
-    production_fields = {
-        "B": golden.get("month_hours", production.get("month_hours")),
-        "C": golden.get("week_hours", production.get("week_hours")),
-        "D": golden.get("month_hours"), "E": golden.get("week_hours"),
-        "F": None, "G": None, "H": production.get("one_to_one_ks"),
-        "I": production.get("one_to_one_ks"), "J": None, "K": None,
-        "L": production.get("class_ks"), "M": golden.get("teacher_count"),
-        "N": production.get("class_ks"), "O": None, "P": None,
-        "Q": golden.get("teacher_count"), "R": golden.get("special_one_to_one"),
+    one_students = add_known(students.get("one_to_one", {}).get("primary"), students.get("one_to_one", {}).get("high"))
+    class_students = add_known(students.get("class", {}).get("primary"), students.get("class", {}).get("high"))
+    week_values = {
+        "H": one_students,
+        "I": production.get("one_to_one_ks"),
+        "L": class_students,
+        "M": students.get("class", {}).get("classes"),
+        "N": production.get("class_ks"),
+        "Q": golden.get("teacher_count"),
+        "R": golden.get("special_one_to_one"),
         "S": golden.get("special_class"),
     }
-    for row in (week + 3, 9, 11):
-        for column, value in production_fields.items():
-            expected[("组课时生产", f"{column}{row}")] = value
+    # B/C are explicitly month/week production hours.  The only month
+    # source currently present is the final-period production baseline; all
+    # average/session columns remain blank because their denominator source
+    # is unresolved.
+    for column, value in {"B": golden.get("month_hours"), "C": golden.get("week_hours"), **week_values}.items():
+        expected[("组课时生产", f"{column}{week_row}")] = value
+    for column in ("B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S"):
+        expected[("组课时生产", f"{column}{month_total_row}")] = golden.get("month_hours") if column == "B" else None
+    for column, value in {"C": golden.get("week_hours"), **week_values}.items():
+        expected[("组课时生产", f"{column}{current_week_row}")] = value
+    for column in ("B", "D", "E", "F", "G", "J", "K", "O", "P"):
+        expected[("组课时生产", f"{column}{current_week_row}")] = None
 
     for row, teacher in enumerate(snapshot.get("teachers", []), 4):
         one = teacher.get("one_to_one", {})
         cls = teacher.get("class", {})
         values = {
-            "A": row - 3, "B": teacher.get("name"), "C": one.get("primary"),
+            "A": row - 3, "B": teacher.get("name"), "C": add_known(one.get("primary"), one.get("high")),
             "D": one.get("hours"), "E": one.get("weekly_average"),
-            "F": cls.get("primary"), "G": cls.get("classes"),
+            "F": add_known(cls.get("primary"), cls.get("high")), "G": cls.get("classes"),
             "H": cls.get("average_class_size"), "I": teacher.get("subject_count"),
             "J": teacher.get("hours"), "K": teacher.get("sessions"),
             "L": teacher.get("leave"), "M": teacher.get("extra"),
@@ -404,6 +435,7 @@ def _excel_binding_check(path: Path, snapshot: dict[str, Any]) -> dict[str, Any]
                 same = abs(float(actual) - float(expected)) < 1e-9
             if not same:
                 errors.append(f"business cell mismatch: {sheet}!{cell}")
+        errors.extend(_explicit_excel_regression_errors(book, snapshot))
         formula_errors = sum(1 for sheet in book.worksheets for row in sheet.iter_rows() for cell in row if isinstance(cell.value, str) and ("#REF!" in cell.value or "#DIV/0!" in cell.value))
         book.close()
         if formula_errors:
@@ -411,6 +443,63 @@ def _excel_binding_check(path: Path, snapshot: dict[str, Any]) -> dict[str, Any]
         return {"status": "PASS" if not errors else "FAILED", "path": str(path), "errors": errors, "sheets": sorted(required)}
     except Exception as exc:
         return {"status": "FAILED", "path": str(path), "errors": [str(exc)]}
+
+
+def _explicit_excel_regression_errors(book, snapshot: dict[str, Any]) -> list[str]:
+    """Check the corrected semantic bindings without using expected-cell maps.
+
+    This intentionally duplicates the critical assertions in business terms:
+    a future mapping bug must fail the reopen gate even if the generated
+    expectation map is changed in the same patch.
+    """
+    errors: list[str] = []
+    period = snapshot.get("period", {})
+    week_row = int(period.get("week", 1)) + 3
+    month_row, current_row = 9, 11
+    students = snapshot.get("students", {})
+    production = snapshot.get("production", {}).get("tms", {})
+    golden = snapshot.get("production", {}).get("golden", {})
+
+    def add_known(left: Any, right: Any) -> Any:
+        if left is None and right is None:
+            return None
+        return (left or 0) + (right or 0)
+
+    one_students = add_known(students.get("one_to_one", {}).get("primary"), students.get("one_to_one", {}).get("high"))
+    class_students = add_known(students.get("class", {}).get("primary"), students.get("class", {}).get("high"))
+    expected = {
+        ("组课时生产", f"B{week_row}"): golden.get("month_hours"),
+        ("组课时生产", f"C{week_row}"): golden.get("week_hours"),
+        ("组课时生产", f"H{week_row}"): one_students,
+        ("组课时生产", f"I{week_row}"): production.get("one_to_one_ks"),
+        ("组课时生产", f"L{week_row}"): class_students,
+        ("组课时生产", f"M{week_row}"): students.get("class", {}).get("classes"),
+        ("组课时生产", f"N{week_row}"): production.get("class_ks"),
+        ("组课时生产", f"Q{week_row}"): golden.get("teacher_count"),
+    }
+    for (sheet, cell), value in expected.items():
+        if sheet in book.sheetnames and book[sheet][cell].value != value:
+            errors.append(f"semantic binding mismatch: {sheet}!{cell}")
+    for teacher_row, teacher in enumerate(snapshot.get("teachers", []), 4):
+        one = teacher.get("one_to_one", {})
+        cls = teacher.get("class", {})
+        teacher_expected = {
+            f"C{teacher_row}": add_known(one.get("primary"), one.get("high")),
+            f"F{teacher_row}": add_known(cls.get("primary"), cls.get("high")),
+        }
+        for cell, value in teacher_expected.items():
+            if "教师" in book.sheetnames and book["教师"][cell].value != value:
+                errors.append(f"semantic binding mismatch: 教师!{cell}")
+    # No monthly total or unsupported average/session metric may be fabricated
+    # from a weekly value.
+    for cell in (f"C{month_row}", f"H{month_row}", f"I{month_row}", f"L{month_row}", f"M{month_row}", f"N{month_row}", f"Q{month_row}"):
+        if "组课时生产" in book.sheetnames and book["组课时生产"][cell].value is not None:
+            errors.append(f"unsupported month-total value: 组课时生产!{cell}")
+    for row in (week_row, current_row):
+        for column in ("D", "E", "F", "G", "J", "K", "O", "P"):
+            if "组课时生产" in book.sheetnames and book["组课时生产"][f"{column}{row}"].value is not None:
+                errors.append(f"unsupported production value: 组课时生产!{column}{row}")
+    return errors
 
 
 def _run_production(source_root: str | Path, output_root: str | Path, *, template: str | Path | None = None) -> dict[str, Any]:

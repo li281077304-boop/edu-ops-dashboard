@@ -266,6 +266,8 @@ def build_snapshot(
     if roster["status"] != "DETERMINED":
         warnings.append("formal active-teacher roster source is unavailable; teacher status remains source-missing.")
     unresolved = [{"metric": "students.changes.refund", "status": "SOURCE_MISSING", "reason": "weekly workflow does not have a verified refund source"}, {"metric": "production.average_hours_and_sessions", "status": "SOURCE_MISSING", "reason": "bkh/class KS is confirmed, but adjusted denominator H+L is not present in the raw WPS export"}, {"metric": "students.fullness", "status": "BUSINESS_RULE_MISSING", "reason": "the WPS export does not contain a stable class-capacity denominator for fullness"}]
+    if golden["production"].get("month_hours") is None:
+        unresolved.append({"metric": "production.month_hours", "status": "SOURCE_MISSING", "reason": "no authoritative month-to-date production source is available; weekly production is not copied into month total"})
     if roster["status"] != "DETERMINED":
         unresolved.append({"metric": "teachers.active_roster", "status": "SOURCE_MISSING", "reason": "no formal active-teacher roster source was available"})
     student_bridge = compile_adjustments(copy.deepcopy({**students, "single_subject_total": wps["single_subject_total"]}), adjustments)
@@ -273,6 +275,7 @@ def build_snapshot(
         "version": "1.0",
         "period": {"year": year, "month": month, "week": week, "label": f"{year}年{month}月第{week}周", "start": f"{year:04d}-{month:02d}-{start_day:02d}", "end": f"{year:04d}-{month:02d}-{end_day:02d}", "group": "数学组", "campus": "宣城二校"},
         "students": student_bridge["final_confirmed"],
+        "changes": wps["changes"],
         "fullness": {"status": "BUSINESS_RULE_MISSING", "reason": "WPS export lacks a stable class-size capacity breakdown for this week; no rate is fabricated"},
         "production": {"tms": {**tms["totals"], "class_production_ks": tms["totals"]["class_ks"], "week_hours_equivalent": tms["totals"]["one_to_one_ks"] + tms["totals"]["class_ks"] / 3}, "golden": golden["production"]},
         "rules": {"bkh": {"canonical_name": "class_production_ks", "unit": "KS", "source_alias": "bkh", "formula": "class attendance × 3", "status": "DETERMINED"}, "production_hours": {"formula": "one_to_one_ks + class_production_ks / 3", "status": "DETERMINED"}, "average_hours": {"formula": "(I + N) / (H + L)", "status": "SOURCE_MISSING"}},

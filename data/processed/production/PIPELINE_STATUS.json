@@ -64,7 +64,7 @@
     "completeness": "COMPLETE",
     "missing_sources": []
   },
-  "snapshot_business_fingerprint": "f7895ecc16a7298fbb9da7e58fa6a641106157f6077d637b52fa24e3cadd60a2",
+  "snapshot_business_fingerprint": "3904d6560dd3061cf69dc6281c57fbe65bbe7a858e2a2115008251d761c6f52a",
   "evidence": {
     "snapshot": "data/processed/production/weekly_report_snapshot.json",
     "excel": "data/processed/production/weekly_report_latest.xlsx",

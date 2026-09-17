@@ -1,0 +1,28 @@
+[
+  {
+    "id": "weekly-report-production-pipeline",
+    "title": "Run and harden the Weekly Report production pipeline",
+    "goal": "Make the validated Weekly Report P0 directly usable each week from newly placed WPS/TMS/CSV source files.",
+    "priority": 10,
+    "acceptance": [
+      "source discovery writes a hash-bound manifest",
+      "latest available and latest complete periods are distinct concepts",
+      "incomplete inputs never become a final report",
+      "WeeklyReportSnapshot is the only business truth for API, Web and Excel",
+      "one command runs the pipeline and repeated identical inputs are idempotent",
+      "four historical Golden periods retain UNEXPLAINED_DIFFERENCE=0",
+      "latest real source dry run, SaaS runtime and Excel reopen evidence are durable"
+    ],
+    "verification": [
+      "PYTHONPATH=src python3 -m pytest -q",
+      "PYTHONPATH=src python3 -m compileall -q src tests",
+      "PYTHONPATH=src python3 -m edu_ops.weekly_report.production --source-root /Users/macos/Documents/03-周报数据/数学组周数据统计 --output-root data/processed/production --template /Users/macos/Documents/03-周报数据/数学组周数据统计/数学组数据统计表基础模板.xlsx"
+    ],
+    "evidence": [
+      "docs/weekly-report/WEEKLY_REPORT_PRODUCTION_UAT.md",
+      "docs/weekly-report/PRODUCTION_UAT_RESULT_20260917.json",
+      "data/processed/production/weekly_report_snapshot.json"
+    ],
+    "source": "WEEKLY_REPORT_PRODUCTION_UAT"
+  }
+]

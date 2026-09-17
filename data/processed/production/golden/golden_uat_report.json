@@ -360,18 +360,18 @@
         "campus": "宣城二校"
       },
       "status": "PASS_WITH_WARNING",
-      "match": 6,
-      "historical_source_gap": 70,
+      "match": 7,
+      "historical_source_gap": 31,
       "expected_difference": 0,
       "unexplained_difference": 0,
       "teacher_checks": 95,
-      "teacher_mismatches": 63,
+      "teacher_mismatches": 25,
       "comparisons": [
         {
           "domain": "students",
           "metric": "single_subject_total",
           "source": 292.0,
-          "golden": null,
+          "golden": 297.0,
           "status": "HISTORICAL_SOURCE_GAP",
           "reason": "WPS source versus manually maintained final workbook"
         },
@@ -403,9 +403,9 @@
           "domain": "students",
           "metric": "class.primary",
           "source": 150.0,
-          "golden": 150.0,
-          "status": "MATCH",
-          "reason": ""
+          "golden": 155.0,
+          "status": "HISTORICAL_SOURCE_GAP",
+          "reason": "WPS source versus manually maintained final workbook"
         },
         {
           "domain": "students",
@@ -427,15 +427,15 @@
           "domain": "students",
           "metric": "class.classes",
           "source": 43.0,
-          "golden": 39.0,
-          "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "WPS source versus manually maintained final workbook"
+          "golden": 43.0,
+          "status": "MATCH",
+          "reason": ""
         },
         {
           "domain": "production",
           "metric": "month_hours",
           "source": null,
-          "golden": 655.0,
+          "golden": 1244.0,
           "status": "HISTORICAL_SOURCE_GAP",
           "reason": "TMS revision/manual cumulative standard differs; no deterministic source bridge in the historical inputs"
         },
@@ -459,9 +459,9 @@
           "domain": "production",
           "metric": "class_ks",
           "source": 597.0,
-          "golden": 199.0,
-          "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "TMS revision/manual cumulative standard differs; no deterministic source bridge in the historical inputs"
+          "golden": 597.0,
+          "status": "MATCH",
+          "reason": ""
         },
         {
           "domain": "production",
@@ -489,38 +489,6 @@
         },
         {
           "domain": "teachers",
-          "metric": "任勇.hours",
-          "source": 12.0,
-          "golden": 30.0,
-          "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
-        },
-        {
-          "domain": "teachers",
-          "metric": "任勇.sessions",
-          "source": 4.0,
-          "golden": 10.0,
-          "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
-        },
-        {
-          "domain": "teachers",
-          "metric": "周文婧.hours",
-          "source": 15.0,
-          "golden": 18.0,
-          "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
-        },
-        {
-          "domain": "teachers",
-          "metric": "周文婧.sessions",
-          "source": 5.0,
-          "golden": 6.0,
-          "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
-        },
-        {
-          "domain": "teachers",
           "metric": "廖永翠.one_to_one_students",
           "source": 5.0,
           "golden": 6.0,
@@ -532,22 +500,6 @@
           "metric": "廖永翠.class_students",
           "source": 7.0,
           "golden": 9.0,
-          "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
-        },
-        {
-          "domain": "teachers",
-          "metric": "廖永翠.hours",
-          "source": 19.0,
-          "golden": 42.0,
-          "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
-        },
-        {
-          "domain": "teachers",
-          "metric": "廖永翠.sessions",
-          "source": 5.0,
-          "golden": 13.0,
           "status": "HISTORICAL_SOURCE_GAP",
           "reason": "teacher summary and manually adjusted final workbook differ"
         },
@@ -569,25 +521,9 @@
         },
         {
           "domain": "teachers",
-          "metric": "张旭.hours",
-          "source": 48.0,
-          "golden": 29.0,
-          "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
-        },
-        {
-          "domain": "teachers",
-          "metric": "张旭.sessions",
-          "source": 17.0,
-          "golden": 10.0,
-          "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
-        },
-        {
-          "domain": "teachers",
           "metric": "张昱.one_to_one_students",
           "source": 3.0,
-          "golden": 5.0,
+          "golden": 4.0,
           "status": "HISTORICAL_SOURCE_GAP",
           "reason": "teacher summary and manually adjusted final workbook differ"
         },
@@ -595,31 +531,7 @@
           "domain": "teachers",
           "metric": "张昱.class_students",
           "source": 0.0,
-          "golden": 6.0,
-          "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
-        },
-        {
-          "domain": "teachers",
-          "metric": "张昱.subject_count",
-          "source": 6.0,
           "golden": 7.0,
-          "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
-        },
-        {
-          "domain": "teachers",
-          "metric": "张昱.hours",
-          "source": 27.0,
-          "golden": 59.0,
-          "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
-        },
-        {
-          "domain": "teachers",
-          "metric": "张昱.sessions",
-          "source": 10.0,
-          "golden": 20.0,
           "status": "HISTORICAL_SOURCE_GAP",
           "reason": "teacher summary and manually adjusted final workbook differ"
         },
@@ -627,23 +539,7 @@
           "domain": "teachers",
           "metric": "徐良琴.one_to_one_students",
           "source": 4.0,
-          "golden": 6.0,
-          "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
-        },
-        {
-          "domain": "teachers",
-          "metric": "徐良琴.subject_count",
-          "source": 8.0,
           "golden": 7.0,
-          "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
-        },
-        {
-          "domain": "teachers",
-          "metric": "徐良琴.sessions",
-          "source": 7.0,
-          "golden": 8.0,
           "status": "HISTORICAL_SOURCE_GAP",
           "reason": "teacher summary and manually adjusted final workbook differ"
         },
@@ -651,7 +547,7 @@
           "domain": "teachers",
           "metric": "徐荣祥.one_to_one_students",
           "source": 0.0,
-          "golden": 9.0,
+          "golden": 8.0,
           "status": "HISTORICAL_SOURCE_GAP",
           "reason": "teacher summary and manually adjusted final workbook differ"
         },
@@ -659,47 +555,15 @@
           "domain": "teachers",
           "metric": "徐荣祥.class_students",
           "source": 4.0,
-          "golden": 5.0,
+          "golden": 6.0,
           "status": "HISTORICAL_SOURCE_GAP",
           "reason": "teacher summary and manually adjusted final workbook differ"
         },
         {
           "domain": "teachers",
-          "metric": "徐荣祥.subject_count",
-          "source": 10.0,
-          "golden": 11.0,
-          "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
-        },
-        {
-          "domain": "teachers",
-          "metric": "徐荣祥.hours",
-          "source": 58.0,
-          "golden": 41.0,
-          "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
-        },
-        {
-          "domain": "teachers",
-          "metric": "徐荣祥.sessions",
-          "source": 20.0,
-          "golden": 14.0,
-          "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
-        },
-        {
-          "domain": "teachers",
-          "metric": "李娜.hours",
-          "source": 37.0,
-          "golden": 46.0,
-          "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
-        },
-        {
-          "domain": "teachers",
-          "metric": "李娜.sessions",
-          "source": 11.0,
-          "golden": 14.0,
+          "metric": "李娜.class_students",
+          "source": 7.0,
+          "golden": 8.0,
           "status": "HISTORICAL_SOURCE_GAP",
           "reason": "teacher summary and manually adjusted final workbook differ"
         },
@@ -715,39 +579,7 @@
           "domain": "teachers",
           "metric": "李媛媛.class_students",
           "source": 21.0,
-          "golden": 24.0,
-          "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
-        },
-        {
-          "domain": "teachers",
-          "metric": "李梦.hours",
-          "source": 33.0,
-          "golden": 45.0,
-          "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
-        },
-        {
-          "domain": "teachers",
-          "metric": "李梦.sessions",
-          "source": 9.0,
-          "golden": 13.0,
-          "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
-        },
-        {
-          "domain": "teachers",
-          "metric": "杨宇宸.hours",
-          "source": 22.0,
-          "golden": 40.0,
-          "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
-        },
-        {
-          "domain": "teachers",
-          "metric": "杨宇宸.sessions",
-          "source": 6.0,
-          "golden": 12.0,
+          "golden": 25.0,
           "status": "HISTORICAL_SOURCE_GAP",
           "reason": "teacher summary and manually adjusted final workbook differ"
         },
@@ -761,17 +593,9 @@
         },
         {
           "domain": "teachers",
-          "metric": "梁缘.hours",
-          "source": 49.0,
-          "golden": 44.0,
-          "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
-        },
-        {
-          "domain": "teachers",
-          "metric": "梁缘.sessions",
-          "source": 13.0,
-          "golden": 10.0,
+          "metric": "梁缘.class_students",
+          "source": 32.0,
+          "golden": 33.0,
           "status": "HISTORICAL_SOURCE_GAP",
           "reason": "teacher summary and manually adjusted final workbook differ"
         },
@@ -779,7 +603,7 @@
           "domain": "teachers",
           "metric": "汪涛.one_to_one_students",
           "source": 2.0,
-          "golden": 7.0,
+          "golden": 5.0,
           "status": "HISTORICAL_SOURCE_GAP",
           "reason": "teacher summary and manually adjusted final workbook differ"
         },
@@ -787,63 +611,7 @@
           "domain": "teachers",
           "metric": "汪涛.subject_count",
           "source": 2.0,
-          "golden": 8.0,
-          "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
-        },
-        {
-          "domain": "teachers",
-          "metric": "汪涛.hours",
-          "source": 24.0,
-          "golden": 33.0,
-          "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
-        },
-        {
-          "domain": "teachers",
-          "metric": "汪涛.sessions",
-          "source": 8.0,
-          "golden": 11.0,
-          "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
-        },
-        {
-          "domain": "teachers",
-          "metric": "潘瑶.hours",
-          "source": 43.0,
-          "golden": 60.0,
-          "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
-        },
-        {
-          "domain": "teachers",
-          "metric": "潘瑶.sessions",
-          "source": 11.0,
-          "golden": 15.0,
-          "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
-        },
-        {
-          "domain": "teachers",
-          "metric": "王星.class_students",
-          "source": 2.0,
-          "golden": 3.0,
-          "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
-        },
-        {
-          "domain": "teachers",
-          "metric": "王星.hours",
-          "source": 2.0,
           "golden": 6.0,
-          "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
-        },
-        {
-          "domain": "teachers",
-          "metric": "王星.sessions",
-          "source": 1.0,
-          "golden": 2.0,
           "status": "HISTORICAL_SOURCE_GAP",
           "reason": "teacher summary and manually adjusted final workbook differ"
         },
@@ -851,7 +619,7 @@
           "domain": "teachers",
           "metric": "胡长春.one_to_one_students",
           "source": 2.0,
-          "golden": 5.0,
+          "golden": 6.0,
           "status": "HISTORICAL_SOURCE_GAP",
           "reason": "teacher summary and manually adjusted final workbook differ"
         },
@@ -859,23 +627,7 @@
           "domain": "teachers",
           "metric": "胡长春.class_students",
           "source": 0.0,
-          "golden": 17.0,
-          "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
-        },
-        {
-          "domain": "teachers",
-          "metric": "胡长春.hours",
-          "source": 60.0,
-          "golden": 30.0,
-          "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
-        },
-        {
-          "domain": "teachers",
-          "metric": "胡长春.sessions",
-          "source": 19.0,
-          "golden": 10.0,
+          "golden": 13.0,
           "status": "HISTORICAL_SOURCE_GAP",
           "reason": "teacher summary and manually adjusted final workbook differ"
         },
@@ -891,23 +643,7 @@
           "domain": "teachers",
           "metric": "董葛飞.class_students",
           "source": 6.0,
-          "golden": 10.0,
-          "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
-        },
-        {
-          "domain": "teachers",
-          "metric": "董葛飞.hours",
-          "source": 27.0,
-          "golden": 28.0,
-          "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
-        },
-        {
-          "domain": "teachers",
-          "metric": "董葛飞.sessions",
-          "source": 8.0,
-          "golden": 9.0,
+          "golden": 7.0,
           "status": "HISTORICAL_SOURCE_GAP",
           "reason": "teacher summary and manually adjusted final workbook differ"
         },
@@ -916,30 +652,6 @@
           "metric": "费晓曼.one_to_one_students",
           "source": 4.0,
           "golden": 5.0,
-          "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
-        },
-        {
-          "domain": "teachers",
-          "metric": "费晓曼.class_students",
-          "source": 5.0,
-          "golden": 4.0,
-          "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
-        },
-        {
-          "domain": "teachers",
-          "metric": "费晓曼.hours",
-          "source": 23.0,
-          "golden": 25.0,
-          "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
-        },
-        {
-          "domain": "teachers",
-          "metric": "费晓曼.sessions",
-          "source": 7.0,
-          "golden": 8.0,
           "status": "HISTORICAL_SOURCE_GAP",
           "reason": "teacher summary and manually adjusted final workbook differ"
         },
@@ -955,23 +667,7 @@
           "domain": "teachers",
           "metric": "高明亮.class_students",
           "source": 3.0,
-          "golden": 6.0,
-          "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
-        },
-        {
-          "domain": "teachers",
-          "metric": "高明亮.hours",
-          "source": 34.0,
-          "golden": 23.0,
-          "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
-        },
-        {
-          "domain": "teachers",
-          "metric": "高明亮.sessions",
-          "source": 12.0,
-          "golden": 8.0,
+          "golden": 7.0,
           "status": "HISTORICAL_SOURCE_GAP",
           "reason": "teacher summary and manually adjusted final workbook differ"
         }
@@ -991,8 +687,8 @@
           "row_count": 1617
         },
         {
-          "path": "/Users/macos/Documents/03-周报数据/数学组周数据统计/数学组数据统计表-宣城二校6月第2周.xlsx",
-          "sha256": "28254badaa52821d5ed9db8354327b23d2ec45198327e6e81738b3ad44c76fa6",
+          "path": "/Users/macos/Documents/03-周报数据/数学组周数据统计/数学组数据统计表-宣城二校6月第2周——手动数据.xls",
+          "sha256": "06dc06ffedf1a5fba40b5a7c11c79faa15c99a776bd1fc045520b48c142daa0b",
           "role": "FINAL_GOLDEN"
         },
         {
@@ -1017,18 +713,18 @@
         "campus": "宣城二校"
       },
       "status": "PASS_WITH_WARNING",
-      "match": 7,
-      "historical_source_gap": 78,
+      "match": 0,
+      "historical_source_gap": 39,
       "expected_difference": 0,
       "unexplained_difference": 0,
       "teacher_checks": 95,
-      "teacher_mismatches": 72,
+      "teacher_mismatches": 26,
       "comparisons": [
         {
           "domain": "students",
           "metric": "single_subject_total",
           "source": 286.0,
-          "golden": 288.0,
+          "golden": 252.0,
           "status": "HISTORICAL_SOURCE_GAP",
           "reason": "WPS source versus manually maintained final workbook"
         },
@@ -1036,63 +732,63 @@
           "domain": "students",
           "metric": "one_to_one.primary",
           "source": 58.0,
-          "golden": 58.0,
-          "status": "MATCH",
-          "reason": ""
+          "golden": 60.0,
+          "status": "HISTORICAL_SOURCE_GAP",
+          "reason": "WPS source versus manually maintained final workbook"
         },
         {
           "domain": "students",
           "metric": "one_to_one.high",
           "source": 38.0,
-          "golden": 38.0,
-          "status": "MATCH",
-          "reason": ""
+          "golden": 35.0,
+          "status": "HISTORICAL_SOURCE_GAP",
+          "reason": "WPS source versus manually maintained final workbook"
         },
         {
           "domain": "students",
           "metric": "one_to_one.double_three",
           "source": 2.0,
-          "golden": 2.0,
-          "status": "MATCH",
-          "reason": ""
+          "golden": 15.0,
+          "status": "HISTORICAL_SOURCE_GAP",
+          "reason": "WPS source versus manually maintained final workbook"
         },
         {
           "domain": "students",
           "metric": "class.primary",
           "source": 151.0,
-          "golden": 151.0,
-          "status": "MATCH",
-          "reason": ""
+          "golden": 132.0,
+          "status": "HISTORICAL_SOURCE_GAP",
+          "reason": "WPS source versus manually maintained final workbook"
         },
         {
           "domain": "students",
           "metric": "class.high",
           "source": 39.0,
-          "golden": 39.0,
-          "status": "MATCH",
-          "reason": ""
+          "golden": 38.0,
+          "status": "HISTORICAL_SOURCE_GAP",
+          "reason": "WPS source versus manually maintained final workbook"
         },
         {
           "domain": "students",
           "metric": "class.double_three",
           "source": 0.0,
-          "golden": 0.0,
-          "status": "MATCH",
-          "reason": ""
+          "golden": 8.0,
+          "status": "HISTORICAL_SOURCE_GAP",
+          "reason": "WPS source versus manually maintained final workbook"
         },
         {
           "domain": "students",
           "metric": "class.classes",
           "source": 41.0,
-          "golden": 41.0,
-          "status": "MATCH",
-          "reason": ""
+          "golden": 43.0,
+          "status": "HISTORICAL_SOURCE_GAP",
+          "reason": "WPS source versus manually maintained final workbook"
         },
         {
           "domain": "production",
           "metric": "month_hours",
           "source": null,
-          "golden": 1244.0,
+          "golden": 1824.5,
           "status": "HISTORICAL_SOURCE_GAP",
           "reason": "TMS revision/manual cumulative standard differs; no deterministic source bridge in the historical inputs"
         },
@@ -1100,7 +796,7 @@
           "domain": "production",
           "metric": "week_hours",
           "source": null,
-          "golden": 580.5,
+          "golden": 1017.0,
           "status": "HISTORICAL_SOURCE_GAP",
           "reason": "TMS revision/manual cumulative standard differs; no deterministic source bridge in the historical inputs"
         },
@@ -1108,7 +804,7 @@
           "domain": "production",
           "metric": "one_to_one_ks",
           "source": 399.0,
-          "golden": 390.0,
+          "golden": 411.0,
           "status": "HISTORICAL_SOURCE_GAP",
           "reason": "TMS revision/manual cumulative standard differs; no deterministic source bridge in the historical inputs"
         },
@@ -1116,7 +812,7 @@
           "domain": "production",
           "metric": "class_ks",
           "source": 579.0,
-          "golden": 576.0,
+          "golden": 606.0,
           "status": "HISTORICAL_SOURCE_GAP",
           "reason": "TMS revision/manual cumulative standard differs; no deterministic source bridge in the historical inputs"
         },
@@ -1124,7 +820,7 @@
           "domain": "production",
           "metric": "teacher_count",
           "source": null,
-          "golden": 18.0,
+          "golden": 20.0,
           "status": "HISTORICAL_SOURCE_GAP",
           "reason": "TMS revision/manual cumulative standard differs; no deterministic source bridge in the historical inputs"
         },
@@ -1132,7 +828,7 @@
           "domain": "teachers",
           "metric": "任勇.one_to_one_students",
           "source": 2.0,
-          "golden": 4.0,
+          "golden": 3.0,
           "status": "HISTORICAL_SOURCE_GAP",
           "reason": "teacher summary and manually adjusted final workbook differ"
         },
@@ -1146,49 +842,9 @@
         },
         {
           "domain": "teachers",
-          "metric": "任勇.subject_count",
-          "source": 4.0,
-          "golden": 5.0,
-          "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
-        },
-        {
-          "domain": "teachers",
-          "metric": "任勇.hours",
-          "source": 14.0,
-          "golden": 12.0,
-          "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
-        },
-        {
-          "domain": "teachers",
-          "metric": "任勇.sessions",
-          "source": 5.0,
-          "golden": 4.0,
-          "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
-        },
-        {
-          "domain": "teachers",
-          "metric": "周文婧.hours",
-          "source": 21.0,
-          "golden": 15.0,
-          "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
-        },
-        {
-          "domain": "teachers",
-          "metric": "周文婧.sessions",
-          "source": 7.0,
-          "golden": 5.0,
-          "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
-        },
-        {
-          "domain": "teachers",
           "metric": "廖永翠.one_to_one_students",
           "source": 3.0,
-          "golden": 6.0,
+          "golden": 4.0,
           "status": "HISTORICAL_SOURCE_GAP",
           "reason": "teacher summary and manually adjusted final workbook differ"
         },
@@ -1196,31 +852,7 @@
           "domain": "teachers",
           "metric": "廖永翠.class_students",
           "source": 8.0,
-          "golden": 9.0,
-          "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
-        },
-        {
-          "domain": "teachers",
-          "metric": "廖永翠.subject_count",
-          "source": 6.0,
-          "golden": 8.0,
-          "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
-        },
-        {
-          "domain": "teachers",
-          "metric": "廖永翠.hours",
-          "source": 23.0,
-          "golden": 19.0,
-          "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
-        },
-        {
-          "domain": "teachers",
-          "metric": "廖永翠.sessions",
-          "source": 7.0,
-          "golden": 5.0,
+          "golden": 10.0,
           "status": "HISTORICAL_SOURCE_GAP",
           "reason": "teacher summary and manually adjusted final workbook differ"
         },
@@ -1242,22 +874,6 @@
         },
         {
           "domain": "teachers",
-          "metric": "张旭.hours",
-          "source": 40.0,
-          "golden": 48.0,
-          "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
-        },
-        {
-          "domain": "teachers",
-          "metric": "张旭.sessions",
-          "source": 14.0,
-          "golden": 17.0,
-          "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
-        },
-        {
-          "domain": "teachers",
           "metric": "张昱.one_to_one_students",
           "source": 3.0,
           "golden": 4.0,
@@ -1268,23 +884,7 @@
           "domain": "teachers",
           "metric": "张昱.class_students",
           "source": 0.0,
-          "golden": 7.0,
-          "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
-        },
-        {
-          "domain": "teachers",
-          "metric": "张昱.hours",
-          "source": 30.0,
-          "golden": 27.0,
-          "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
-        },
-        {
-          "domain": "teachers",
-          "metric": "张昱.sessions",
-          "source": 15.0,
-          "golden": 10.0,
+          "golden": 6.0,
           "status": "HISTORICAL_SOURCE_GAP",
           "reason": "teacher summary and manually adjusted final workbook differ"
         },
@@ -1292,22 +892,6 @@
           "domain": "teachers",
           "metric": "徐良琴.one_to_one_students",
           "source": 4.0,
-          "golden": 7.0,
-          "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
-        },
-        {
-          "domain": "teachers",
-          "metric": "徐良琴.hours",
-          "source": 26.0,
-          "golden": 21.0,
-          "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
-        },
-        {
-          "domain": "teachers",
-          "metric": "徐良琴.sessions",
-          "source": 10.0,
           "golden": 7.0,
           "status": "HISTORICAL_SOURCE_GAP",
           "reason": "teacher summary and manually adjusted final workbook differ"
@@ -1324,63 +908,7 @@
           "domain": "teachers",
           "metric": "徐荣祥.class_students",
           "source": 4.0,
-          "golden": 6.0,
-          "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
-        },
-        {
-          "domain": "teachers",
-          "metric": "徐荣祥.hours",
-          "source": 39.0,
-          "golden": 58.0,
-          "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
-        },
-        {
-          "domain": "teachers",
-          "metric": "徐荣祥.sessions",
-          "source": 13.0,
-          "golden": 20.0,
-          "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
-        },
-        {
-          "domain": "teachers",
-          "metric": "李娜.one_to_one_students",
-          "source": 8.0,
-          "golden": 9.0,
-          "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
-        },
-        {
-          "domain": "teachers",
-          "metric": "李娜.class_students",
-          "source": 7.0,
-          "golden": 8.0,
-          "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
-        },
-        {
-          "domain": "teachers",
-          "metric": "李娜.subject_count",
-          "source": 9.0,
-          "golden": 10.0,
-          "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
-        },
-        {
-          "domain": "teachers",
-          "metric": "李娜.hours",
-          "source": 42.0,
-          "golden": 37.0,
-          "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
-        },
-        {
-          "domain": "teachers",
-          "metric": "李娜.sessions",
-          "source": 14.0,
-          "golden": 11.0,
+          "golden": 5.0,
           "status": "HISTORICAL_SOURCE_GAP",
           "reason": "teacher summary and manually adjusted final workbook differ"
         },
@@ -1402,65 +930,9 @@
         },
         {
           "domain": "teachers",
-          "metric": "李媛媛.hours",
-          "source": 36.5,
-          "golden": 35.0,
-          "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
-        },
-        {
-          "domain": "teachers",
-          "metric": "李媛媛.sessions",
-          "source": 12.5,
-          "golden": 10.0,
-          "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
-        },
-        {
-          "domain": "teachers",
-          "metric": "李梦.hours",
-          "source": 34.0,
-          "golden": 33.0,
-          "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
-        },
-        {
-          "domain": "teachers",
-          "metric": "杨宇宸.one_to_one_students",
-          "source": 10.0,
-          "golden": 9.0,
-          "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
-        },
-        {
-          "domain": "teachers",
-          "metric": "杨宇宸.subject_count",
-          "source": 11.0,
-          "golden": 10.0,
-          "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
-        },
-        {
-          "domain": "teachers",
-          "metric": "杨宇宸.hours",
-          "source": 37.0,
-          "golden": 22.0,
-          "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
-        },
-        {
-          "domain": "teachers",
-          "metric": "杨宇宸.sessions",
-          "source": 11.0,
-          "golden": 6.0,
-          "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
-        },
-        {
-          "domain": "teachers",
           "metric": "梁缘.one_to_one_students",
           "source": 1.0,
-          "golden": 4.0,
+          "golden": 2.0,
           "status": "HISTORICAL_SOURCE_GAP",
           "reason": "teacher summary and manually adjusted final workbook differ"
         },
@@ -1468,31 +940,7 @@
           "domain": "teachers",
           "metric": "梁缘.class_students",
           "source": 32.0,
-          "golden": 33.0,
-          "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
-        },
-        {
-          "domain": "teachers",
-          "metric": "梁缘.subject_count",
-          "source": 7.0,
-          "golden": 9.0,
-          "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
-        },
-        {
-          "domain": "teachers",
-          "metric": "梁缘.hours",
-          "source": 38.0,
-          "golden": 49.0,
-          "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
-        },
-        {
-          "domain": "teachers",
-          "metric": "梁缘.sessions",
-          "source": 9.0,
-          "golden": 13.0,
+          "golden": 34.0,
           "status": "HISTORICAL_SOURCE_GAP",
           "reason": "teacher summary and manually adjusted final workbook differ"
         },
@@ -1506,14 +954,6 @@
         },
         {
           "domain": "teachers",
-          "metric": "汪涛.class_students",
-          "source": 4.0,
-          "golden": 3.0,
-          "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
-        },
-        {
-          "domain": "teachers",
           "metric": "汪涛.subject_count",
           "source": 2.0,
           "golden": 6.0,
@@ -1522,48 +962,8 @@
         },
         {
           "domain": "teachers",
-          "metric": "汪涛.hours",
-          "source": 23.0,
-          "golden": 24.0,
-          "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
-        },
-        {
-          "domain": "teachers",
-          "metric": "潘瑶.hours",
-          "source": 47.0,
-          "golden": 43.0,
-          "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
-        },
-        {
-          "domain": "teachers",
-          "metric": "潘瑶.sessions",
-          "source": 13.0,
-          "golden": 11.0,
-          "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
-        },
-        {
-          "domain": "teachers",
-          "metric": "王星.class_students",
-          "source": 0.0,
-          "golden": 2.0,
-          "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
-        },
-        {
-          "domain": "teachers",
           "metric": "王星.subject_count",
           "source": 1.0,
-          "golden": 2.0,
-          "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
-        },
-        {
-          "domain": "teachers",
-          "metric": "王星.hours",
-          "source": 3.0,
           "golden": 2.0,
           "status": "HISTORICAL_SOURCE_GAP",
           "reason": "teacher summary and manually adjusted final workbook differ"
@@ -1580,7 +980,7 @@
           "domain": "teachers",
           "metric": "胡长春.class_students",
           "source": 0.0,
-          "golden": 13.0,
+          "golden": 12.0,
           "status": "HISTORICAL_SOURCE_GAP",
           "reason": "teacher summary and manually adjusted final workbook differ"
         },
@@ -1594,33 +994,9 @@
         },
         {
           "domain": "teachers",
-          "metric": "胡长春.hours",
-          "source": 33.0,
-          "golden": 60.0,
-          "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
-        },
-        {
-          "domain": "teachers",
-          "metric": "胡长春.sessions",
-          "source": 10.0,
-          "golden": 19.0,
-          "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
-        },
-        {
-          "domain": "teachers",
           "metric": "董葛飞.one_to_one_students",
           "source": 3.0,
           "golden": 6.0,
-          "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
-        },
-        {
-          "domain": "teachers",
-          "metric": "董葛飞.class_students",
-          "source": 6.0,
-          "golden": 7.0,
           "status": "HISTORICAL_SOURCE_GAP",
           "reason": "teacher summary and manually adjusted final workbook differ"
         },
@@ -1634,41 +1010,9 @@
         },
         {
           "domain": "teachers",
-          "metric": "董葛飞.hours",
-          "source": 32.0,
-          "golden": 27.0,
-          "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
-        },
-        {
-          "domain": "teachers",
-          "metric": "董葛飞.sessions",
-          "source": 10.0,
-          "golden": 8.0,
-          "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
-        },
-        {
-          "domain": "teachers",
           "metric": "费晓曼.one_to_one_students",
           "source": 4.0,
           "golden": 5.0,
-          "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
-        },
-        {
-          "domain": "teachers",
-          "metric": "费晓曼.class_students",
-          "source": 6.0,
-          "golden": 5.0,
-          "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
-        },
-        {
-          "domain": "teachers",
-          "metric": "费晓曼.hours",
-          "source": 24.0,
-          "golden": 23.0,
           "status": "HISTORICAL_SOURCE_GAP",
           "reason": "teacher summary and manually adjusted final workbook differ"
         },
@@ -1684,23 +1028,7 @@
           "domain": "teachers",
           "metric": "高明亮.class_students",
           "source": 3.0,
-          "golden": 7.0,
-          "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
-        },
-        {
-          "domain": "teachers",
-          "metric": "高明亮.hours",
-          "source": 38.0,
-          "golden": 34.0,
-          "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
-        },
-        {
-          "domain": "teachers",
-          "metric": "高明亮.sessions",
-          "source": 13.0,
-          "golden": 12.0,
+          "golden": 6.0,
           "status": "HISTORICAL_SOURCE_GAP",
           "reason": "teacher summary and manually adjusted final workbook differ"
         }
@@ -1720,8 +1048,8 @@
           "row_count": 1617
         },
         {
-          "path": "/Users/macos/Documents/03-周报数据/数学组周数据统计/数学组数据统计表-宣城二校6月第3周.xlsx",
-          "sha256": "8e67cf4521c8d96a54ab6bfcbba5e042836456d3ea55d962277b592d647e2914",
+          "path": "/Users/macos/Documents/03-周报数据/数学组周数据统计/数学组数据统计表-宣城二校6月第3周——手动数据_自动填.xlsx",
+          "sha256": "d04895fa71f3bc26f38a19e0de8ec4495b412033ffc0311fd3715bba89aff0c8",
           "role": "FINAL_GOLDEN"
         },
         {
@@ -1746,18 +1074,18 @@
         "campus": "宣城二校"
       },
       "status": "PASS_WITH_WARNING",
-      "match": 9,
-      "historical_source_gap": 69,
+      "match": 5,
+      "historical_source_gap": 38,
       "expected_difference": 0,
       "unexplained_difference": 0,
       "teacher_checks": 90,
-      "teacher_mismatches": 65,
+      "teacher_mismatches": 30,
       "comparisons": [
         {
           "domain": "students",
           "metric": "single_subject_total",
           "source": 263.0,
-          "golden": 265.0,
+          "golden": 285.0,
           "status": "HISTORICAL_SOURCE_GAP",
           "reason": "WPS source versus manually maintained final workbook"
         },
@@ -1765,9 +1093,9 @@
           "domain": "students",
           "metric": "one_to_one.primary",
           "source": 57.0,
-          "golden": 57.0,
-          "status": "MATCH",
-          "reason": ""
+          "golden": 60.0,
+          "status": "HISTORICAL_SOURCE_GAP",
+          "reason": "WPS source versus manually maintained final workbook"
         },
         {
           "domain": "students",
@@ -1781,17 +1109,17 @@
           "domain": "students",
           "metric": "one_to_one.double_three",
           "source": 2.0,
-          "golden": 2.0,
-          "status": "MATCH",
-          "reason": ""
+          "golden": 1.0,
+          "status": "HISTORICAL_SOURCE_GAP",
+          "reason": "WPS source versus manually maintained final workbook"
         },
         {
           "domain": "students",
           "metric": "class.primary",
           "source": 130.0,
-          "golden": 130.0,
-          "status": "MATCH",
-          "reason": ""
+          "golden": 149.0,
+          "status": "HISTORICAL_SOURCE_GAP",
+          "reason": "WPS source versus manually maintained final workbook"
         },
         {
           "domain": "students",
@@ -1813,9 +1141,9 @@
           "domain": "students",
           "metric": "class.classes",
           "source": 39.0,
-          "golden": 39.0,
-          "status": "MATCH",
-          "reason": ""
+          "golden": 41.0,
+          "status": "HISTORICAL_SOURCE_GAP",
+          "reason": "WPS source versus manually maintained final workbook"
         },
         {
           "domain": "production",
@@ -1875,41 +1203,9 @@
         },
         {
           "domain": "teachers",
-          "metric": "任勇.hours",
-          "source": 6.0,
-          "golden": 14.0,
-          "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
-        },
-        {
-          "domain": "teachers",
-          "metric": "任勇.sessions",
-          "source": 2.0,
-          "golden": 5.0,
-          "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
-        },
-        {
-          "domain": "teachers",
-          "metric": "周文婧.hours",
-          "source": 15.0,
-          "golden": 21.0,
-          "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
-        },
-        {
-          "domain": "teachers",
-          "metric": "周文婧.sessions",
-          "source": 5.0,
-          "golden": 7.0,
-          "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
-        },
-        {
-          "domain": "teachers",
           "metric": "廖永翠.one_to_one_students",
           "source": 3.0,
-          "golden": 4.0,
+          "golden": 5.0,
           "status": "HISTORICAL_SOURCE_GAP",
           "reason": "teacher summary and manually adjusted final workbook differ"
         },
@@ -1917,22 +1213,14 @@
           "domain": "teachers",
           "metric": "廖永翠.class_students",
           "source": 7.0,
-          "golden": 10.0,
+          "golden": 9.0,
           "status": "HISTORICAL_SOURCE_GAP",
           "reason": "teacher summary and manually adjusted final workbook differ"
         },
         {
           "domain": "teachers",
-          "metric": "廖永翠.hours",
-          "source": 16.0,
-          "golden": 23.0,
-          "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
-        },
-        {
-          "domain": "teachers",
-          "metric": "廖永翠.sessions",
-          "source": 4.0,
+          "metric": "廖永翠.subject_count",
+          "source": 6.0,
           "golden": 7.0,
           "status": "HISTORICAL_SOURCE_GAP",
           "reason": "teacher summary and manually adjusted final workbook differ"
@@ -1949,7 +1237,7 @@
           "domain": "teachers",
           "metric": "张旭.class_students",
           "source": 6.0,
-          "golden": 12.0,
+          "golden": 13.0,
           "status": "HISTORICAL_SOURCE_GAP",
           "reason": "teacher summary and manually adjusted final workbook differ"
         },
@@ -1963,30 +1251,6 @@
         },
         {
           "domain": "teachers",
-          "metric": "张旭.hours",
-          "source": 19.0,
-          "golden": 40.0,
-          "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
-        },
-        {
-          "domain": "teachers",
-          "metric": "张旭.sessions",
-          "source": 6.0,
-          "golden": 14.0,
-          "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
-        },
-        {
-          "domain": "teachers",
-          "metric": "张昱.one_to_one_students",
-          "source": 3.0,
-          "golden": 4.0,
-          "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
-        },
-        {
-          "domain": "teachers",
           "metric": "张昱.class_students",
           "source": 0.0,
           "golden": 6.0,
@@ -1995,49 +1259,9 @@
         },
         {
           "domain": "teachers",
-          "metric": "张昱.subject_count",
-          "source": 5.0,
-          "golden": 6.0,
-          "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
-        },
-        {
-          "domain": "teachers",
-          "metric": "张昱.hours",
-          "source": 8.0,
-          "golden": 30.0,
-          "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
-        },
-        {
-          "domain": "teachers",
-          "metric": "张昱.sessions",
-          "source": 3.0,
-          "golden": 15.0,
-          "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
-        },
-        {
-          "domain": "teachers",
           "metric": "徐良琴.one_to_one_students",
           "source": 4.0,
           "golden": 7.0,
-          "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
-        },
-        {
-          "domain": "teachers",
-          "metric": "徐良琴.hours",
-          "source": 12.0,
-          "golden": 26.0,
-          "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
-        },
-        {
-          "domain": "teachers",
-          "metric": "徐良琴.sessions",
-          "source": 4.0,
-          "golden": 10.0,
           "status": "HISTORICAL_SOURCE_GAP",
           "reason": "teacher summary and manually adjusted final workbook differ"
         },
@@ -2053,39 +1277,15 @@
           "domain": "teachers",
           "metric": "徐荣祥.class_students",
           "source": 3.0,
-          "golden": 5.0,
+          "golden": 4.0,
           "status": "HISTORICAL_SOURCE_GAP",
           "reason": "teacher summary and manually adjusted final workbook differ"
         },
         {
           "domain": "teachers",
-          "metric": "徐荣祥.hours",
-          "source": 15.0,
-          "golden": 39.0,
-          "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
-        },
-        {
-          "domain": "teachers",
-          "metric": "徐荣祥.sessions",
-          "source": 5.0,
-          "golden": 13.0,
-          "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
-        },
-        {
-          "domain": "teachers",
-          "metric": "李娜.hours",
-          "source": 31.0,
-          "golden": 42.0,
-          "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
-        },
-        {
-          "domain": "teachers",
-          "metric": "李娜.sessions",
-          "source": 9.0,
-          "golden": 14.0,
+          "metric": "李娜.class_students",
+          "source": 7.0,
+          "golden": 8.0,
           "status": "HISTORICAL_SOURCE_GAP",
           "reason": "teacher summary and manually adjusted final workbook differ"
         },
@@ -2107,49 +1307,25 @@
         },
         {
           "domain": "teachers",
-          "metric": "李媛媛.hours",
-          "source": 23.0,
-          "golden": 36.5,
+          "metric": "李梦.one_to_one_students",
+          "source": 5.0,
+          "golden": 6.0,
           "status": "HISTORICAL_SOURCE_GAP",
           "reason": "teacher summary and manually adjusted final workbook differ"
         },
         {
           "domain": "teachers",
-          "metric": "李媛媛.sessions",
-          "source": 7.0,
-          "golden": 12.5,
-          "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
-        },
-        {
-          "domain": "teachers",
-          "metric": "李梦.hours",
-          "source": 25.0,
-          "golden": 34.0,
-          "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
-        },
-        {
-          "domain": "teachers",
-          "metric": "李梦.sessions",
-          "source": 7.0,
+          "metric": "李梦.subject_count",
+          "source": 8.0,
           "golden": 9.0,
           "status": "HISTORICAL_SOURCE_GAP",
           "reason": "teacher summary and manually adjusted final workbook differ"
         },
         {
           "domain": "teachers",
-          "metric": "杨宇宸.hours",
-          "source": 25.0,
-          "golden": 37.0,
-          "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
-        },
-        {
-          "domain": "teachers",
-          "metric": "杨宇宸.sessions",
-          "source": 7.0,
-          "golden": 11.0,
+          "metric": "梁缘.one_to_one_students",
+          "source": 2.0,
+          "golden": 3.0,
           "status": "HISTORICAL_SOURCE_GAP",
           "reason": "teacher summary and manually adjusted final workbook differ"
         },
@@ -2157,23 +1333,7 @@
           "domain": "teachers",
           "metric": "梁缘.class_students",
           "source": 31.0,
-          "golden": 34.0,
-          "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
-        },
-        {
-          "domain": "teachers",
-          "metric": "梁缘.subject_count",
-          "source": 8.0,
-          "golden": 7.0,
-          "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
-        },
-        {
-          "domain": "teachers",
-          "metric": "梁缘.hours",
-          "source": 40.0,
-          "golden": 38.0,
+          "golden": 33.0,
           "status": "HISTORICAL_SOURCE_GAP",
           "reason": "teacher summary and manually adjusted final workbook differ"
         },
@@ -2195,22 +1355,6 @@
         },
         {
           "domain": "teachers",
-          "metric": "汪涛.hours",
-          "source": 16.0,
-          "golden": 23.0,
-          "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
-        },
-        {
-          "domain": "teachers",
-          "metric": "汪涛.sessions",
-          "source": 5.0,
-          "golden": 8.0,
-          "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
-        },
-        {
-          "domain": "teachers",
           "metric": "潘瑶.class_students",
           "source": 11.0,
           "golden": 28.0,
@@ -2227,25 +1371,9 @@
         },
         {
           "domain": "teachers",
-          "metric": "潘瑶.hours",
-          "source": 43.0,
-          "golden": 47.0,
-          "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
-        },
-        {
-          "domain": "teachers",
-          "metric": "潘瑶.sessions",
-          "source": 11.0,
-          "golden": 13.0,
-          "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
-        },
-        {
-          "domain": "teachers",
           "metric": "胡长春.one_to_one_students",
           "source": 0.0,
-          "golden": 6.0,
+          "golden": 4.0,
           "status": "HISTORICAL_SOURCE_GAP",
           "reason": "teacher summary and manually adjusted final workbook differ"
         },
@@ -2253,31 +1381,7 @@
           "domain": "teachers",
           "metric": "胡长春.class_students",
           "source": 0.0,
-          "golden": 12.0,
-          "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
-        },
-        {
-          "domain": "teachers",
-          "metric": "胡长春.subject_count",
-          "source": 7.0,
-          "golden": 9.0,
-          "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
-        },
-        {
-          "domain": "teachers",
-          "metric": "胡长春.hours",
-          "source": 16.0,
-          "golden": 33.0,
-          "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
-        },
-        {
-          "domain": "teachers",
-          "metric": "胡长春.sessions",
-          "source": 5.0,
-          "golden": 10.0,
+          "golden": 11.0,
           "status": "HISTORICAL_SOURCE_GAP",
           "reason": "teacher summary and manually adjusted final workbook differ"
         },
@@ -2299,49 +1403,9 @@
         },
         {
           "domain": "teachers",
-          "metric": "董葛飞.subject_count",
-          "source": 7.0,
-          "golden": 8.0,
-          "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
-        },
-        {
-          "domain": "teachers",
-          "metric": "董葛飞.hours",
-          "source": 16.0,
-          "golden": 32.0,
-          "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
-        },
-        {
-          "domain": "teachers",
-          "metric": "董葛飞.sessions",
-          "source": 5.0,
-          "golden": 10.0,
-          "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
-        },
-        {
-          "domain": "teachers",
           "metric": "费晓曼.one_to_one_students",
           "source": 4.0,
           "golden": 5.0,
-          "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
-        },
-        {
-          "domain": "teachers",
-          "metric": "费晓曼.hours",
-          "source": 15.0,
-          "golden": 24.0,
-          "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
-        },
-        {
-          "domain": "teachers",
-          "metric": "费晓曼.sessions",
-          "source": 4.0,
-          "golden": 7.0,
           "status": "HISTORICAL_SOURCE_GAP",
           "reason": "teacher summary and manually adjusted final workbook differ"
         },
@@ -2358,22 +1422,6 @@
           "metric": "高明亮.class_students",
           "source": 3.0,
           "golden": 6.0,
-          "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
-        },
-        {
-          "domain": "teachers",
-          "metric": "高明亮.hours",
-          "source": 15.0,
-          "golden": 38.0,
-          "status": "HISTORICAL_SOURCE_GAP",
-          "reason": "teacher summary and manually adjusted final workbook differ"
-        },
-        {
-          "domain": "teachers",
-          "metric": "高明亮.sessions",
-          "source": 5.0,
-          "golden": 13.0,
           "status": "HISTORICAL_SOURCE_GAP",
           "reason": "teacher summary and manually adjusted final workbook differ"
         }
@@ -2393,8 +1441,8 @@
           "row_count": 1617
         },
         {
-          "path": "/Users/macos/Documents/03-周报数据/数学组周数据统计/数学组数据统计表-宣城二校6月第4周.xls",
-          "sha256": "3390a2a4fa6ef4f406e2134d4abb6bdc308cd3f2aa1b983492a98a317be997b6",
+          "path": "/Users/macos/Documents/03-周报数据/数学组周数据统计/数学组数据统计表-宣城二校6月第4周——手动数据.xls",
+          "sha256": "71342691c8bf5574e69c845d6b593a3f94fc17a25f19341704fcbebd4e2dd431",
           "role": "FINAL_GOLDEN"
         },
         {

@@ -38,6 +38,7 @@
     "data/processed/production/PERIOD_RESOLUTION.json",
     "data/processed/production/weekly_report_snapshot.json",
     "data/processed/production/weekly_report_2026-06-w4.xlsx",
+    "data/processed/production/integrity_report.json",
     "data/processed/production/golden/golden_uat_report.json",
     "tests/weekly_report/test_production.py"
   ]

@@ -64,5 +64,12 @@
     "completeness": "COMPLETE",
     "missing_sources": []
   },
-  "snapshot_business_fingerprint": "7f57bb892f17faeb4295ddba7c5c84a619a21f9492cb3938306eb2ca04e99909"
+  "snapshot_business_fingerprint": "7f57bb892f17faeb4295ddba7c5c84a619a21f9492cb3938306eb2ca04e99909",
+  "evidence": {
+    "snapshot": "data/processed/production/weekly_report_snapshot.json",
+    "excel": "data/processed/production/weekly_report_latest.xlsx",
+    "integrity": "data/processed/production/integrity_report.json",
+    "golden": "data/processed/production/golden/golden_uat_report.json",
+    "golden_unexplained_difference": 0
+  }
 }

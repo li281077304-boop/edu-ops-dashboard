@@ -18,6 +18,8 @@ from typing import Any
 from openpyxl import Workbook, load_workbook
 
 from .excel_adapter import build_snapshot
+from .golden_uat import run_golden_uat
+from .integrity import check as check_snapshot_integrity
 
 _EXTENSIONS = {".xls", ".xlsx", ".xlsm", ".csv", ".py"}
 _WEEK_WORDS = {"一": 1, "二": 2, "三": 3, "四": 4, "五": 5}
@@ -284,13 +286,54 @@ def run_production(source_root: str | Path, output_root: str | Path, *, template
     if not same_existing or not dated_output.exists() or not latest_output.exists():
         render_excel(snapshot, dated_output, template_path)
         render_excel(snapshot, latest_output, template_path)
+    # Keep the historical regression and snapshot integrity evidence as part
+    # of the same production command.  These are reports about the snapshot
+    # inputs, never alternate business-value producers.
+    golden_files = {
+        int(item["period"][2]): Path(item["path"])
+        for item in manifest["files"]
+        if item["role"] == "FINAL_GOLDEN"
+        and item.get("period")
+        and tuple(item["period"][:2]) == tuple(period[:2])
+        and len(item["period"]) > 2
+    }
+    golden_dir = output / "golden"
+    golden_report = run_golden_uat(
+        Path(selected["wps"]["path"]),
+        Path(selected["tms"]["path"]),
+        golden_files,
+        golden_dir,
+    )
+    integrity_report = check_snapshot_integrity(snapshot)
+    (output / "integrity_report.json").write_text(
+        json.dumps(integrity_report, ensure_ascii=False, indent=2), encoding="utf-8"
+    )
     (output / "PIPELINE_STATUS.json").write_text(json.dumps({
         "status": "PASS",
         "manifest_hash": manifest["manifest_hash"],
         "resolution": resolution,
         "snapshot_business_fingerprint": snapshot["business_fingerprint"],
+        "evidence": {
+            "snapshot": str(previous_path),
+            "excel": str(latest_output),
+            "integrity": str(output / "integrity_report.json"),
+            "golden": str(golden_dir / "golden_uat_report.json"),
+            "golden_unexplained_difference": golden_report["unexplained_difference"],
+        },
     }, ensure_ascii=False, indent=2), encoding="utf-8")
-    return {"manifest": manifest, "resolution": resolution, "snapshot": snapshot, "status": "PASS"}
+    return {
+        "manifest": manifest,
+        "resolution": resolution,
+        "snapshot": snapshot,
+        "status": "PASS",
+        "evidence": {
+            "snapshot": previous_path,
+            "excel": latest_output,
+            "integrity": output / "integrity_report.json",
+            "golden": golden_dir / "golden_uat_report.json",
+            "golden_unexplained_difference": golden_report["unexplained_difference"],
+        },
+    }
 
 
 def main(argv: list[str] | None = None) -> int:

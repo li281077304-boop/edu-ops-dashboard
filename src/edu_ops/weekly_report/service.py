@@ -34,5 +34,7 @@ def snapshot_summary(snapshot: dict[str, Any]) -> dict[str, Any]:
         "completeness": snapshot.get("completeness"),
         "week_over_week": snapshot.get("week_over_week"),
         "reconciliation": snapshot.get("reconciliation"),
+        "manifest_hash": snapshot.get("manifest_hash"),
+        "business_fingerprint": snapshot.get("business_fingerprint"),
         "generated_at": snapshot.get("generated_at"),
     }

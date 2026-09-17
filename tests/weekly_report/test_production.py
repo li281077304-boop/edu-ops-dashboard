@@ -1,0 +1,71 @@
+from __future__ import annotations
+
+import json
+import shutil
+from pathlib import Path
+
+from openpyxl import load_workbook
+
+from edu_ops.weekly_report.production import (
+    discover_sources,
+    resolve_periods,
+    run_production,
+    week_delta,
+)
+
+
+ASSET_ROOT = Path("/Users/macos/Documents/03-周报数据/数学组周数据统计")
+
+
+def _real_source_manifest():
+    return discover_sources(ASSET_ROOT)
+
+
+def test_source_manifest_and_period_gate_find_latest_complete_real_period():
+    manifest = _real_source_manifest()
+    assert manifest["files"]
+    roles = {item["role"] for item in manifest["files"]}
+    assert {"WPS", "TMS", "FINAL_GOLDEN"}.issubset(roles)
+    resolution = resolve_periods(manifest)
+    assert resolution["latest_available_period"] == (2026, 6, 4)
+    assert resolution["latest_complete_period"] == (2026, 6, 4)
+    assert resolution["completeness"] == "COMPLETE"
+
+
+def test_next_week_fixture_is_discovered_without_rule_changes(tmp_path: Path):
+    source = tmp_path / "inbox"
+    source.mkdir()
+    for name in ("二校数学组数据汇总-六月第四周.xls", "数学组数据统计表-宣城二校6月第4周.xls", "排课列表_06月01日到06月28日_202606301011.xls"):
+        shutil.copy2(ASSET_ROOT / name, source / name)
+    initial = resolve_periods(discover_sources(source))
+    assert initial["latest_complete_period"] == (2026, 6, 4)
+    # A new period is represented by the same real schema, not a synthetic row.
+    shutil.copy2(source / "二校数学组数据汇总-六月第四周.xls", source / "二校数学组数据汇总-七月第一周.xls")
+    shutil.copy2(source / "数学组数据统计表-宣城二校6月第4周.xls", source / "数学组数据统计表-宣城二校7月第1周.xls")
+    shutil.copy2(source / "排课列表_06月01日到06月28日_202606301011.xls", source / "排课列表_07月01日到07月07日_202607071011.xls")
+    updated = resolve_periods(discover_sources(source))
+    assert updated["latest_available_period"] == (2026, 7, 1)
+    assert updated["latest_complete_period"] == (2026, 7, 1)
+
+
+def test_production_dry_run_is_idempotent_and_exports_reopenable_excel(tmp_path: Path):
+    output = tmp_path / "out"
+    first = run_production(ASSET_ROOT, output, template=ASSET_ROOT / "数学组数据统计表基础模板.xlsx")
+    first_snapshot = json.loads((output / "weekly_report_snapshot.json").read_text(encoding="utf-8"))
+    second = run_production(ASSET_ROOT, output, template=ASSET_ROOT / "数学组数据统计表基础模板.xlsx")
+    second_snapshot = json.loads((output / "weekly_report_snapshot.json").read_text(encoding="utf-8"))
+    assert first["status"] == second["status"] == "PASS"
+    assert first_snapshot["business_fingerprint"] == second_snapshot["business_fingerprint"]
+    assert second_snapshot["idempotency"]["same_input_business_fingerprint"] is True
+    workbook = load_workbook(output / "weekly_report_2026-06-w4.xlsx", data_only=False)
+    assert {"学生", "组课时生产", "教师", "生产元数据"}.issubset(workbook.sheetnames)
+    assert all("#REF!" not in str(cell.value) for sheet in workbook.worksheets for row in sheet.iter_rows() for cell in row)
+
+
+def test_week_delta_is_explicit_and_bounded():
+    current = {"students": {"single_subject_total": 12}, "production": {"tms": {"one_to_one_ks": 10, "class_ks": 20, "week_hours_equivalent": 16}}, "teachers": [{"name": "A"}, {"name": "B"}]}
+    previous = {"students": {"single_subject_total": 10}, "production": {"tms": {"one_to_one_ks": 8, "class_ks": 20, "week_hours_equivalent": 14}}, "teachers": [{"name": "A"}]}
+    result = week_delta(current, previous)
+    assert result["status"] == "COMPUTED"
+    assert result["metrics"]["students.single_subject_total"]["delta"] == 2
+    assert result["metrics"]["teachers.count"]["delta"] == 1

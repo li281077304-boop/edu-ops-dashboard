@@ -6,7 +6,12 @@ from pathlib import Path
 from typing import Any
 
 
-DEFAULT_SNAPSHOT = Path(__file__).resolve().parents[3] / "data" / "processed" / "weekly_report_snapshot.json"
+_DATA_ROOT = Path(__file__).resolve().parents[3] / "data" / "processed"
+DEFAULT_SNAPSHOT = (
+    _DATA_ROOT / "production" / "weekly_report_snapshot.json"
+    if (_DATA_ROOT / "production" / "weekly_report_snapshot.json").exists()
+    else _DATA_ROOT / "weekly_report_snapshot.json"
+)
 
 
 def load_snapshot(path: str | Path | None = None) -> dict[str, Any]:
@@ -26,4 +31,8 @@ def snapshot_summary(snapshot: dict[str, Any]) -> dict[str, Any]:
         "warnings": snapshot.get("warnings", []),
         "unresolved_items": snapshot.get("unresolved_items", []),
         "source_metadata": snapshot.get("source_metadata", []),
+        "completeness": snapshot.get("completeness"),
+        "week_over_week": snapshot.get("week_over_week"),
+        "reconciliation": snapshot.get("reconciliation"),
+        "generated_at": snapshot.get("generated_at"),
     }

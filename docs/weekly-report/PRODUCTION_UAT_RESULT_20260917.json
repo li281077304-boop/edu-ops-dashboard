@@ -1,0 +1,44 @@
+{
+  "version": "1.0",
+  "status": "PASS_WITH_WARNING",
+  "gates": {
+    "source_inbox": "PASS",
+    "period_resolution": "PASS",
+    "completeness": "PASS",
+    "snapshot": "PASS",
+    "reconciliation": "PASS_WITH_WARNING",
+    "saas_api": "PASS",
+    "saas_web": "PASS",
+    "excel_export": "PASS",
+    "idempotency": "PASS",
+    "historical_golden": "PASS_WITH_WARNING",
+    "latest_real_period": "PASS",
+    "next_week_readiness": "PASS",
+    "human_interrupt_count": 0
+  },
+  "latest_available_period": [
+    2026,
+    6,
+    4
+  ],
+  "latest_complete_period": [
+    2026,
+    6,
+    4
+  ],
+  "metrics": {
+    "students_single_subject": 263,
+    "one_to_one_ks": 219,
+    "class_ks": 411,
+    "equivalent_hours": 356,
+    "teacher_count": 18
+  },
+  "evidence": [
+    "data/processed/production/SOURCE_MANIFEST.json",
+    "data/processed/production/PERIOD_RESOLUTION.json",
+    "data/processed/production/weekly_report_snapshot.json",
+    "data/processed/production/weekly_report_2026-06-w4.xlsx",
+    "data/processed/production/golden/golden_uat_report.json",
+    "tests/weekly_report/test_production.py"
+  ]
+}

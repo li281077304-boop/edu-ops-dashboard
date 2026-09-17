@@ -1,0 +1,19 @@
+{
+  "version": "1.0",
+  "snapshot_truth": "WeeklyReportSnapshot",
+  "gates": [
+    {"id":"UAT-01","name":"source_inbox_provenance","status":"REQUIRED"},
+    {"id":"UAT-02","name":"period_resolution","status":"REQUIRED"},
+    {"id":"UAT-03","name":"completeness_gate","status":"REQUIRED"},
+    {"id":"UAT-04","name":"snapshot","status":"REQUIRED"},
+    {"id":"UAT-05","name":"reconciliation_and_delta","status":"REQUIRED"},
+    {"id":"UAT-06","name":"saas_api_web","status":"REQUIRED"},
+    {"id":"UAT-07","name":"excel_export","status":"REQUIRED"},
+    {"id":"UAT-08","name":"one_command_idempotency","status":"REQUIRED"},
+    {"id":"UAT-09","name":"historical_golden","status":"REQUIRED"},
+    {"id":"UAT-10","name":"latest_real_period","status":"REQUIRED"},
+    {"id":"UAT-11","name":"next_week_readiness","status":"REQUIRED"},
+    {"id":"UAT-12","name":"ralph_delivery","status":"REQUIRED"}
+  ],
+  "human_categories": ["SOURCE_CONFIRMATION","BUSINESS_DECISION","USER_ONLY_INPUT","CREDENTIAL_OR_SECRET","EXTERNAL_AUTHORIZATION","IRREVERSIBLE_EXTERNAL_ACTION"]
+}

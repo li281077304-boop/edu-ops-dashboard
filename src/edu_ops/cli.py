@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import argparse
+import sys
 from datetime import date, datetime, timezone
 from pathlib import Path
 
@@ -16,6 +17,12 @@ from .storage.postgres import PostgresWriter, connect
 
 
 def main() -> int:
+    if len(sys.argv) >= 2 and sys.argv[1] == "weekly-report":
+        if len(sys.argv) < 3 or sys.argv[2] != "run":
+            raise SystemExit("用法: edu-ops weekly-report run --source-root ROOT --output-root ROOT")
+        from .weekly_report.production import main as weekly_report_main
+
+        return weekly_report_main(sys.argv[3:])
     parser = argparse.ArgumentParser(description="edu-ops-dashboard 基础工具")
     parser.add_argument("--today", type=date.fromisoformat, default=date.today())
     parser.add_argument("--config", type=Path, default=Path("config/manual_months.csv"))

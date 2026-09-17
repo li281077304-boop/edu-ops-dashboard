@@ -1,0 +1,1151 @@
+{
+  "version": "1.0",
+  "period": {
+    "year": 2026,
+    "month": 6,
+    "week": 4,
+    "label": "2026年6月第4周",
+    "start": "2026-06-22",
+    "end": "2026-06-28",
+    "group": "数学组",
+    "campus": "宣城二校"
+  },
+  "students": {
+    "one_to_one": {
+      "primary": 57.0,
+      "high": 37.0,
+      "double_three": 2.0,
+      "stop": 13.0,
+      "new": 0,
+      "completed": 1,
+      "refund": null
+    },
+    "class": {
+      "primary": 130.0,
+      "high": 39.0,
+      "double_three": 0.0,
+      "stop": 17.0,
+      "classes": 39.0,
+      "new": 1,
+      "completed": 4,
+      "refund": null
+    },
+    "single_subject_total": 263.0
+  },
+  "fullness": {
+    "status": "BUSINESS_RULE_MISSING",
+    "reason": "WPS export lacks a stable class-size capacity breakdown for this week; no rate is fabricated"
+  },
+  "production": {
+    "tms": {
+      "one_to_one_ks": 219.0,
+      "class_ks": 411.0,
+      "one_to_one_sessions": 73.0,
+      "class_sessions": 30.0,
+      "class_production_ks": 411.0,
+      "week_hours_equivalent": 356.0
+    },
+    "golden": {
+      "month_hours": 2180.5,
+      "week_hours": 356.0,
+      "one_to_one_ks": 219.0,
+      "class_ks": 411.0,
+      "teacher_count": 18.0,
+      "special_one_to_one": null,
+      "special_class": null
+    }
+  },
+  "rules": {
+    "bkh": {
+      "canonical_name": "class_production_ks",
+      "unit": "KS",
+      "source_alias": "bkh",
+      "formula": "class attendance × 3",
+      "status": "DETERMINED"
+    },
+    "production_hours": {
+      "formula": "one_to_one_ks + class_production_ks / 3",
+      "status": "DETERMINED"
+    },
+    "average_hours": {
+      "formula": "(I + N) / (H + L)",
+      "status": "SOURCE_MISSING"
+    }
+  },
+  "teachers": [
+    {
+      "name": "任勇",
+      "status": "active",
+      "one_to_one": {
+        "primary": 2.0,
+        "high": 1.0,
+        "double_three": 0.0,
+        "hours": 6.0,
+        "sessions": 2.0,
+        "stop": 1.0,
+        "weekly_average": 2.0
+      },
+      "class": {
+        "primary": 0.0,
+        "high": 3.0,
+        "double_three": 0.0,
+        "classes": 1.0,
+        "hours": 0.0,
+        "sessions": 0.0,
+        "stop": 0.0,
+        "average_class_size": 3.0
+      },
+      "subject_count": 4.0,
+      "hours": 6.0,
+      "sessions": 2.0,
+      "leave": 3.0,
+      "extra": 0.0,
+      "expansion": 0.0,
+      "production": {
+        "one_to_one_ks": 6.0,
+        "class_ks": 0.0,
+        "one_to_one_sessions": 2.0,
+        "class_sessions": 0.0
+      }
+    },
+    {
+      "name": "胡长春",
+      "status": "active",
+      "one_to_one": {
+        "primary": 0.0,
+        "high": 4.0,
+        "double_three": 0.0,
+        "hours": 9.0,
+        "sessions": 3.0,
+        "stop": 0.0,
+        "weekly_average": 2.25
+      },
+      "class": {
+        "primary": 0.0,
+        "high": 11.0,
+        "double_three": 0.0,
+        "classes": 3.0,
+        "hours": 21.0,
+        "sessions": 2.0,
+        "stop": 0.0,
+        "average_class_size": 3.6666666666666665
+      },
+      "subject_count": 7.0,
+      "hours": 16.0,
+      "sessions": 5.0,
+      "leave": 0.0,
+      "extra": 0.0,
+      "expansion": 0.0,
+      "production": {
+        "one_to_one_ks": 9.0,
+        "class_ks": 21.0,
+        "one_to_one_sessions": 3.0,
+        "class_sessions": 2.0
+      }
+    },
+    {
+      "name": "张昱",
+      "status": "active",
+      "one_to_one": {
+        "primary": 3.0,
+        "high": 0.0,
+        "double_three": 0.0,
+        "hours": 3.0,
+        "sessions": 1.0,
+        "stop": 0.0,
+        "weekly_average": 1.0
+      },
+      "class": {
+        "primary": 0.0,
+        "high": 6.0,
+        "double_three": 0.0,
+        "classes": 2.0,
+        "hours": 15.0,
+        "sessions": 2.0,
+        "stop": 0.0,
+        "average_class_size": 3.0
+      },
+      "subject_count": 5.0,
+      "hours": 8.0,
+      "sessions": 3.0,
+      "leave": 0.0,
+      "extra": 0.0,
+      "expansion": 0.0,
+      "production": {
+        "one_to_one_ks": 3.0,
+        "class_ks": 15.0,
+        "one_to_one_sessions": 1.0,
+        "class_sessions": 2.0
+      }
+    },
+    {
+      "name": "廖永翠",
+      "status": "active",
+      "one_to_one": {
+        "primary": 3.0,
+        "high": 1.0,
+        "double_three": 0.0,
+        "hours": 9.0,
+        "sessions": 3.0,
+        "stop": 2.0,
+        "weekly_average": 2.25
+      },
+      "class": {
+        "primary": 7.0,
+        "high": 2.0,
+        "double_three": 0.0,
+        "classes": 2.0,
+        "hours": 21.0,
+        "sessions": 1.0,
+        "stop": 2.0,
+        "average_class_size": 4.5
+      },
+      "subject_count": 6.0,
+      "hours": 16.0,
+      "sessions": 4.0,
+      "leave": 0.0,
+      "extra": 0.0,
+      "expansion": 0.0,
+      "production": {
+        "one_to_one_ks": 9.0,
+        "class_ks": 21.0,
+        "one_to_one_sessions": 3.0,
+        "class_sessions": 1.0
+      }
+    },
+    {
+      "name": "董葛飞",
+      "status": "active",
+      "one_to_one": {
+        "primary": 3.0,
+        "high": 3.0,
+        "double_three": 0.0,
+        "hours": 12.0,
+        "sessions": 4.0,
+        "stop": 0.0,
+        "weekly_average": 2.0
+      },
+      "class": {
+        "primary": 5.0,
+        "high": 0.0,
+        "double_three": 0.0,
+        "classes": 1.0,
+        "hours": 12.0,
+        "sessions": 1.0,
+        "stop": 0.0,
+        "average_class_size": 5.0
+      },
+      "subject_count": 7.0,
+      "hours": 16.0,
+      "sessions": 5.0,
+      "leave": 0.0,
+      "extra": 0.0,
+      "expansion": 0.0,
+      "production": {
+        "one_to_one_ks": 12.0,
+        "class_ks": 12.0,
+        "one_to_one_sessions": 4.0,
+        "class_sessions": 1.0
+      }
+    },
+    {
+      "name": "高明亮",
+      "status": "active",
+      "one_to_one": {
+        "primary": 0.0,
+        "high": 6.0,
+        "double_three": 0.0,
+        "hours": 12.0,
+        "sessions": 4.0,
+        "stop": 0.0,
+        "weekly_average": 2.0
+      },
+      "class": {
+        "primary": 3.0,
+        "high": 3.0,
+        "double_three": 0.0,
+        "classes": 2.0,
+        "hours": 9.0,
+        "sessions": 1.0,
+        "stop": 0.0,
+        "average_class_size": 3.0
+      },
+      "subject_count": 8.0,
+      "hours": 15.0,
+      "sessions": 5.0,
+      "leave": 0.0,
+      "extra": 0.0,
+      "expansion": 0.0,
+      "production": {
+        "one_to_one_ks": 12.0,
+        "class_ks": 9.0,
+        "one_to_one_sessions": 4.0,
+        "class_sessions": 1.0
+      }
+    },
+    {
+      "name": "徐良琴",
+      "status": "active",
+      "one_to_one": {
+        "primary": 4.0,
+        "high": 3.0,
+        "double_three": 1.0,
+        "hours": 12.0,
+        "sessions": 4.0,
+        "stop": 2.0,
+        "weekly_average": 1.7142857142857142
+      },
+      "class": {
+        "primary": 1.0,
+        "high": 0.0,
+        "double_three": 0.0,
+        "classes": 1.0,
+        "hours": 0.0,
+        "sessions": 0.0,
+        "stop": 0.0,
+        "average_class_size": 1.0
+      },
+      "subject_count": 8.0,
+      "hours": 12.0,
+      "sessions": 4.0,
+      "leave": 0.0,
+      "extra": 0.0,
+      "expansion": 0.0,
+      "production": {
+        "one_to_one_ks": 12.0,
+        "class_ks": 0.0,
+        "one_to_one_sessions": 4.0,
+        "class_sessions": 0.0
+      }
+    },
+    {
+      "name": "徐荣祥",
+      "status": "active",
+      "one_to_one": {
+        "primary": 0.0,
+        "high": 8.0,
+        "double_three": 0.0,
+        "hours": 12.0,
+        "sessions": 4.0,
+        "stop": 2.0,
+        "weekly_average": 1.5
+      },
+      "class": {
+        "primary": 3.0,
+        "high": 1.0,
+        "double_three": 0.0,
+        "classes": 2.0,
+        "hours": 9.0,
+        "sessions": 1.0,
+        "stop": 3.0,
+        "average_class_size": 2.0
+      },
+      "subject_count": 10.0,
+      "hours": 15.0,
+      "sessions": 5.0,
+      "leave": 0.0,
+      "extra": 0.0,
+      "expansion": 0.0,
+      "production": {
+        "one_to_one_ks": 12.0,
+        "class_ks": 9.0,
+        "one_to_one_sessions": 4.0,
+        "class_sessions": 1.0
+      }
+    },
+    {
+      "name": "杨宇宸",
+      "status": "active",
+      "one_to_one": {
+        "primary": 10.0,
+        "high": 0.0,
+        "double_three": 0.0,
+        "hours": 18.0,
+        "sessions": 6.0,
+        "stop": 3.0,
+        "weekly_average": 1.8
+      },
+      "class": {
+        "primary": 7.0,
+        "high": 0.0,
+        "double_three": 0.0,
+        "classes": 1.0,
+        "hours": 21.0,
+        "sessions": 1.0,
+        "stop": 0.0,
+        "average_class_size": 7.0
+      },
+      "subject_count": 11.0,
+      "hours": 25.0,
+      "sessions": 7.0,
+      "leave": 0.0,
+      "extra": 0.0,
+      "expansion": 0.0,
+      "production": {
+        "one_to_one_ks": 18.0,
+        "class_ks": 21.0,
+        "one_to_one_sessions": 6.0,
+        "class_sessions": 1.0
+      }
+    },
+    {
+      "name": "周文婧",
+      "status": "active",
+      "one_to_one": {
+        "primary": 4.0,
+        "high": 0.0,
+        "double_three": 0.0,
+        "hours": 15.0,
+        "sessions": 5.0,
+        "stop": 0.0,
+        "weekly_average": 3.75
+      },
+      "class": {
+        "primary": 0.0,
+        "high": 0.0,
+        "double_three": 0.0,
+        "classes": 0.0,
+        "hours": 0.0,
+        "sessions": 0.0,
+        "stop": 0.0,
+        "average_class_size": 7.0
+      },
+      "subject_count": 4.0,
+      "hours": 15.0,
+      "sessions": 5.0,
+      "leave": 0.0,
+      "extra": 0.0,
+      "expansion": 0.0,
+      "production": {
+        "one_to_one_ks": 15.0,
+        "class_ks": 0.0,
+        "one_to_one_sessions": 5.0,
+        "class_sessions": 0.0
+      }
+    },
+    {
+      "name": "潘瑶",
+      "status": "active",
+      "one_to_one": {
+        "primary": 4.0,
+        "high": 0.0,
+        "double_three": 0.0,
+        "hours": 24.0,
+        "sessions": 8.0,
+        "stop": 3.0,
+        "weekly_average": 6.0
+      },
+      "class": {
+        "primary": 11.0,
+        "high": 0.0,
+        "double_three": 0.0,
+        "classes": 3.0,
+        "hours": 57.0,
+        "sessions": 3.0,
+        "stop": 5.0,
+        "average_class_size": 3.6666666666666665
+      },
+      "subject_count": 7.0,
+      "hours": 43.0,
+      "sessions": 11.0,
+      "leave": 0.0,
+      "extra": 0.0,
+      "expansion": 0.0,
+      "production": {
+        "one_to_one_ks": 24.0,
+        "class_ks": 57.0,
+        "one_to_one_sessions": 8.0,
+        "class_sessions": 3.0
+      }
+    },
+    {
+      "name": "李娜",
+      "status": "active",
+      "one_to_one": {
+        "primary": 8.0,
+        "high": 0.0,
+        "double_three": 0.0,
+        "hours": 24.0,
+        "sessions": 8.0,
+        "stop": 0.0,
+        "weekly_average": 3.0
+      },
+      "class": {
+        "primary": 7.0,
+        "high": 0.0,
+        "double_three": 0.0,
+        "classes": 1.0,
+        "hours": 21.0,
+        "sessions": 1.0,
+        "stop": 0.0,
+        "average_class_size": 7.0
+      },
+      "subject_count": 9.0,
+      "hours": 31.0,
+      "sessions": 9.0,
+      "leave": 0.0,
+      "extra": 0.0,
+      "expansion": 0.0,
+      "production": {
+        "one_to_one_ks": 24.0,
+        "class_ks": 21.0,
+        "one_to_one_sessions": 8.0,
+        "class_sessions": 1.0
+      }
+    },
+    {
+      "name": "梁缘",
+      "status": "active",
+      "one_to_one": {
+        "primary": 2.0,
+        "high": 1.0,
+        "double_three": 0.0,
+        "hours": 9.0,
+        "sessions": 3.0,
+        "stop": 0.0,
+        "weekly_average": 3.0
+      },
+      "class": {
+        "primary": 31.0,
+        "high": 2.0,
+        "double_three": 0.0,
+        "classes": 5.0,
+        "hours": 93.0,
+        "sessions": 6.0,
+        "stop": 2.0,
+        "average_class_size": 6.6
+      },
+      "subject_count": 8.0,
+      "hours": 40.0,
+      "sessions": 9.0,
+      "leave": 0.0,
+      "extra": 0.0,
+      "expansion": 0.0,
+      "production": {
+        "one_to_one_ks": 9.0,
+        "class_ks": 93.0,
+        "one_to_one_sessions": 3.0,
+        "class_sessions": 6.0
+      }
+    },
+    {
+      "name": "张旭",
+      "status": "active",
+      "one_to_one": {
+        "primary": 1.0,
+        "high": 4.0,
+        "double_three": 1.0,
+        "hours": 12.0,
+        "sessions": 4.0,
+        "stop": 0.0,
+        "weekly_average": 2.4
+      },
+      "class": {
+        "primary": 6.0,
+        "high": 7.0,
+        "double_three": 0.0,
+        "classes": 4.0,
+        "hours": 21.0,
+        "sessions": 2.0,
+        "stop": 2.0,
+        "average_class_size": 3.25
+      },
+      "subject_count": 9.0,
+      "hours": 19.0,
+      "sessions": 6.0,
+      "leave": 0.0,
+      "extra": 0.0,
+      "expansion": 0.0,
+      "production": {
+        "one_to_one_ks": 12.0,
+        "class_ks": 21.0,
+        "one_to_one_sessions": 4.0,
+        "class_sessions": 2.0
+      }
+    },
+    {
+      "name": "李梦",
+      "status": "active",
+      "one_to_one": {
+        "primary": 5.0,
+        "high": 0.0,
+        "double_three": 0.0,
+        "hours": 15.0,
+        "sessions": 5.0,
+        "stop": 0.0,
+        "weekly_average": 3.0
+      },
+      "class": {
+        "primary": 18.0,
+        "high": 0.0,
+        "double_three": 0.0,
+        "classes": 3.0,
+        "hours": 30.0,
+        "sessions": 2.0,
+        "stop": 3.0,
+        "average_class_size": 6.0
+      },
+      "subject_count": 8.0,
+      "hours": 25.0,
+      "sessions": 7.0,
+      "leave": 0.0,
+      "extra": 0.0,
+      "expansion": 0.0,
+      "production": {
+        "one_to_one_ks": 15.0,
+        "class_ks": 30.0,
+        "one_to_one_sessions": 5.0,
+        "class_sessions": 2.0
+      }
+    },
+    {
+      "name": "李媛媛",
+      "status": "active",
+      "one_to_one": {
+        "primary": 2.0,
+        "high": 2.0,
+        "double_three": 0.0,
+        "hours": 6.0,
+        "sessions": 2.0,
+        "stop": 0.0,
+        "weekly_average": 1.5
+      },
+      "class": {
+        "primary": 21.0,
+        "high": 4.0,
+        "double_three": 0.0,
+        "classes": 6.0,
+        "hours": 51.0,
+        "sessions": 5.0,
+        "stop": 0.0,
+        "average_class_size": 4.166666666666667
+      },
+      "subject_count": 10.0,
+      "hours": 23.0,
+      "sessions": 7.0,
+      "leave": 0.0,
+      "extra": 0.0,
+      "expansion": 0.0,
+      "production": {
+        "one_to_one_ks": 6.0,
+        "class_ks": 51.0,
+        "one_to_one_sessions": 2.0,
+        "class_sessions": 5.0
+      }
+    },
+    {
+      "name": "汪涛",
+      "status": "active",
+      "one_to_one": {
+        "primary": 2.0,
+        "high": 3.0,
+        "double_three": 0.0,
+        "hours": 12.0,
+        "sessions": 4.0,
+        "stop": 0.0,
+        "weekly_average": 2.4
+      },
+      "class": {
+        "primary": 4.0,
+        "high": 0.0,
+        "double_three": 0.0,
+        "classes": 1.0,
+        "hours": 12.0,
+        "sessions": 1.0,
+        "stop": 0.0,
+        "average_class_size": 4.0
+      },
+      "subject_count": 2.0,
+      "hours": 16.0,
+      "sessions": 5.0,
+      "leave": 0.0,
+      "extra": 0.0,
+      "expansion": 0.0,
+      "production": {
+        "one_to_one_ks": 12.0,
+        "class_ks": 12.0,
+        "one_to_one_sessions": 4.0,
+        "class_sessions": 1.0
+      }
+    },
+    {
+      "name": "费晓曼",
+      "status": "active",
+      "one_to_one": {
+        "primary": 4.0,
+        "high": 1.0,
+        "double_three": 0.0,
+        "hours": 9.0,
+        "sessions": 3.0,
+        "stop": 0.0,
+        "weekly_average": 1.8
+      },
+      "class": {
+        "primary": 6.0,
+        "high": 0.0,
+        "double_three": 0.0,
+        "classes": 1.0,
+        "hours": 18.0,
+        "sessions": 1.0,
+        "stop": 0.0,
+        "average_class_size": 6.0
+      },
+      "subject_count": 6.0,
+      "hours": 15.0,
+      "sessions": 4.0,
+      "leave": 0.0,
+      "extra": 0.0,
+      "expansion": 0.0,
+      "production": {
+        "one_to_one_ks": 9.0,
+        "class_ks": 18.0,
+        "one_to_one_sessions": 3.0,
+        "class_sessions": 1.0
+      }
+    }
+  ],
+  "roster": {
+    "status": "DETERMINED",
+    "teachers": [
+      "任勇",
+      "胡长春",
+      "张昱",
+      "廖永翠",
+      "董葛飞",
+      "高明亮",
+      "徐良琴",
+      "徐荣祥",
+      "杨宇宸",
+      "周文婧",
+      "潘瑶",
+      "李娜",
+      "梁缘",
+      "张旭",
+      "李梦",
+      "李媛媛",
+      "汪涛",
+      "费晓曼"
+    ],
+    "source": "/Users/macos/Documents/03-周报数据/数学组周数据统计/teacher_config.py",
+    "sha256": "b7001e351e6f10b36b0f5f39f73f68fcc19dfb9154518248778178d69ee8719f",
+    "count": 18
+  },
+  "adjustments": {
+    "raw_calculated": {
+      "one_to_one": {
+        "primary": 57.0,
+        "high": 37.0,
+        "double_three": 2.0,
+        "stop": 13.0,
+        "new": 0,
+        "completed": 1,
+        "refund": null
+      },
+      "class": {
+        "primary": 130.0,
+        "high": 39.0,
+        "double_three": 0.0,
+        "stop": 17.0,
+        "classes": 39.0,
+        "new": 1,
+        "completed": 4,
+        "refund": null
+      },
+      "single_subject_total": 263.0
+    },
+    "manual_adjustments": [],
+    "final_confirmed": {
+      "one_to_one": {
+        "primary": 57.0,
+        "high": 37.0,
+        "double_three": 2.0,
+        "stop": 13.0,
+        "new": 0,
+        "completed": 1,
+        "refund": null
+      },
+      "class": {
+        "primary": 130.0,
+        "high": 39.0,
+        "double_three": 0.0,
+        "stop": 17.0,
+        "classes": 39.0,
+        "new": 1,
+        "completed": 4,
+        "refund": null
+      },
+      "single_subject_total": 263.0
+    }
+  },
+  "manual_adjustments": [],
+  "source_metadata": [
+    {
+      "path": "/Users/macos/Documents/03-周报数据/数学组周数据统计/二校数学组数据汇总-六月第四周.xls",
+      "sha256": "55f3e66eb39e1d8ba8914291cb59be025526be2e023fec89ce2789de6410208d",
+      "role": "WPS",
+      "sheet": "第四周",
+      "row_count": 54
+    },
+    {
+      "path": "/Users/macos/Documents/03-周报数据/数学组周数据统计/排课列表_06月01日到06月28日_202606301011.xls",
+      "sha256": "3a496a772b0ab3bec63b300ab4b79483074fe796fa724d5fea442ad3b4418619",
+      "role": "TMS",
+      "row_count": 1617
+    },
+    {
+      "path": "/Users/macos/Documents/03-周报数据/数学组周数据统计/数学组数据统计表-宣城二校6月第4周.xls",
+      "sha256": "3390a2a4fa6ef4f406e2134d4abb6bdc308cd3f2aa1b983492a98a317be997b6",
+      "role": "FINAL_GOLDEN"
+    },
+    {
+      "path": "/Users/macos/Documents/03-周报数据/数学组周数据统计/teacher_config.py",
+      "sha256": "b7001e351e6f10b36b0f5f39f73f68fcc19dfb9154518248778178d69ee8719f",
+      "role": "ACTIVE_ROSTER",
+      "row_count": 18
+    }
+  ],
+  "warnings": [
+    "refund source is outside the P0 weekly-report scope."
+  ],
+  "unresolved_items": [
+    {
+      "metric": "students.changes.refund",
+      "status": "SOURCE_MISSING",
+      "reason": "weekly workflow does not have a verified refund source"
+    },
+    {
+      "metric": "production.average_hours_and_sessions",
+      "status": "SOURCE_MISSING",
+      "reason": "bkh/class KS is confirmed, but adjusted denominator H+L is not present in the raw WPS export"
+    },
+    {
+      "metric": "students.fullness",
+      "status": "BUSINESS_RULE_MISSING",
+      "reason": "the WPS export does not contain a stable class-capacity denominator for fullness"
+    }
+  ],
+  "golden_reference": {
+    "workbook_type": "CDFV2",
+    "student": {
+      "single_subject_total": 265.0,
+      "one_to_one": {
+        "primary": 57.0,
+        "high": 37.0,
+        "double_three": 2.0,
+        "stop": 11.0,
+        "new": null,
+        "completed": 1.0,
+        "refund": null
+      },
+      "class": {
+        "primary": 130.0,
+        "high": 39.0,
+        "double_three": 0.0,
+        "stop": 15.0,
+        "new": null,
+        "completed": 3.0,
+        "refund": null,
+        "classes": 39.0
+      }
+    },
+    "production": {
+      "month_hours": 2180.5,
+      "week_hours": 356.0,
+      "one_to_one_ks": 219.0,
+      "class_ks": 411.0,
+      "teacher_count": 18.0,
+      "special_one_to_one": null,
+      "special_class": null
+    },
+    "teachers": [
+      {
+        "name": "任勇",
+        "one_to_one_students": 3.0,
+        "one_to_one_hours": 12.0,
+        "one_to_one_weekly_average": 4.0,
+        "class_students": 3.0,
+        "class_count": 1.0,
+        "subject_count": 4.0,
+        "hours": 14.0,
+        "sessions": 5.0
+      },
+      {
+        "name": "胡长春",
+        "one_to_one_students": 6.0,
+        "one_to_one_hours": 18.0,
+        "one_to_one_weekly_average": 3.0,
+        "class_students": 12.0,
+        "class_count": 3.0,
+        "subject_count": 9.0,
+        "hours": 33.0,
+        "sessions": 10.0
+      },
+      {
+        "name": "张昱",
+        "one_to_one_students": 4.0,
+        "one_to_one_hours": 12.0,
+        "one_to_one_weekly_average": 3.0,
+        "class_students": 6.0,
+        "class_count": 2.0,
+        "subject_count": 6.0,
+        "hours": 30.0,
+        "sessions": 15.0
+      },
+      {
+        "name": "廖永翠",
+        "one_to_one_students": 4.0,
+        "one_to_one_hours": 15.0,
+        "one_to_one_weekly_average": 3.75,
+        "class_students": 10.0,
+        "class_count": 2.0,
+        "subject_count": 6.0,
+        "hours": 23.0,
+        "sessions": 7.0
+      },
+      {
+        "name": "董葛飞",
+        "one_to_one_students": 6.0,
+        "one_to_one_hours": 27.0,
+        "one_to_one_weekly_average": 4.5,
+        "class_students": 6.0,
+        "class_count": 2.0,
+        "subject_count": 8.0,
+        "hours": 32.0,
+        "sessions": 10.0
+      },
+      {
+        "name": "高明亮",
+        "one_to_one_students": 6.0,
+        "one_to_one_hours": 30.0,
+        "one_to_one_weekly_average": 5.0,
+        "class_students": 6.0,
+        "class_count": 2.0,
+        "subject_count": 8.0,
+        "hours": 38.0,
+        "sessions": 13.0
+      },
+      {
+        "name": "徐良琴",
+        "one_to_one_students": 7.0,
+        "one_to_one_hours": 24.0,
+        "one_to_one_weekly_average": 3.4285714285714284,
+        "class_students": 1.0,
+        "class_count": 1.0,
+        "subject_count": 8.0,
+        "hours": 26.0,
+        "sessions": 10.0
+      },
+      {
+        "name": "徐荣祥",
+        "one_to_one_students": 8.0,
+        "one_to_one_hours": 36.0,
+        "one_to_one_weekly_average": 4.5,
+        "class_students": 5.0,
+        "class_count": 2.0,
+        "subject_count": 10.0,
+        "hours": 39.0,
+        "sessions": 13.0
+      },
+      {
+        "name": "杨宇宸",
+        "one_to_one_students": 10.0,
+        "one_to_one_hours": 30.0,
+        "one_to_one_weekly_average": 3.0,
+        "class_students": 7.0,
+        "class_count": 1.0,
+        "subject_count": 11.0,
+        "hours": 37.0,
+        "sessions": 11.0
+      },
+      {
+        "name": "周文婧",
+        "one_to_one_students": 4.0,
+        "one_to_one_hours": 21.0,
+        "one_to_one_weekly_average": 5.25,
+        "class_students": 0.0,
+        "class_count": 0.0,
+        "subject_count": 4.0,
+        "hours": 21.0,
+        "sessions": 7.0
+      },
+      {
+        "name": "潘瑶",
+        "one_to_one_students": 4.0,
+        "one_to_one_hours": 18.0,
+        "one_to_one_weekly_average": 4.5,
+        "class_students": 28.0,
+        "class_count": 5.0,
+        "subject_count": 9.0,
+        "hours": 47.0,
+        "sessions": 13.0
+      },
+      {
+        "name": "李娜",
+        "one_to_one_students": 8.0,
+        "one_to_one_hours": 39.0,
+        "one_to_one_weekly_average": 4.875,
+        "class_students": 7.0,
+        "class_count": 1.0,
+        "subject_count": 9.0,
+        "hours": 42.0,
+        "sessions": 14.0
+      },
+      {
+        "name": "梁缘",
+        "one_to_one_students": 2.0,
+        "one_to_one_hours": 9.0,
+        "one_to_one_weekly_average": 4.5,
+        "class_students": 34.0,
+        "class_count": 5.0,
+        "subject_count": 7.0,
+        "hours": 38.0,
+        "sessions": 9.0
+      },
+      {
+        "name": "张旭",
+        "one_to_one_students": 6.0,
+        "one_to_one_hours": 24.0,
+        "one_to_one_weekly_average": 4.0,
+        "class_students": 12.0,
+        "class_count": 4.0,
+        "subject_count": 10.0,
+        "hours": 40.0,
+        "sessions": 14.0
+      },
+      {
+        "name": "王星",
+        "one_to_one_students": 1.0,
+        "one_to_one_hours": 3.0,
+        "one_to_one_weekly_average": 3.0,
+        "class_students": 0.0,
+        "class_count": 1.0,
+        "subject_count": 2.0,
+        "hours": 3.0,
+        "sessions": 1.0
+      },
+      {
+        "name": "李梦",
+        "one_to_one_students": 5.0,
+        "one_to_one_hours": 18.0,
+        "one_to_one_weekly_average": 3.6,
+        "class_students": 18.0,
+        "class_count": 3.0,
+        "subject_count": 8.0,
+        "hours": 34.0,
+        "sessions": 9.0
+      },
+      {
+        "name": "李媛媛",
+        "one_to_one_students": 4.0,
+        "one_to_one_hours": 13.5,
+        "one_to_one_weekly_average": 3.375,
+        "class_students": 25.0,
+        "class_count": 6.0,
+        "subject_count": 10.0,
+        "hours": 36.5,
+        "sessions": 12.5
+      },
+      {
+        "name": "汪涛",
+        "one_to_one_students": 5.0,
+        "one_to_one_hours": 21.0,
+        "one_to_one_weekly_average": 4.2,
+        "class_students": 4.0,
+        "class_count": 1.0,
+        "subject_count": 6.0,
+        "hours": 23.0,
+        "sessions": 8.0
+      },
+      {
+        "name": "费晓曼",
+        "one_to_one_students": 5.0,
+        "one_to_one_hours": 18.0,
+        "one_to_one_weekly_average": 3.6,
+        "class_students": 6.0,
+        "class_count": 1.0,
+        "subject_count": 6.0,
+        "hours": 24.0,
+        "sessions": 7.0
+      },
+      {
+        "name": "宋涛",
+        "one_to_one_students": 0.0,
+        "one_to_one_hours": 0.0,
+        "one_to_one_weekly_average": 7.0,
+        "class_students": 0.0,
+        "class_count": 0.0,
+        "subject_count": 0.0,
+        "hours": 0.0,
+        "sessions": 0.0
+      }
+    ]
+  },
+  "schema_version": "1.0",
+  "completeness": {
+    "status": "COMPLETE",
+    "missing_sources": [],
+    "latest_available_period": [
+      2026,
+      6,
+      4
+    ],
+    "latest_complete_period": [
+      2026,
+      6,
+      4
+    ]
+  },
+  "source_hashes": {
+    "wps": "55f3e66eb39e1d8ba8914291cb59be025526be2e023fec89ce2789de6410208d",
+    "tms": "3a496a772b0ab3bec63b300ab4b79483074fe796fa724d5fea442ad3b4418619",
+    "golden": "3390a2a4fa6ef4f406e2134d4abb6bdc308cd3f2aa1b983492a98a317be997b6",
+    "roster": "b7001e351e6f10b36b0f5f39f73f68fcc19dfb9154518248778178d69ee8719f"
+  },
+  "generated_at": "2026-09-17T00:50:06.936541+00:00",
+  "week_over_week": {
+    "status": "COMPUTED",
+    "metrics": {
+      "students.single_subject_total": {
+        "current": 263.0,
+        "previous": 263.0,
+        "delta": 0.0,
+        "delta_pct": 0.0
+      },
+      "production.one_to_one_ks": {
+        "current": 219.0,
+        "previous": 219.0,
+        "delta": 0.0,
+        "delta_pct": 0.0
+      },
+      "production.class_ks": {
+        "current": 411.0,
+        "previous": 411.0,
+        "delta": 0.0,
+        "delta_pct": 0.0
+      },
+      "production.week_hours_equivalent": {
+        "current": 356.0,
+        "previous": 356.0,
+        "delta": 0.0,
+        "delta_pct": 0.0
+      },
+      "teachers.count": {
+        "current": 18,
+        "previous": 18,
+        "delta": 0,
+        "delta_pct": 0.0
+      }
+    }
+  },
+  "reconciliation": {
+    "status": "WARNING",
+    "blocking": [],
+    "warnings": [
+      "refund source is outside the P0 weekly-report scope."
+    ]
+  },
+  "business_fingerprint": "ab68f05858dcc312e2b76834f7c3f05d801ddeecbb7e9163b132da772e914dbe",
+  "idempotency": {
+    "same_input_business_fingerprint": false
+  }
+}

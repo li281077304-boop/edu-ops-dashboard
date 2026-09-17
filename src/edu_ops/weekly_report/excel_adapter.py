@@ -177,12 +177,12 @@ def parse_wps(path: Path, week: int) -> dict[str, Any]:
     return {"workbook_type": kind, "sheet": sheet_name, "row_count": len(rows), "teacher_summary_count": len(teachers), "teachers": teachers, "students": totals, "changes": changes, "single_subject_total": single_subject_total}
 
 
-def _parse_day(value: Any) -> int | None:
-    match = re.search(r"2026-06-(\d{1,2})", str(value or ""))
+def _parse_day(value: Any, year: int = 2026, month: int = 6) -> int | None:
+    match = re.search(rf"{year:04d}-{month:02d}-(\d{{1,2}})", str(value or ""))
     return int(match.group(1)) if match else None
 
 
-def parse_tms(path: Path, week: int) -> dict[str, Any]:
+def parse_tms(path: Path, week: int, year: int = 2026, month: int = 6) -> dict[str, Any]:
     kind, workbook = _open_xls_or_xlsx(path)
     if hasattr(workbook, "sheetnames"):
         rows = [list(row) for row in workbook.active.iter_rows(values_only=True)]
@@ -198,7 +198,7 @@ def parse_tms(path: Path, week: int) -> dict[str, Any]:
         if len(row) < 12:
             continue
         teacher = str(row[11] or "").strip()
-        day = _parse_day(row[4] if len(row) > 4 else None)
+        day = _parse_day(row[4] if len(row) > 4 else None, year, month)
         if teacher not in target or day is None or not dmin <= day <= dmax:
             continue
         fmt = str(row[2] or "")
@@ -248,9 +248,11 @@ def build_snapshot(
     week: int,
     roster_path: Path | None = DEFAULT_ROSTER,
     adjustments: list[dict[str, Any]] | None = None,
+    year: int = 2026,
+    month: int = 6,
 ) -> dict[str, Any]:
     wps = parse_wps(wps_path, week)
-    tms = parse_tms(tms_path, week)
+    tms = parse_tms(tms_path, week, year, month)
     golden = read_golden(golden_path, week)
     start_day, end_day = WEEK_DAYS[week]
     students = wps["students"]
@@ -269,7 +271,7 @@ def build_snapshot(
     student_bridge = compile_adjustments(copy.deepcopy({**students, "single_subject_total": wps["single_subject_total"]}), adjustments)
     return {
         "version": "1.0",
-        "period": {"year": 2026, "month": 6, "week": week, "label": f"2026年6月第{week}周", "start": f"2026-06-{start_day:02d}", "end": f"2026-06-{end_day:02d}", "group": "数学组", "campus": "宣城二校"},
+        "period": {"year": year, "month": month, "week": week, "label": f"{year}年{month}月第{week}周", "start": f"{year:04d}-{month:02d}-{start_day:02d}", "end": f"{year:04d}-{month:02d}-{end_day:02d}", "group": "数学组", "campus": "宣城二校"},
         "students": student_bridge["final_confirmed"],
         "fullness": {"status": "BUSINESS_RULE_MISSING", "reason": "WPS export lacks a stable class-size capacity breakdown for this week; no rate is fabricated"},
         "production": {"tms": {**tms["totals"], "class_production_ks": tms["totals"]["class_ks"], "week_hours_equivalent": tms["totals"]["one_to_one_ks"] + tms["totals"]["class_ks"] / 3}, "golden": golden["production"]},

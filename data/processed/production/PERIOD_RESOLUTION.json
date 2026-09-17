@@ -1,0 +1,63 @@
+{
+  "latest_available_period": [
+    2026,
+    6,
+    4
+  ],
+  "latest_complete_period": [
+    2026,
+    6,
+    4
+  ],
+  "selected": {
+    "wps": {
+      "path": "/Users/macos/Documents/03-周报数据/数学组周数据统计/二校数学组数据汇总-六月第四周.xls",
+      "relative_path": "二校数学组数据汇总-六月第四周.xls",
+      "role": "WPS",
+      "period": [
+        2026,
+        6,
+        4
+      ],
+      "sha256": "55f3e66eb39e1d8ba8914291cb59be025526be2e023fec89ce2789de6410208d",
+      "size_bytes": 412160,
+      "modified_at": "2026-06-30T02:43:50.053868+00:00"
+    },
+    "tms": {
+      "path": "/Users/macos/Documents/03-周报数据/数学组周数据统计/排课列表_06月01日到06月28日_202606301011.xls",
+      "relative_path": "排课列表_06月01日到06月28日_202606301011.xls",
+      "role": "TMS",
+      "period": [
+        2026,
+        6
+      ],
+      "sha256": "3a496a772b0ab3bec63b300ab4b79483074fe796fa724d5fea442ad3b4418619",
+      "size_bytes": 161680,
+      "modified_at": "2026-06-30T02:11:55.935057+00:00"
+    },
+    "golden": {
+      "path": "/Users/macos/Documents/03-周报数据/数学组周数据统计/数学组数据统计表-宣城二校6月第4周.xls",
+      "relative_path": "数学组数据统计表-宣城二校6月第4周.xls",
+      "role": "FINAL_GOLDEN",
+      "period": [
+        2026,
+        6,
+        4
+      ],
+      "sha256": "3390a2a4fa6ef4f406e2134d4abb6bdc308cd3f2aa1b983492a98a317be997b6",
+      "size_bytes": 83968,
+      "modified_at": "2026-06-30T04:05:49.350556+00:00"
+    },
+    "roster": {
+      "path": "/Users/macos/Documents/03-周报数据/数学组周数据统计/teacher_config.py",
+      "relative_path": "teacher_config.py",
+      "role": "ACTIVE_ROSTER",
+      "period": null,
+      "sha256": "b7001e351e6f10b36b0f5f39f73f68fcc19dfb9154518248778178d69ee8719f",
+      "size_bytes": 1280,
+      "modified_at": "2026-06-23T12:57:54.264219+00:00"
+    }
+  },
+  "completeness": "COMPLETE",
+  "missing_sources": []
+}

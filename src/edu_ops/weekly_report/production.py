@@ -17,11 +17,12 @@ from typing import Any
 
 from openpyxl import Workbook, load_workbook
 
-from .excel_adapter import DEFAULT_ROSTER, build_snapshot
+from .excel_adapter import build_snapshot
 
 _EXTENSIONS = {".xls", ".xlsx", ".xlsm", ".csv", ".py"}
 _WEEK_WORDS = {"一": 1, "二": 2, "三": 3, "四": 4, "五": 5}
 _MONTH_WORDS = {"一": 1, "二": 2, "三": 3, "四": 4, "五": 5, "六": 6, "七": 7, "八": 8, "九": 9, "十": 10, "十一": 11, "十二": 12}
+_DATED_REPORT = re.compile(r"^weekly_report_20\d{2}-\d{2}-w[1-5]\.xlsx$")
 
 
 def sha256(path: Path) -> str:
@@ -235,7 +236,11 @@ def run_production(source_root: str | Path, output_root: str | Path, *, template
     if resolution["completeness"] != "COMPLETE":
         # Do not leave a stale snapshot/workbook looking like the current
         # result.  The manifest and resolution remain as durable diagnostics.
-        for stale in (output / "weekly_report_snapshot.json", output / "weekly_report_latest.xlsx"):
+        stale_reports = [
+            path for path in output.iterdir()
+            if path.is_file() and _DATED_REPORT.fullmatch(path.name)
+        ]
+        for stale in (*stale_reports, output / "weekly_report_snapshot.json", output / "weekly_report_latest.xlsx"):
             stale.unlink(missing_ok=True)
         (output / "PIPELINE_STATUS.json").write_text(json.dumps({
             "status": "PARTIAL",
@@ -245,24 +250,40 @@ def run_production(source_root: str | Path, output_root: str | Path, *, template
         return {"manifest": manifest, "resolution": resolution, "status": "PARTIAL"}
     selected = resolution["selected"]
     period = resolution["latest_complete_period"]
-    snapshot = build_snapshot(Path(selected["wps"]["path"]), Path(selected["tms"]["path"]), Path(selected["golden"]["path"]), period[2], Path(selected.get("roster", {}).get("path", DEFAULT_ROSTER)), year=period[0], month=period[1])
+    # A production run is bound to the discovered source set.  In particular,
+    # do not silently import the developer-machine default roster when the
+    # current inbox has no roster file.
+    roster_path = Path(selected["roster"]["path"]) if selected.get("roster") else None
+    snapshot = build_snapshot(Path(selected["wps"]["path"]), Path(selected["tms"]["path"]), Path(selected["golden"]["path"]), period[2], roster_path, year=period[0], month=period[1])
     snapshot["schema_version"] = "1.0"
     snapshot["completeness"] = {"status": "COMPLETE", "missing_sources": [], "latest_available_period": resolution["latest_available_period"], "latest_complete_period": period}
     snapshot["manifest_hash"] = manifest["manifest_hash"]
     snapshot["source_hashes"] = {key: item["sha256"] for key, item in selected.items()}
-    snapshot["generated_at"] = datetime.now(timezone.utc).isoformat()
     previous_path = output / "weekly_report_snapshot.json"
     previous = json.loads(previous_path.read_text(encoding="utf-8")) if previous_path.exists() else None
     snapshot["week_over_week"] = week_delta(snapshot, previous)
     snapshot["reconciliation"] = {"status": "WARNING" if snapshot.get("unresolved_items") else "PASS", "blocking": [], "warnings": snapshot.get("warnings", [])}
     snapshot["business_fingerprint"] = _business_fingerprint(snapshot)
     previous_fingerprint = previous.get("business_fingerprint") if previous else None
-    snapshot["idempotency"] = {"same_input_business_fingerprint": previous_fingerprint == snapshot["business_fingerprint"] if previous else True}
+    same_business = previous_fingerprint == snapshot["business_fingerprint"] if previous else True
+    same_existing = bool(previous) and same_business and previous.get("manifest_hash") == manifest["manifest_hash"]
+    if same_existing:
+        # Keep a repeated identical run byte-stable.  This also makes the
+        # durable snapshot's timestamp describe the first production of this
+        # exact input set rather than every polling/retry invocation.
+        snapshot["generated_at"] = previous.get("generated_at")
+        snapshot["week_over_week"] = previous.get("week_over_week", snapshot["week_over_week"])
+    else:
+        snapshot["generated_at"] = datetime.now(timezone.utc).isoformat()
+    snapshot["idempotency"] = {"same_input_business_fingerprint": same_business}
     previous_path.write_text(json.dumps(snapshot, ensure_ascii=False, indent=2), encoding="utf-8")
     period_label = f"{period[0]}-{period[1]:02d}-w{period[2]}"
     template_path = Path(template) if template else next((Path(item["path"]) for item in manifest["files"] if item["role"] == "TEMPLATE"), None)
-    render_excel(snapshot, output / f"weekly_report_{period_label}.xlsx", template_path)
-    render_excel(snapshot, output / "weekly_report_latest.xlsx", template_path)
+    dated_output = output / f"weekly_report_{period_label}.xlsx"
+    latest_output = output / "weekly_report_latest.xlsx"
+    if not same_existing or not dated_output.exists() or not latest_output.exists():
+        render_excel(snapshot, dated_output, template_path)
+        render_excel(snapshot, latest_output, template_path)
     (output / "PIPELINE_STATUS.json").write_text(json.dumps({
         "status": "PASS",
         "manifest_hash": manifest["manifest_hash"],

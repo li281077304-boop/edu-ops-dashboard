@@ -1102,7 +1102,6 @@
     "golden": "3390a2a4fa6ef4f406e2134d4abb6bdc308cd3f2aa1b983492a98a317be997b6",
     "roster": "b7001e351e6f10b36b0f5f39f73f68fcc19dfb9154518248778178d69ee8719f"
   },
-  "generated_at": "2026-09-17T01:00:42.603299+00:00",
   "week_over_week": {
     "status": "COMPUTED",
     "metrics": {
@@ -1146,6 +1145,7 @@
     ]
   },
   "business_fingerprint": "7f57bb892f17faeb4295ddba7c5c84a619a21f9492cb3938306eb2ca04e99909",
+  "generated_at": "2026-09-17T01:09:08.111728+00:00",
   "idempotency": {
     "same_input_business_fingerprint": true
   }

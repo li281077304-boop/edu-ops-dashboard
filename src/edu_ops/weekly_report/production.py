@@ -242,9 +242,35 @@ def _numeric(snapshot: dict[str, Any], path: tuple[str, ...]) -> float | None:
     return float(value) if isinstance(value, (int, float)) else None
 
 
+def _snapshot_period(snapshot: dict[str, Any] | None) -> tuple[int, int, int] | None:
+    if not snapshot:
+        return None
+    period = snapshot.get("period", {})
+    try:
+        year, month, week = int(period["year"]), int(period["month"]), int(period["week"])
+    except (KeyError, TypeError, ValueError):
+        return None
+    return year, month, week
+
+
 def week_delta(current: dict[str, Any], previous: dict[str, Any] | None) -> dict[str, Any]:
     if not previous:
         return {"status": "NO_PREVIOUS_PERIOD", "metrics": {}}
+    current_period = _snapshot_period(current)
+    previous_period = _snapshot_period(previous)
+    # The output snapshot is also the idempotency record.  It can therefore
+    # be a same-period replacement, not a historical baseline.  Never turn
+    # that replacement into a fabricated all-zero week-over-week comparison.
+    if current_period is None or previous_period is None:
+        return {"status": "PREVIOUS_PERIOD_UNAVAILABLE", "metrics": {}}
+    if previous_period >= current_period:
+        reason = "SAME_PERIOD_BASELINE_UNAVAILABLE" if previous_period == current_period else "PREVIOUS_PERIOD_IS_NOT_EARLIER"
+        return {
+            "status": reason,
+            "metrics": {},
+            "current_period": current_period,
+            "previous_period": previous_period,
+        }
     paths = {
         "students.single_subject_total": ("students", "single_subject_total"),
         "production.one_to_one_ks": ("production", "tms", "one_to_one_ks"),
@@ -261,7 +287,12 @@ def week_delta(current: dict[str, Any], previous: dict[str, Any] | None) -> dict
             continue
         delta = current_value - previous_value
         result[name] = {"current": current_value, "previous": previous_value, "delta": delta, "delta_pct": (delta / previous_value * 100 if previous_value else None)}
-    return {"status": "COMPUTED", "metrics": result}
+    return {
+        "status": "COMPUTED",
+        "metrics": result,
+        "current_period": current_period,
+        "previous_period": previous_period,
+    }
 
 
 def _excel_expected_cells(snapshot: dict[str, Any]) -> dict[tuple[str, str], Any]:
@@ -548,7 +579,16 @@ def _run_production(source_root: str | Path, output_root: str | Path, *, templat
         # durable snapshot's timestamp describe the first production of this
         # exact input set rather than every polling/retry invocation.
         snapshot["generated_at"] = previous.get("generated_at")
-        snapshot["week_over_week"] = previous.get("week_over_week", snapshot["week_over_week"])
+        # Do not preserve a legacy self-comparison computed before the
+        # period-order gate existed.  Repeated valid runs remain byte-stable,
+        # while an old same-period artifact is repaired to an explicit
+        # unavailable state.
+        previous_delta = previous.get("week_over_week")
+        if previous_delta == snapshot["week_over_week"] or not (
+            previous_delta and previous_delta.get("status") == "COMPUTED"
+            and snapshot["week_over_week"].get("status") != "COMPUTED"
+        ):
+            snapshot["week_over_week"] = previous_delta or snapshot["week_over_week"]
     else:
         snapshot["generated_at"] = datetime.now(timezone.utc).isoformat()
     snapshot["idempotency"] = {"same_input_business_fingerprint": same_business}

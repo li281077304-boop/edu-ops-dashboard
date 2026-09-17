@@ -157,9 +157,35 @@ def test_excel_semantic_regression_mapping_is_not_just_expected_cell_self_check(
 
 
 def test_week_delta_is_explicit_and_bounded():
-    current = {"students": {"single_subject_total": 12}, "production": {"tms": {"one_to_one_ks": 10, "class_ks": 20, "week_hours_equivalent": 16}}, "teachers": [{"name": "A"}, {"name": "B"}]}
-    previous = {"students": {"single_subject_total": 10}, "production": {"tms": {"one_to_one_ks": 8, "class_ks": 20, "week_hours_equivalent": 14}}, "teachers": [{"name": "A"}]}
+    current = {"period": {"year": 2026, "month": 6, "week": 4}, "students": {"single_subject_total": 12}, "production": {"tms": {"one_to_one_ks": 10, "class_ks": 20, "week_hours_equivalent": 16}}, "teachers": [{"name": "A"}, {"name": "B"}]}
+    previous = {"period": {"year": 2026, "month": 6, "week": 3}, "students": {"single_subject_total": 10}, "production": {"tms": {"one_to_one_ks": 8, "class_ks": 20, "week_hours_equivalent": 14}}, "teachers": [{"name": "A"}]}
     result = week_delta(current, previous)
     assert result["status"] == "COMPUTED"
     assert result["metrics"]["students.single_subject_total"]["delta"] == 2
     assert result["metrics"]["teachers.count"]["delta"] == 1
+
+
+def test_same_period_replacement_does_not_self_compare_as_zero(tmp_path: Path):
+    output = tmp_path / "out"
+    first = run_production(ASSET_ROOT, output, template=ASSET_ROOT / "数学组数据统计表基础模板.xlsx")
+    assert first["status"] == "PASS"
+    snapshot_path = output / "weekly_report_snapshot.json"
+    previous = json.loads(snapshot_path.read_text(encoding="utf-8"))
+    previous["students"]["single_subject_total"] += 1
+    previous["business_fingerprint"] = "different-same-period-baseline"
+    previous["week_over_week"] = {"status": "COMPUTED", "metrics": {"students.single_subject_total": {"delta": 0}}}
+    snapshot_path.write_text(json.dumps(previous, ensure_ascii=False, indent=2), encoding="utf-8")
+
+    second = run_production(ASSET_ROOT, output, template=ASSET_ROOT / "数学组数据统计表基础模板.xlsx")
+    assert second["status"] == "PASS"
+    refreshed = json.loads(snapshot_path.read_text(encoding="utf-8"))
+    assert refreshed["week_over_week"]["status"] == "SAME_PERIOD_BASELINE_UNAVAILABLE"
+    assert refreshed["week_over_week"]["metrics"] == {}
+
+
+def test_same_period_week_delta_is_not_computed():
+    current = {"period": {"year": 2026, "month": 6, "week": 4}, "students": {"single_subject_total": 12}, "teachers": []}
+    previous = {"period": {"year": 2026, "month": 6, "week": 4}, "students": {"single_subject_total": 10}, "teachers": []}
+    result = week_delta(current, previous)
+    assert result["status"] == "SAME_PERIOD_BASELINE_UNAVAILABLE"
+    assert result["metrics"] == {}

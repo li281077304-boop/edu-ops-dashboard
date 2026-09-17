@@ -1115,39 +1115,18 @@
     "roster": "b7001e351e6f10b36b0f5f39f73f68fcc19dfb9154518248778178d69ee8719f"
   },
   "week_over_week": {
-    "status": "COMPUTED",
-    "metrics": {
-      "students.single_subject_total": {
-        "current": 263.0,
-        "previous": 263.0,
-        "delta": 0.0,
-        "delta_pct": 0.0
-      },
-      "production.one_to_one_ks": {
-        "current": 219.0,
-        "previous": 219.0,
-        "delta": 0.0,
-        "delta_pct": 0.0
-      },
-      "production.class_ks": {
-        "current": 411.0,
-        "previous": 411.0,
-        "delta": 0.0,
-        "delta_pct": 0.0
-      },
-      "production.week_hours_equivalent": {
-        "current": 356.0,
-        "previous": 356.0,
-        "delta": 0.0,
-        "delta_pct": 0.0
-      },
-      "teachers.count": {
-        "current": 18,
-        "previous": 18,
-        "delta": 0,
-        "delta_pct": 0.0
-      }
-    }
+    "status": "SAME_PERIOD_BASELINE_UNAVAILABLE",
+    "metrics": {},
+    "current_period": [
+      2026,
+      6,
+      4
+    ],
+    "previous_period": [
+      2026,
+      6,
+      4
+    ]
   },
   "reconciliation": {
     "status": "WARNING",

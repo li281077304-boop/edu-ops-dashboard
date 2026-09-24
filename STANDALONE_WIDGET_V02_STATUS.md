@@ -6,12 +6,16 @@ Status snapshot for this source branch. This is not a release-readiness declarat
 - CONTRACT_V2 = PASS
 - PYTHON_TESTS = PASS
 - ANDROID_SOURCE_IMPLEMENTED = PASS
-- ANDROID_UNIT_TEST = TECHNICAL_OPEN_LOCAL_SDK_MISSING
-- ANDROID_BUILD = TECHNICAL_OPEN_LOCAL_SDK_MISSING
+- ANDROID_UNIT_TEST = PASS_CI
+- ANDROID_BUILD = PASS_CI
 - DEVICE_UAT = NOT_RUN
 
-Android SDK platforms/build-tools are not installed in the standard local SDK
-location. No SDK was installed and no license was accepted for this work.
+CI verification: GitHub Actions run `35963925513` passed on `ubuntu-24.04`.
+The `standalone-widget-v0.2-debug-apk` artifact was uploaded successfully.
+Local Android device UAT has not been performed.
+
+The local Android SDK platform/build-tools remain uninstalled; no local SDK
+license was accepted for this work.
 
 The Android app starts with “尚未导入数据”. It imports a V2 `widget-data.json`,
 validates the contract, saves the last valid payload locally, and renders from

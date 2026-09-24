@@ -3,17 +3,27 @@ package com.li281077304.eduops.widget
 import android.content.Context
 import android.content.SharedPreferences
 import org.json.JSONObject
-import java.net.URI
 
-private const val SCHEMA_VERSION = 1
+private const val SCHEMA_VERSION = 2
 private val CARD_KEYS = listOf(
     "monthly_produced_ks",
     "monthly_planned_ks",
-    "one_to_one_weekly_average_ks",
-    "total_weekly_average_ks",
-    "average_lessons",
-    "big_small_week_ks",
+    "monthly_lesson_count",
+    "monthly_completed_lessons",
+    "monthly_scheduled_lessons",
+    "monthly_cancelled_lessons",
+    "weekly_produced_ks",
+    "weekly_planned_ks",
+    "weekly_completed_lessons",
+    "weekly_scheduled_lessons",
+    "weekly_average_lessons",
+    "one_to_one_produced_ks",
+    "one_to_one_planned_ks",
+    "class_produced_ks",
+    "class_planned_ks",
+    "teacher_count",
 )
+private val SECTIONS = listOf("month", "week", "structure")
 
 data class WidgetCard(
     val key: String,
@@ -21,6 +31,9 @@ data class WidgetCard(
     val value: String,
     val unit: String,
     val format: String,
+    val section: String,
+    val availability: String,
+    val definition: String,
 )
 
 data class WidgetPayload(
@@ -31,7 +44,6 @@ data class WidgetPayload(
     val periodStart: String,
     val periodEnd: String,
     val periodLabel: String,
-    val dataStatus: String,
     val cards: List<WidgetCard>,
 ) {
     fun card(key: String): WidgetCard? = cards.firstOrNull { it.key == key }
@@ -44,24 +56,63 @@ data class WidgetPayload(
             }
             val dashboard = root.getJSONObject("dashboard")
             val period = root.getJSONObject("period")
+            val source = root.getJSONObject("source")
+            require(dashboard.getString("id").isNotBlank() && dashboard.getString("name").isNotBlank()) {
+                "Dashboard 标识缺失"
+            }
+            require(root.getString("updated_at").isNotBlank()) { "更新时间缺失" }
+            require(period.getString("start").isNotBlank() && period.getString("end").isNotBlank()) {
+                "统计周期缺失"
+            }
+            require(period.getString("label").isNotBlank()) { "统计周期说明缺失" }
+            require(source.getString("file_name").isNotBlank()) { "来源文件名缺失" }
+            require(Regex("[0-9a-f]{64}").matches(source.getString("sha256"))) { "来源指纹无效" }
+            val recordCount = source.get("record_count")
+            require(recordCount is Number && recordCount.toInt() > 0) { "来源记录数无效" }
             val cardsJson = root.getJSONArray("cards")
-            require(cardsJson.length() == CARD_KEYS.size) { "Dashboard 必须包含六张卡" }
+            require(cardsJson.length() == CARD_KEYS.size) { "Dashboard 必须包含十六张卡" }
             val cards = buildList(cardsJson.length()) {
                 for (index in 0 until cardsJson.length()) {
                     val card = cardsJson.getJSONObject(index)
                     require(card.getString("key") == CARD_KEYS[index]) { "Dashboard 卡片顺序无效" }
                     val format = card.getString("format")
-                    require(format in setOf("number", "text", "unavailable")) { "卡片格式无效" }
+                    require(format == "number") { "卡片格式无效" }
+                    require(card.getString("availability") == "available") { "卡片不可用" }
+                    require(card.getString("label").isNotBlank() && card.getString("definition").isNotBlank()) {
+                        "Dashboard 卡片说明缺失"
+                    }
+                    require(card.getString("unit").isNotBlank()) { "Dashboard 卡片单位缺失" }
+                    val number = card.get("value")
+                    require(number is Number && number.toDouble().isFinite()) { "Dashboard 卡片值无效" }
                     add(
                         WidgetCard(
                             key = card.getString("key"),
                             label = card.getString("label"),
-                            value = card.getString("value"),
+                            value = card.get("value").toString(),
                             unit = card.optString("unit"),
                             format = format,
+                            section = card.getString("section"),
+                            availability = card.getString("availability"),
+                            definition = card.getString("definition"),
                         ),
                     )
                 }
+            }
+            val sections = root.getJSONObject("sections")
+            require(sections.keys().asSequence().toSet() == SECTIONS.toSet()) { "Dashboard 分区字段无效" }
+            require(SECTIONS.all { sections.has(it) }) { "Dashboard 分区不完整" }
+            val groupedKeys = SECTIONS.flatMap { section ->
+                val keys = sections.getJSONArray(section)
+                (0 until keys.length()).map { keys.getString(it) }
+            }
+            require(groupedKeys == cards.map { it.key }) { "Dashboard 分区与卡片不一致" }
+            val cardSection = cards.associate { it.key to it.section }
+            val sectionMatches = SECTIONS.all { section ->
+                val keys = sections.getJSONArray(section)
+                (0 until keys.length()).all { cardSection[keys.getString(it)] == section }
+            }
+            require(sectionMatches && cards.all { it.section in SECTIONS }) {
+                "Dashboard 卡片元数据不完整"
             }
             return WidgetPayload(
                 schemaVersion = root.getInt("schema_version"),
@@ -71,7 +122,6 @@ data class WidgetPayload(
                 periodStart = period.getString("start"),
                 periodEnd = period.getString("end"),
                 periodLabel = period.getString("label"),
-                dataStatus = root.optString("data_status", "live"),
                 cards = cards,
             )
         }
@@ -79,54 +129,18 @@ data class WidgetPayload(
 }
 
 internal object DashboardConfig {
-    const val DEFAULT_ENDPOINT = "http://10.0.2.2:8787/widget-data.json"
     private const val PREFS = "dashboard_widget"
-    private const val ENDPOINT = "endpoint"
-    private const val DASHBOARD_ID = "dashboard_id"
     private const val PAYLOAD = "last_payload"
 
     fun preferences(context: Context): SharedPreferences =
         context.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
-
-    fun endpoint(context: Context): String =
-        preferences(context).getString(ENDPOINT, DEFAULT_ENDPOINT) ?: DEFAULT_ENDPOINT
-
-    fun dashboardId(context: Context): String =
-        preferences(context).getString(DASHBOARD_ID, "xc2") ?: "xc2"
-
-    fun setSettings(context: Context, endpoint: String, dashboardId: String) {
-        requireValidEndpoint(endpoint)
-        require(dashboardId.trim().isNotEmpty()) { "Dashboard ID 不能为空" }
-        preferences(context).edit()
-            .putString(ENDPOINT, endpoint.trim())
-            .putString(DASHBOARD_ID, dashboardId.trim())
-            .commit()
-    }
-
-    fun requireValidEndpoint(endpoint: String): String {
-        val value = endpoint.trim()
-        val uri = runCatching { URI(value) }.getOrNull()
-        require(
-            uri != null && uri.host != null && uri.path.orEmpty().isNotBlank() &&
-                (uri.scheme == "http" || uri.scheme == "https"),
-        ) { "Dashboard 地址必须是完整的 http(s) URL" }
-        return value
-    }
 
     fun cachedJson(context: Context): String? = preferences(context).getString(PAYLOAD, null)
 
     fun cachedPayload(context: Context): WidgetPayload? =
         cachedJson(context)?.let { runCatching { WidgetPayload.fromDashboardJson(it) }.getOrNull() }
 
-    fun samplePayload(context: Context): WidgetPayload =
-        context.assets.open("widget-data.json").bufferedReader().use {
-            WidgetPayload.fromDashboardJson(it.readText())
-        }
-
-    fun currentPayload(context: Context): WidgetPayload = cachedPayload(context) ?: samplePayload(context)
-
-    fun isSample(context: Context): Boolean =
-        (cachedPayload(context)?.dataStatus ?: "sample") == "sample"
+    fun currentPayload(context: Context): WidgetPayload? = cachedPayload(context)
 
     /** SharedPreferences commit makes the new validated payload visible as one completed write. */
     fun savePayload(context: Context, json: String) {

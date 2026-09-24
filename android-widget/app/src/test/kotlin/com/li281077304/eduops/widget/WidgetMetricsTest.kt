@@ -4,31 +4,42 @@ import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
 
-private fun contractJson(schema: Int = 1, cards: String = """[
-    {"key":"monthly_produced_ks","label":"月度已生产","value":"8420","unit":"KS","format":"number"},
-    {"key":"monthly_planned_ks","label":"月度预排","value":"10680","unit":"KS","format":"number"},
-    {"key":"one_to_one_weekly_average_ks","label":"一对一周平均","value":"3","unit":"KS / 人 / 周","format":"number"},
-    {"key":"total_weekly_average_ks","label":"全员周平均","value":"9.6","unit":"KS / 人 / 周","format":"number"},
-    {"key":"average_lessons","label":"平均课次","value":"12.4","unit":"次 / 教师","format":"number"},
-    {"key":"big_small_week_ks","label":"大小周课时","value":"大周 1300\n小周 700","unit":"KS","format":"text"}
-]""") = """{"schema_version":$schema,"data_status":"live","dashboard":{"id":"xc2","name":"二校经营看板"},"updated_at":"2026-09-16T09:00:00+08:00","period":{"start":"2026-08-31","end":"2026-09-27","label":"人工月9 · 2026-08-31 ～ 2026-09-27"},"cards":$cards}"""
+private val cardKeys = listOf(
+    "monthly_produced_ks", "monthly_planned_ks", "monthly_lesson_count",
+    "monthly_completed_lessons", "monthly_scheduled_lessons", "monthly_cancelled_lessons",
+    "weekly_produced_ks", "weekly_planned_ks", "weekly_completed_lessons",
+    "weekly_scheduled_lessons", "weekly_average_lessons", "one_to_one_produced_ks",
+    "one_to_one_planned_ks", "class_produced_ks", "class_planned_ks", "teacher_count",
+)
+
+private fun contractJson(schema: Int = 2, cards: String? = null): String {
+    val cardData = cards ?: cardKeys.mapIndexed { index, key ->
+        val section = when (index) {
+            in 0..5 -> "month"
+            in 6..10 -> "week"
+            else -> "structure"
+        }
+        """{"key":"$key","label":"Metric $index","value":$index,"unit":"KS","format":"number","section":"$section","availability":"available","definition":"synthetic fixture"}"""
+    }.joinToString(",", "[", "]")
+    return """{"schema_version":$schema,"dashboard":{"id":"fixture","name":"Fixture"},"updated_at":"2026-09-16T09:00:00+08:00","period":{"start":"2026-08-31","end":"2026-09-27","label":"Fixture period"},"source":{"file_name":"synthetic.xlsx","sha256":"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","record_count":1},"cards":$cardData,"sections":{"month":[${cardKeys.take(6).joinToString(",") { "\"$it\"" }}],"week":[${cardKeys.slice(6..10).joinToString(",") { "\"$it\"" }}],"structure":[${cardKeys.drop(11).joinToString(",") { "\"$it\"" }}]}}"""
+}
 
 class WidgetMetricsTest {
     @Test
-    fun parsesTheVersionedContractWithoutRecalculatingMetrics() {
+    fun parsesContractV2WithoutRecalculatingMetrics() {
         val payload = WidgetPayload.fromDashboardJson(contractJson())
 
-        assertEquals(1, payload.schemaVersion)
-        assertEquals("二校经营看板", payload.dashboardName)
-        assertEquals("3 KS / 人 / 周", formatCard(payload.card("one_to_one_weekly_average_ks")!!))
-        assertEquals("大周 1300 KS\n小周 700 KS", formatCard(payload.card("big_small_week_ks")!!))
+        assertEquals(2, payload.schemaVersion)
+        assertEquals("Fixture", payload.dashboardName)
+        assertEquals("0 KS", formatCard(payload.card("monthly_produced_ks")!!))
+        assertEquals("15 KS", formatCard(payload.card("teacher_count")!!))
     }
 
     @Test
     fun rejectsUnsupportedSchemaAndIncompleteCards() {
         var rejected = false
         try {
-            WidgetPayload.fromDashboardJson(contractJson(schema = 2))
+            WidgetPayload.fromDashboardJson(contractJson(schema = 3))
         } catch (_: IllegalArgumentException) {
             rejected = true
         }
@@ -44,14 +55,22 @@ class WidgetMetricsTest {
     }
 
     @Test
-    fun endpointValidationIsExplicitAndTrimmed() {
-        assertEquals(
-            "https://dashboard.example/widget-data.json",
-            DashboardConfig.requireValidEndpoint(" https://dashboard.example/widget-data.json "),
-        )
+    fun rejectsLegacySchemaAndUnknownUnavailableCards() {
         var rejected = false
         try {
-            DashboardConfig.requireValidEndpoint("dashboard.example")
+            WidgetPayload.fromDashboardJson(contractJson(schema = 1))
+        } catch (_: IllegalArgumentException) {
+            rejected = true
+        }
+        assertTrue(rejected)
+
+        val unavailable = contractJson().replaceFirst(
+            "\"availability\":\"available\"",
+            "\"availability\":\"unavailable\"",
+        )
+        rejected = false
+        try {
+            WidgetPayload.fromDashboardJson(unavailable)
         } catch (_: IllegalArgumentException) {
             rejected = true
         }

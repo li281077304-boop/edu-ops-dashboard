@@ -35,14 +35,15 @@ class DashboardWidget : GlanceAppWidget() {
     override val sizeMode: SizeMode = SizeMode.Responsive(
         setOf(
             DpSize(180.dp, 220.dp),
-            DpSize(280.dp, 300.dp),
+            DpSize(250.dp, 260.dp),
+            DpSize(320.dp, 360.dp),
         ),
     )
 
     override suspend fun provideGlance(context: Context, id: androidx.glance.GlanceId) {
         // Rendering is strictly local: network sync belongs to the app, never to a redraw.
         val payload = DashboardConfig.currentPayload(context)
-        provideContent { DashboardContent(payload, DashboardConfig.isSample(context)) }
+        provideContent { DashboardContent(payload) }
     }
 }
 
@@ -51,10 +52,31 @@ class DashboardWidgetReceiver : GlanceAppWidgetReceiver() {
 }
 
 @Composable
-private fun DashboardContent(payload: WidgetPayload, isSample: Boolean) {
+private fun DashboardContent(payload: WidgetPayload?) {
     val context = LocalContext.current
-    val compact = LocalSize.current.width < 240.dp || LocalSize.current.height < 260.dp
-    val cards = if (compact) payload.cards.take(4) else payload.cards
+    val size = LocalSize.current
+    val compact = size.width < 230.dp || size.height < 250.dp
+    val medium = !compact && (size.width < 300.dp || size.height < 330.dp)
+    val smallKeys = listOf(
+        "monthly_produced_ks",
+        "monthly_planned_ks",
+        "weekly_produced_ks",
+        "weekly_planned_ks",
+        "weekly_average_lessons",
+        "teacher_count",
+    )
+    val mediumKeys = smallKeys + listOf(
+        "monthly_lesson_count",
+        "monthly_completed_lessons",
+        "weekly_completed_lessons",
+        "weekly_scheduled_lessons",
+    )
+    val selectedKeys = when {
+        compact -> smallKeys
+        medium -> mediumKeys
+        else -> payload?.cards?.map { it.key }.orEmpty()
+    }
+    val cards = payload?.cards?.filter { it.key in selectedKeys }?.sortedBy { selectedKeys.indexOf(it.key) }.orEmpty()
     Column(
         modifier = GlanceModifier
             .fillMaxSize()
@@ -63,7 +85,7 @@ private fun DashboardContent(payload: WidgetPayload, isSample: Boolean) {
         verticalAlignment = Alignment.Vertical.Top,
     ) {
         Text(
-            text = payload.dashboardName,
+            text = payload?.dashboardName ?: "经营看板",
             modifier = GlanceModifier.clickable(actionStartActivity(Intent(context, MainActivity::class.java))),
             style = TextStyle(
                 color = ColorProvider(R.color.widget_title),
@@ -72,18 +94,25 @@ private fun DashboardContent(payload: WidgetPayload, isSample: Boolean) {
             ),
         )
         Text(
-            text = if (isSample) "示例数据 · 点击打开应用" else "更新 ${payload.updatedAt}",
+            text = if (payload == null) "尚未导入数据 · 点击打开应用" else "更新 ${payload.updatedAt}",
             style = TextStyle(color = ColorProvider(R.color.widget_muted), fontSize = 9.sp),
         )
-        if (!compact) {
+        if (!compact && payload != null) {
             Text(
-                text = payload.periodLabel,
+            text = payload.periodLabel,
                 style = TextStyle(color = ColorProvider(R.color.widget_muted), fontSize = 9.sp),
             )
         }
         Spacer(GlanceModifier.height(if (compact) 5.dp else 7.dp))
-        cards.chunked(2).forEach { row ->
-            MetricRow(row, compact)
+        if (payload == null) {
+            Text(
+                text = "打开应用，导入最新经营数据",
+                style = TextStyle(color = ColorProvider(R.color.widget_muted), fontSize = 12.sp),
+            )
+        } else {
+            cards.chunked(2).forEach { row ->
+                MetricRow(row, compact)
+            }
         }
     }
 }
@@ -118,7 +147,7 @@ private fun MetricCardView(card: WidgetCard, compact: Boolean, weight: GlanceMod
             text = formatCard(card),
             style = TextStyle(
                 color = ColorProvider(R.color.widget_value),
-                fontSize = if (card.key == "big_small_week_ks") 12.sp else 14.sp,
+                fontSize = if (card.label.length > 8) 12.sp else 14.sp,
                 fontWeight = FontWeight.Bold,
             ),
         )

@@ -33,16 +33,12 @@ import androidx.glance.unit.ColorProvider
 
 class DashboardWidget : GlanceAppWidget() {
     override val sizeMode: SizeMode = SizeMode.Responsive(
-        setOf(
-            DpSize(180.dp, 220.dp),
-            DpSize(280.dp, 300.dp),
-        ),
+        setOf(DpSize(180.dp, 220.dp), DpSize(280.dp, 300.dp), DpSize(420.dp, 420.dp)),
     )
 
     override suspend fun provideGlance(context: Context, id: androidx.glance.GlanceId) {
-        // Rendering is strictly local: network sync belongs to the app, never to a redraw.
-        val payload = DashboardConfig.currentPayload(context)
-        provideContent { DashboardContent(payload, DashboardConfig.isSample(context)) }
+        // Redraws are offline-only: cache first, then the bundled V2 sample.
+        provideContent { DashboardContent(DashboardConfig.currentPayload(context)) }
     }
 }
 
@@ -51,47 +47,30 @@ class DashboardWidgetReceiver : GlanceAppWidgetReceiver() {
 }
 
 @Composable
-private fun DashboardContent(payload: WidgetPayload, isSample: Boolean) {
+private fun DashboardContent(payload: WidgetPayload) {
     val context = LocalContext.current
-    val compact = LocalSize.current.width < 240.dp || LocalSize.current.height < 260.dp
-    val cards = if (compact) payload.cards.take(4) else payload.cards
+    val limit = visibleCardLimitFor(LocalSize.current.width.value)
+    val compact = limit == 6
+    val cards = payload.visibleCards(limit)
     Column(
-        modifier = GlanceModifier
-            .fillMaxSize()
-            .background(ImageProvider(R.drawable.widget_surface_background))
-            .padding(if (compact) 8.dp else 10.dp),
+        modifier = GlanceModifier.fillMaxSize().background(ImageProvider(R.drawable.widget_surface_background))
+            .padding(if (compact) 8.dp else 10.dp)
+            .clickable(actionStartActivity(Intent(context, MainActivity::class.java))),
         verticalAlignment = Alignment.Vertical.Top,
     ) {
-        Text(
-            text = payload.dashboardName,
-            modifier = GlanceModifier.clickable(actionStartActivity(Intent(context, MainActivity::class.java))),
-            style = TextStyle(
-                color = ColorProvider(R.color.widget_title),
-                fontSize = if (compact) 15.sp else 17.sp,
-                fontWeight = FontWeight.Bold,
-            ),
-        )
-        Text(
-            text = if (isSample) "示例数据 · 点击打开应用" else "更新 ${payload.updatedAt}",
-            style = TextStyle(color = ColorProvider(R.color.widget_muted), fontSize = 9.sp),
-        )
-        if (!compact) {
-            Text(
-                text = payload.periodLabel,
-                style = TextStyle(color = ColorProvider(R.color.widget_muted), fontSize = 9.sp),
-            )
-        }
+        Text(payload.dashboardName, style = TextStyle(color = ColorProvider(R.color.widget_title), fontSize = if (compact) 15.sp else 17.sp, fontWeight = FontWeight.Bold))
+        Text("更新 ${payload.updatedAt}", style = TextStyle(color = ColorProvider(R.color.widget_muted), fontSize = 9.sp))
+        if (!compact) Text(payload.periodLabel, style = TextStyle(color = ColorProvider(R.color.widget_muted), fontSize = 9.sp))
         Spacer(GlanceModifier.height(if (compact) 5.dp else 7.dp))
-        cards.chunked(2).forEach { row ->
-            MetricRow(row, compact)
-        }
+        if (cards.isEmpty()) Text("暂无可展示指标", style = TextStyle(color = ColorProvider(R.color.widget_muted), fontSize = 12.sp))
+        else cards.chunked(2).forEach { row -> MetricRow(row, compact) }
     }
 }
 
 @Composable
 private fun MetricRow(cards: List<WidgetCard>, compact: Boolean) {
     Row(modifier = GlanceModifier.fillMaxWidth()) {
-        cards.getOrNull(0)?.let { MetricCardView(it, compact, GlanceModifier.defaultWeight()) }
+        cards.firstOrNull()?.let { MetricCardView(it, compact, GlanceModifier.defaultWeight()) }
         if (cards.size > 1) {
             Spacer(GlanceModifier.width(5.dp))
             MetricCardView(cards[1], compact, GlanceModifier.defaultWeight())
@@ -103,24 +82,11 @@ private fun MetricRow(cards: List<WidgetCard>, compact: Boolean) {
 @Composable
 private fun MetricCardView(card: WidgetCard, compact: Boolean, weight: GlanceModifier) {
     Column(
-        modifier = weight
-            .padding(3.dp)
-            .background(ImageProvider(R.drawable.widget_card_background))
-            .padding(if (compact) 7.dp else 8.dp),
+        modifier = weight.padding(3.dp).background(ImageProvider(R.drawable.widget_card_background)).padding(if (compact) 7.dp else 8.dp),
         verticalAlignment = Alignment.Vertical.CenterVertically,
     ) {
-        Text(
-            text = card.label,
-            style = TextStyle(color = ColorProvider(R.color.widget_muted), fontSize = 10.sp),
-        )
+        Text(card.label, style = TextStyle(color = ColorProvider(R.color.widget_muted), fontSize = 10.sp))
         Spacer(GlanceModifier.height(2.dp))
-        Text(
-            text = formatCard(card),
-            style = TextStyle(
-                color = ColorProvider(R.color.widget_value),
-                fontSize = if (card.key == "big_small_week_ks") 12.sp else 14.sp,
-                fontWeight = FontWeight.Bold,
-            ),
-        )
+        Text(formatCard(card), style = TextStyle(color = ColorProvider(R.color.widget_value), fontSize = 14.sp, fontWeight = FontWeight.Bold))
     }
 }

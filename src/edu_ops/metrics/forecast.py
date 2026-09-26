@@ -9,9 +9,14 @@ from typing import Optional
 from edu_ops.transforms.schedule import ScheduleRecord, is_cancelled
 
 
-def _is_one_to_one(record: ScheduleRecord) -> bool:
+def is_one_to_one(record: ScheduleRecord) -> bool:
     form = (record.course_type or "").lower().replace(" ", "")
     return any(token in form for token in ("一对一", "1对1", "1v1"))
+
+
+def _is_one_to_one(record: ScheduleRecord) -> bool:
+    """Backward-compatible private alias for existing callers."""
+    return is_one_to_one(record)
 
 
 def _count(value: Optional[Decimal]) -> Decimal:

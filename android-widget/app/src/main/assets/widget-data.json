@@ -1,22 +1,48 @@
 {
-  "schema_version": 1,
-  "data_status": "sample",
-  "dashboard": {
-    "id": "xc2",
-    "name": "二校经营看板"
-  },
-  "updated_at": "2026-09-16T08:00:00+08:00",
+  "schema_version": 2,
+  "data_status": "empty",
+  "dashboard": {"id": "standalone-schedule", "name": "排课经营数据"},
+  "updated_at": "尚未导入",
   "period": {
-    "start": "2026-08-31",
-    "end": "2026-09-27",
-    "label": "人工月9 · 2026-08-31 ～ 2026-09-27"
+    "manual_month": 0,
+    "weeks": 0,
+    "start": "1970-01-01",
+    "end": "1970-01-01",
+    "label": "请从电脑导入数据",
+    "data_cutoff": "1970-01-01",
+    "current_week_start": "1970-01-01",
+    "current_week_end": "1970-01-01"
+  },
+  "source": {
+    "filename": "尚未导入",
+    "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+    "size_bytes": 0,
+    "format": "none",
+    "row_count": 0,
+    "date_coverage": {"start": "1970-01-01", "end": "1970-01-01"},
+    "duplicate_rows": 0
   },
   "cards": [
-    {"key": "monthly_produced_ks", "label": "月度已生产", "value": "8420", "unit": "KS", "format": "number"},
-    {"key": "monthly_planned_ks", "label": "月度预排", "value": "10680", "unit": "KS", "format": "number"},
-    {"key": "one_to_one_weekly_average_ks", "label": "一对一周平均", "value": "3", "unit": "KS / 人 / 周", "format": "number"},
-    {"key": "total_weekly_average_ks", "label": "全员周平均", "value": "9.6", "unit": "KS / 人 / 周", "format": "number"},
-    {"key": "average_lessons", "label": "平均课次", "value": "12.4", "unit": "次 / 教师", "format": "number"},
-    {"key": "big_small_week_ks", "label": "大小周课时", "value": "大周 1300\n小周 700", "unit": "KS", "format": "text"}
-  ]
+    {"key":"monthly_produced_ks","label":"月度已生产","value":null,"unit":"KS","format":"unavailable","section":"month","availability":"unavailable","definition":"人工月内已上课记录按实到人数计算；仅计入数据截止日及以前。","reason":"请先导入本地排课数据。"},
+    {"key":"monthly_planned_ks","label":"月度预排","value":null,"unit":"KS","format":"unavailable","section":"month","availability":"unavailable","definition":"人工月内按现有预排口径计算；一对一每节3 KS，其余按应到人数。","reason":"请先导入本地排课数据。"},
+    {"key":"monthly_lesson_count","label":"月度总课次","value":null,"unit":"课次","format":"unavailable","section":"month","availability":"unavailable","definition":"人工月内已上课与未上课课次之和；取消/作废单独统计。","reason":"请先导入本地排课数据。"},
+    {"key":"monthly_completed_lessons","label":"月度已上课","value":null,"unit":"课次","format":"unavailable","section":"month","availability":"unavailable","definition":"人工月内状态为已上课且日期不晚于数据截止日的课次。","reason":"请先导入本地排课数据。"},
+    {"key":"monthly_scheduled_lessons","label":"月度未上课","value":null,"unit":"课次","format":"unavailable","section":"month","availability":"unavailable","definition":"人工月内状态为未上课或已排的课次。","reason":"请先导入本地排课数据。"},
+    {"key":"monthly_cancelled_lessons","label":"月度已取消","value":null,"unit":"课次","format":"unavailable","section":"month","availability":"unavailable","definition":"人工月内已取消或作废课次，不计入总课次及课时。","reason":"请先导入本地排课数据。"},
+    {"key":"weekly_produced_ks","label":"本周已生产","value":null,"unit":"KS","format":"unavailable","section":"week","availability":"unavailable","definition":"本周一至数据截止日内已上课记录按实到计算。","reason":"请先导入本地排课数据。"},
+    {"key":"weekly_planned_ks","label":"本周预排","value":null,"unit":"KS","format":"unavailable","section":"week","availability":"unavailable","definition":"本周完整自然周按现有预排口径计算，包含未来课程计划。","reason":"请先导入本地排课数据。"},
+    {"key":"weekly_completed_lessons","label":"本周已上课","value":null,"unit":"课次","format":"unavailable","section":"week","availability":"unavailable","definition":"本周一至数据截止日内状态为已上课的课次。","reason":"请先导入本地排课数据。"},
+    {"key":"weekly_scheduled_lessons","label":"本周未上课","value":null,"unit":"课次","format":"unavailable","section":"week","availability":"unavailable","definition":"本周完整自然周状态为未上课或已排课次。","reason":"请先导入本地排课数据。"},
+    {"key":"weekly_average_lessons","label":"本周平均课次","value":null,"unit":"课次/教师","format":"unavailable","section":"week","availability":"unavailable","definition":"沿用本周累计排课课次除以人工月排课涉及教师数的口径。","reason":"请先导入本地排课数据。"},
+    {"key":"one_to_one_produced_ks","label":"一对一已生产","value":null,"unit":"KS","format":"unavailable","section":"structure","availability":"unavailable","definition":"人工月内已上课的一对一记录按实到计算。","reason":"请先导入本地排课数据。"},
+    {"key":"one_to_one_planned_ks","label":"一对一预排","value":null,"unit":"KS","format":"unavailable","section":"structure","availability":"unavailable","definition":"人工月内一对一记录按现有预排口径计算。","reason":"请先导入本地排课数据。"},
+    {"key":"class_produced_ks","label":"班课已生产","value":null,"unit":"KS","format":"unavailable","section":"structure","availability":"unavailable","definition":"人工月内非一对一已上课记录按实到计算。","reason":"请先导入本地排课数据。"},
+    {"key":"class_planned_ks","label":"班课预排","value":null,"unit":"KS","format":"unavailable","section":"structure","availability":"unavailable","definition":"人工月内非一对一记录按现有预排口径计算。","reason":"请先导入本地排课数据。"},
+    {"key":"teacher_count","label":"教师数","value":null,"unit":"人","format":"unavailable","section":"structure","availability":"unavailable","definition":"人工月内至少涉及一条未取消课程的去重教师数。","reason":"请先导入本地排课数据。"}
+  ],
+  "sections": {
+    "month": ["monthly_produced_ks","monthly_planned_ks","monthly_lesson_count","monthly_completed_lessons","monthly_scheduled_lessons","monthly_cancelled_lessons"],
+    "week": ["weekly_produced_ks","weekly_planned_ks","weekly_completed_lessons","weekly_scheduled_lessons","weekly_average_lessons"],
+    "structure": ["one_to_one_produced_ks","one_to_one_planned_ks","class_produced_ks","class_planned_ks","teacher_count"]
+  }
 }
